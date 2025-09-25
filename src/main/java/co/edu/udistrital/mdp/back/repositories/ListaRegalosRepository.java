@@ -1,4 +1,4 @@
-package co.edu.udistrital.mdp.back.entities;
+package co.edu.udistrital.mdp.back.repositories;
 
 import java.util.List;
 
