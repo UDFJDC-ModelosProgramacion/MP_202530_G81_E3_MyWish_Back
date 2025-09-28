@@ -43,19 +43,13 @@ public class ListaRegalosEntity extends BaseEntity {
 
 
     @PodamExclude
-    @ManyToOne
+    @OneToOne
     private CelebracionEntity celebracion;
 
     @PodamExclude
     @OneToOne
     private FotoEntity foto;
 
-    @PodamExclude
-    @ManyToOne
-    private MonedaEntity moneda;
 
-    @PodamExclude
-    @ManyToOne
-    private OcasionEntity ocasion;
 
 }
