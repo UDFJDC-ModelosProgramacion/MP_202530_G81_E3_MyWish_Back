@@ -1,9 +1,7 @@
 package co.edu.udistrital.mdp.back.entities;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
+import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -22,5 +20,8 @@ public class MonedaEntity {
     private String codigo;
 
     private String simbolo;
-}
 
+    // Relación con RegaloEntity (una moneda puede estar en muchos regalos)
+    @OneToMany(mappedBy = "moneda")
+    private List<RegaloEntity> regalos;
+}
