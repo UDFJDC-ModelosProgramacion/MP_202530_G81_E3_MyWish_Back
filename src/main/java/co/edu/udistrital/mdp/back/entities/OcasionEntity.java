@@ -1,29 +1,24 @@
 package co.edu.udistrital.mdp.back.entities;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "ocasion")
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class OcasionEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, unique = true, length = 100)
     private String nombre;
-
-    // ===== Constructores =====
-    public Ocasion() {}
-
-    public Ocasion(String nombre) {
-        this.nombre = nombre;
-    }
-
-    // ===== Getters y Setters =====
-    public Long getId() { return id; }
-
-    public String getNombre() { return nombre; }
-    public void setNombre(String nombre) { this.nombre = nombre; }
 }
 
