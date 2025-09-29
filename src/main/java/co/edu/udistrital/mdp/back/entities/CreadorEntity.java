@@ -8,6 +8,7 @@ import jakarta.persistence.FetchType;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import uk.co.jemos.podam.common.PodamExclude;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,11 +22,11 @@ import java.util.List;
 @EqualsAndHashCode(callSuper = true) 
 public class CreadorEntity extends UsuarioEntity {
 
-    // Relación uno a muchos con ListaRegalosEntity
+    @PodamExclude
     @OneToMany(mappedBy = "creador", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<ListaRegalosEntity> listasRegalos = new ArrayList<>();
 
-    // Relación uno a muchos con CelebracionEntity
+    @PodamExclude
     @OneToMany(mappedBy = "creador", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<CelebracionEntity> celebraciones = new ArrayList<>();
 }
