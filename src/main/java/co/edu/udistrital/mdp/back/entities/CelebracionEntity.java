@@ -27,19 +27,19 @@ public class CelebracionEntity extends BaseEntity {
     private int cantidadInvitados;
 
     @PodamExclude
-    @ManyToOne
+    @ManyToOne //no propietaria de la relacion
     private CreadorEntity creador;
 
     @PodamExclude
-    @ManyToMany
+    @ManyToMany //no propietaria de la relacion
     private List<InvitadoEntity> invitados;
 
     @PodamExclude
-    @OneToOne(mappedBy = "celebracion")
+    @OneToOne(mappedBy = "celebracion")  // propietaria de la relacion
     private ListaRegalosEntity listaRegalos;
 
     @PodamExclude
-    @OneToMany(mappedBy = "celebracion")
+    @OneToMany(mappedBy = "celebracion") // propietaria de la relacion
     private List<MensajeInvitacionEntity> mensajesInvitacion;
 
 
