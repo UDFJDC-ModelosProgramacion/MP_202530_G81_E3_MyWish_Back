@@ -18,6 +18,6 @@ import java.util.List;
 public class InvitadoEntity extends UsuarioEntity {
 
     @PodamExclude
-    @ManyToMany(mappedBy = "invitados") // relación bidireccional
+    @ManyToMany(mappedBy = "invitados")
     private List<CelebracionEntity> celebraciones = new ArrayList<>();
 }
