@@ -1,9 +1,7 @@
 package co.edu.udistrital.mdp.back.entities;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
+import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -20,5 +18,10 @@ public class OcasionEntity {
     private Long id;
 
     private String nombre;
+
+    // Relación con RegaloEntity (una ocasión puede tener muchos regalos)
+    @OneToMany(mappedBy = "ocasion")
+    private List<RegaloEntity> regalos;
 }
+
 
