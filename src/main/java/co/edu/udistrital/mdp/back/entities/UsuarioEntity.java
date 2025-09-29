@@ -1,6 +1,8 @@
 package co.edu.udistrital.mdp.back.entities;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Column;
@@ -8,7 +10,7 @@ import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
 import jakarta.persistence.Inheritance;
 import jakarta.persistence.InheritanceType;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.OneToMany;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -19,7 +21,7 @@ import lombok.ToString;
  */
 @Data
 @Entity
-@Inheritance(strategy = InheritanceType.JOINED) // permite herencia en JPA
+@Inheritance(strategy = InheritanceType.JOINED)
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
 public class UsuarioEntity extends BaseEntity {
@@ -33,7 +35,7 @@ public class UsuarioEntity extends BaseEntity {
     @Temporal(TemporalType.DATE)
     private Date fechaNacimiento;
 
-    // 🔹 Relación uno a uno con Comentario
-    @OneToOne(mappedBy = "usuario")
-    private ComentarioEntity comentario;
+    // Relación uno a muchos con Comentario
+    @OneToMany(mappedBy = "usuario")
+    private List<ComentarioEntity> comentarios = new ArrayList<>();
 }
