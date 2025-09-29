@@ -18,7 +18,7 @@ import java.util.List;
 @Data
 @Entity
 @Table(name = "creador")
-@EqualsAndHashCode(callSuper = true) // 👉 hereda de UsuarioEntity
+@EqualsAndHashCode(callSuper = true) 
 public class CreadorEntity extends UsuarioEntity {
 
     
@@ -33,3 +33,4 @@ public class CreadorEntity extends UsuarioEntity {
     @OneToMany(mappedBy = "creador", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<CelebracionEntity> celebraciones = new ArrayList<>();
 }
+
