@@ -21,10 +21,6 @@ import java.util.List;
 @EqualsAndHashCode(callSuper = true) 
 public class CreadorEntity extends UsuarioEntity {
 
-    
-    private String biografia;
-    private String paginaWeb;
-
     // Relación uno a muchos con ListaRegalosEntity
     @OneToMany(mappedBy = "creador", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<ListaRegalosEntity> listasRegalos = new ArrayList<>();
@@ -33,4 +29,3 @@ public class CreadorEntity extends UsuarioEntity {
     @OneToMany(mappedBy = "creador", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<CelebracionEntity> celebraciones = new ArrayList<>();
 }
-
