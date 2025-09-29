@@ -3,9 +3,10 @@ package co.edu.udistrital.mdp.back.entities;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import uk.co.jemos.podam.common.PodamExclude;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Entidad que representa a un Invitado (usuario que es invitado a celebraciones).
@@ -16,12 +17,7 @@ import java.util.Set;
 @EqualsAndHashCode(callSuper = true)
 public class InvitadoEntity extends UsuarioEntity {
 
-    // Asociación muchos a muchos con CelebracionEntity
-    @ManyToMany
-    @JoinTable(
-            name = "invitado_celebracion",
-            joinColumns = @JoinColumn(name = "invitado_id"),
-            inverseJoinColumns = @JoinColumn(name = "celebracion_id")
-    )
-    private Set<CelebracionEntity> celebraciones = new HashSet<>();
+    @PodamExclude
+    @ManyToMany(mappedBy = "invitados") // relación bidireccional
+    private List<CelebracionEntity> celebraciones = new ArrayList<>();
 }
