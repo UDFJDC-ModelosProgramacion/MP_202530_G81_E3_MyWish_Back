@@ -23,4 +23,18 @@ public interface ListaRegalosRepository extends JpaRepository<ListaRegalosEntity
 
     // Buscar listas por nombre y color
     List<ListaRegalosEntity> findByNombreAndColor(String nombre, String color);
+
+    //por creador
+    List<ListaRegalosEntity> findByCreadorId(Long creadorId);
+
+    List<ListaRegalosEntity> findByInvitadosCorreo(String correo);
+// Por ocasión / moneda
+    List<ListaRegalosEntity> findByOcasionNombre(String nombre);
+// Por ocasión / moneda
+    List<ListaRegalosEntity> findByMonedaCodigo(String codigo);
+
+    //Por celebración asociada
+    List<ListaRegalosEntity> findByCelebracionId(Long celebracionId);
+
+
 }

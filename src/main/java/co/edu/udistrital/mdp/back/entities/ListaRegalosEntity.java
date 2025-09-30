@@ -1,17 +1,16 @@
 package co.edu.udistrital.mdp.back.entities;
 
-
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
-
 
 import lombok.Data;
 import uk.co.jemos.podam.common.PodamExclude;
@@ -35,21 +34,34 @@ public class ListaRegalosEntity extends BaseEntity {
 
     @PodamExclude
     @ManyToOne
-    private CreadorEntity creador;
+    private UsuarioEntity creador;
+
+    @PodamExclude
+    @ManyToMany
+    private List<UsuarioEntity> invitados = new ArrayList<>();
+
+    @PodamExclude
+    @OneToOne (mappedBy = "listaRegalos")  // propietaria de la relacion
+    private CelebracionEntity celebracion; 
 
     @PodamExclude
     @OneToMany(mappedBy = "listaRegalos", cascade = CascadeType.PERSIST, orphanRemoval = true)
     private List<RegaloEntity> regalos = new ArrayList<>();
 
-
-    @PodamExclude
-    @OneToOne
-    private CelebracionEntity celebracion;
-
     @PodamExclude
     @OneToOne
     private FotoEntity foto;
 
+    @PodamExclude
+    @OneToMany(mappedBy = "listaRegalos")
+    private List<FiltroRegalo> filtrosRegalos = new ArrayList<>();
 
+    @PodamExclude
+    @ManyToOne
+    private Moneda moneda;
+
+    @PodamExclude
+    @ManyToOne
+    private Ocasion ocasion;
 
 }
