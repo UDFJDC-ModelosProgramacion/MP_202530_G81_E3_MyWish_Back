@@ -19,9 +19,10 @@ public class OcasionEntity {
 
     private String nombre;
 
-    // Relación con RegaloEntity (una ocasión puede tener muchos regalos)
+    // Relación con ListaRegalosEntity (una ocasión puede estar en muchas listas)
     @OneToMany(mappedBy = "ocasion")
-    private List<RegaloEntity> regalos;
+    private List<ListaRegalosEntity> listasRegalos;
 }
+
 
 
