@@ -21,7 +21,8 @@ public class MonedaEntity {
 
     private String simbolo;
 
-    // Relación con RegaloEntity (una moneda puede estar en muchos regalos)
+    // Relación con ListaRegalosEntity (una moneda puede estar en muchas listas)
     @OneToMany(mappedBy = "moneda")
-    private List<RegaloEntity> regalos;
+    private List<ListaRegalosEntity> listasRegalos;
 }
+
