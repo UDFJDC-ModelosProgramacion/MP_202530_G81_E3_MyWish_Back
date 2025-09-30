@@ -35,8 +35,8 @@ public class CelebracionEntity extends BaseEntity {
     private List<UsuarioEntity> invitados;
 
     @PodamExclude
-    @OneToMany(mappedBy = "celebracion")  // propietaria de la relacion
-    private List<ListaRegalosEntity> listaRegalos;
+    @OneToOne
+    private ListaRegalosEntity listaRegalos;
 
     @PodamExclude
     @OneToMany(mappedBy = "celebracion") // propietaria de la relacion
