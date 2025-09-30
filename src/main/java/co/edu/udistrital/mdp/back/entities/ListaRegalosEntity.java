@@ -54,14 +54,14 @@ public class ListaRegalosEntity extends BaseEntity {
 
     @PodamExclude
     @OneToMany(mappedBy = "listaRegalos")
-    private List<FiltroRegalo> filtrosRegalos = new ArrayList<>();
+    private List<FiltroRegaloEntity> filtrosRegalos = new ArrayList<>();
 
     @PodamExclude
     @ManyToOne
-    private Moneda moneda;
+    private MonedaEntity moneda;
 
     @PodamExclude
     @ManyToOne
-    private Ocasion ocasion;
+    private OcasionEntity ocasion;
 
 }
