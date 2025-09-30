@@ -1,9 +1,6 @@
 package co.edu.udistrital.mdp.back.entities;
 
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.CascadeType;
 import lombok.Data;
@@ -19,15 +16,7 @@ import java.util.ArrayList;
 @Data
 @Entity
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
-public class CatalogoTiendasEntity {
-
-    /**
-     * Identificador único autogenerado para cada catálogo.
-     */
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @EqualsAndHashCode.Include
-    private Long id;
+public class CatalogoTiendasEntity extends BaseEntity {
 
     /**
      * Nombre descriptivo del catálogo de tiendas.
