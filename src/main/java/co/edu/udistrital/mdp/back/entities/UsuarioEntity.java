@@ -1,3 +1,4 @@
+
 package co.edu.udistrital.mdp.back.entities;
 
 import jakarta.persistence.CascadeType;
