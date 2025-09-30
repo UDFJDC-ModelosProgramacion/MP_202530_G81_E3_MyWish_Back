@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import co.edu.udistrital.mdp.back.entities.CelebracionEntity;
+import co.edu.udistrital.mdp.back.entities.UsuarioEntity;
 
 /**
  * Repositorio para la entidad Celebracion.
@@ -25,8 +26,11 @@ public interface CelebracionRepository extends JpaRepository<CelebracionEntity, 
     // Buscar celebraciones por fecha
     List<CelebracionEntity> findByFecha(Date fecha);
 
-    // Buscar celebraciones por creador (implementar cuando CreadorEntity esté disponible)
-    List<CelebracionEntity> findByCreador(CreadorEntity creador);
+    // Buscar celebraciones por organizador (antes era CreadorEntity)
+    List<CelebracionEntity> findByOrganizador(UsuarioEntity organizador);
+
+    // Buscar celebraciones por organizador ID (antes era CreadorEntity)
+    List<CelebracionEntity> findByOrganizadorId(Long organizadorId);
 
     // Buscar celebraciones por nombre y lugar
     List<CelebracionEntity> findByNombreAndLugar(String nombre, String lugar);
