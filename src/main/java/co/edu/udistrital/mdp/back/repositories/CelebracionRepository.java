@@ -29,6 +29,9 @@ public interface CelebracionRepository extends JpaRepository<CelebracionEntity, 
     // Buscar celebraciones por organizador (antes era CreadorEntity)
     List<CelebracionEntity> findByOrganizador(UsuarioEntity organizador);
 
+    // Buscar celebraciones por organizador ID (antes era CreadorEntity)
+    List<CelebracionEntity> findByOrganizadorId(Long organizadorId);
+
     // Buscar celebraciones por nombre y lugar
     List<CelebracionEntity> findByNombreAndLugar(String nombre, String lugar);
 
