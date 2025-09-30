@@ -1,9 +1,7 @@
 package co.edu.udistrital.mdp.back.entities;
 
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.ManyToOne;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -14,15 +12,7 @@ import lombok.EqualsAndHashCode;
 @Data
 @Entity
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
-public class FiltroRegaloEntity {
-
-    /**
-     * Identificador único del filtro generado automáticamente.
-     */
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @EqualsAndHashCode.Include
-    private Long id;
+public class FiltroRegaloEntity extends BaseEntity {
 
     /**
      * Criterio del filtro (por ejemplo, categoría, prioridad, etc.).
@@ -33,4 +23,10 @@ public class FiltroRegaloEntity {
      * Valor asociado al criterio para filtrar los regalos.
      */
     private String valor;
+
+    /**
+     * Asociación de muchos filtros a una lista de regalos.
+     */
+    @ManyToOne
+    private ListaRegalosEntity listaRegalos;
 }
