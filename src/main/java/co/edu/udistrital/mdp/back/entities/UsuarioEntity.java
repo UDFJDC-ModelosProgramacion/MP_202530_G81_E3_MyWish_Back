@@ -1,29 +1,27 @@
 package co.edu.udistrital.mdp.back.entities;
 
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Entity;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.Temporal;
+import jakarta.persistence.TemporalType;
+
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import uk.co.jemos.podam.common.PodamExclude;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Temporal;
-import jakarta.persistence.TemporalType;
-import jakarta.persistence.Inheritance;
-import jakarta.persistence.InheritanceType;
-import jakarta.persistence.OneToMany;
-
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
-import uk.co.jemos.podam.common.PodamExclude;
-
-/**
- * Clase que representa un usuario en la persistencia
- */
-@Data
 @Entity
-@Inheritance(strategy = InheritanceType.JOINED)
-@EqualsAndHashCode(callSuper = true)
-@ToString(callSuper = true)
+@Data
+@EqualsAndHashCode(callSuper = true, exclude = {
+        "listasCreadas", "listasInvitado",
+        "celebracionesOrganizadas", "celebracionesInvitado",
+        "comentarios"
+})
 public class UsuarioEntity extends BaseEntity {
 
     private String correo;
@@ -32,7 +30,30 @@ public class UsuarioEntity extends BaseEntity {
     @Temporal(TemporalType.DATE)
     private Date fechaNacimiento;
 
+    // --- Relaciones ---
+
+    /** Usuario crea varias listas de regalos */
     @PodamExclude
-    @OneToMany(mappedBy = "usuario")
+    @OneToMany(mappedBy = "creador")
+    private List<ListaRegalosEntity> listasCreadas;
+
+    /** Usuario es invitado a varias listas de regalos */
+    @PodamExclude
+    @ManyToMany(mappedBy = "invitados")
+    private List<ListaRegalosEntity> listasInvitado;
+
+    /** Usuario organiza varias celebraciones */
+    @PodamExclude
+    @OneToMany(mappedBy = "organizador")
+    private List<CelebracionEntity> celebracionesOrganizadas;
+
+    /** Usuario es invitado a varias celebraciones */
+    @PodamExclude
+    @ManyToMany(mappedBy = "invitados")
+    private List<CelebracionEntity> celebracionesInvitado;
+
+    /** Usuario escribe varios comentarios */
+    @PodamExclude
+    @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ComentarioEntity> comentarios = new ArrayList<>();
 }
