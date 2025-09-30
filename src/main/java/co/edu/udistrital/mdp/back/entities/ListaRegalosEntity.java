@@ -41,8 +41,8 @@ public class ListaRegalosEntity extends BaseEntity {
     private List<UsuarioEntity> invitados = new ArrayList<>();
 
     @PodamExclude
-    @OneToOne
-    private CelebracionEntity celebracion; // opcional
+    @OneToOne (mappedBy = "listaRegalos")  // propietaria de la relacion
+    private CelebracionEntity celebracion; 
 
     @PodamExclude
     @OneToMany(mappedBy = "listaRegalos", cascade = CascadeType.PERSIST, orphanRemoval = true)
