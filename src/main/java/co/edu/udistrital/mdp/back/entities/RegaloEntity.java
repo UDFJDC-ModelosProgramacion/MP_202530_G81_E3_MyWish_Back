@@ -1,33 +1,33 @@
 package co.edu.udistrital.mdp.back.entities;
 
-import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import jakarta.persistence.Entity;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
+import lombok.Data;
+import uk.co.jemos.podam.common.PodamExclude;
 
+@Data
 @Entity
-@Table(name = "regalos")
-@Getter
-@Setter
-public class RegaloEntity {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+public class RegaloEntity extends BaseEntity {
 
     private String descripcion;
     private String linkCompra;
     private Double precioEstimado;
     private String categoria;
 
-    // Constructor vacío
-    public RegaloEntity() {}
+    @PodamExclude
+    @OneToOne
+    private EstadoCompraEntity estadoCompra;
 
-    // Constructor con parámetros
-    public RegaloEntity(String descripcion, String linkCompra, Double precioEstimado, String categoria) {
-        this.descripcion = descripcion;
-        this.linkCompra = linkCompra;
-        this.precioEstimado = precioEstimado;
-        this.categoria = categoria;
-    }
+    @PodamExclude
+    @ManyToOne
+    private TiendaEntity tienda;
+
+    @PodamExclude
+    @OneToOne
+    private FotoEntity foto;
+
+    @PodamExclude
+    @OneToOne
+    private PrioridadRegaloEntity prioridad;
 }
-
