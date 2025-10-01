@@ -17,9 +17,9 @@ public class TiendaEntity extends BaseEntity {
     private String link;
 
     @PodamExclude
-    @ManyToOne
-    private UbicacionEntity ubicacion;
-
+    @OneToMany(mappedBy = "tienda")
+    private List<UbicacionEntity> ubicaciones;
+    
     @PodamExclude
     @ManyToOne
     private CatalogoTiendasEntity catalogo;
@@ -32,4 +32,9 @@ public class TiendaEntity extends BaseEntity {
     @OneToMany(mappedBy = "tienda")
     private List<RegaloEntity> regalos = new ArrayList<>();
 
+    PodamExclude
+    @OneToMany(mappedBy = "tienda")
+    private List<FotoEntity> fotos;
+
 }
+
