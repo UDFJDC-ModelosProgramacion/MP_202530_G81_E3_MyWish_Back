@@ -28,6 +28,10 @@ public class RegaloEntity extends BaseEntity {
     private FotoEntity foto;
 
     @PodamExclude
+    @ManyToOne
+    private ListaRegalosEntity listaRegalos;
+
+    @PodamExclude
     @OneToOne
     private PrioridadRegaloEntity prioridad;
 }
