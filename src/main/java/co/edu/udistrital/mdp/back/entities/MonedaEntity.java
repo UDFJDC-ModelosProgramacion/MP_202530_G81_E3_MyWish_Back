@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class MonedaEntity {
+public class MonedaEntity extends BaseEntity  {
 
     private String codigo;
 
