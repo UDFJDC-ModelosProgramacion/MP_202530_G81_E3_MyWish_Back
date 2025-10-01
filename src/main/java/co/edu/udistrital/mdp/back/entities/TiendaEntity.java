@@ -32,7 +32,7 @@ public class TiendaEntity extends BaseEntity {
     @OneToMany(mappedBy = "tienda")
     private List<RegaloEntity> regalos = new ArrayList<>();
 
-    PodamExclude
+    @PodamExclude
     @OneToMany(mappedBy = "tienda")
     private List<FotoEntity> fotos;
 
