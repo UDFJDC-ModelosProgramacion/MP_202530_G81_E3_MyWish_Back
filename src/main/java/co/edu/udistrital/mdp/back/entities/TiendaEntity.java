@@ -2,6 +2,7 @@ package co.edu.udistrital.mdp.back.entities;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
@@ -32,7 +33,7 @@ public class TiendaEntity extends BaseEntity {
     @OneToMany(mappedBy = "tienda")
     private List<RegaloEntity> regalos = new ArrayList<>();
 
-    PodamExclude
+    @PodamExclude
     @OneToMany(mappedBy = "tienda")
     private List<FotoEntity> fotos;
 
