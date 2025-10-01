@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class ComentarioEntity {
+public class ComentarioEntity extends BaseEntity {
 
 
     private String texto;
