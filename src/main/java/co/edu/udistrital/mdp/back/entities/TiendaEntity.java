@@ -2,6 +2,7 @@ package co.edu.udistrital.mdp.back.entities;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
