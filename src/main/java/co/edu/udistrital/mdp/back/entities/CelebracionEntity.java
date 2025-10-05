@@ -1,5 +1,6 @@
 package co.edu.udistrital.mdp.back.entities;
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 import jakarta.persistence.OneToOne;
@@ -21,8 +22,7 @@ public class CelebracionEntity extends BaseEntity {
     private String lugar;
     private String color;
 
-    @Temporal(TemporalType.DATE)
-    private Date fecha;
+    private LocalDate fecha;
 
     private int cantidadInvitados;
 
