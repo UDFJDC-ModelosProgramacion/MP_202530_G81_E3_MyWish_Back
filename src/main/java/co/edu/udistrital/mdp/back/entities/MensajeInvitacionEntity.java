@@ -12,15 +12,19 @@ import jakarta.persistence.TemporalType;
 @Data
 @Entity
 public class MensajeInvitacionEntity extends BaseEntity {
-    
+
     @Temporal(TemporalType.TIMESTAMP)
     private Date fechaEnvio;
 
     private String mensaje;
 
     @PodamExclude
-    @ManyToOne
+    @ManyToOne(optional = true)
     private CelebracionEntity celebracion;
+
+    @PodamExclude
+    @ManyToOne(optional = true)
+    private ListaRegalosEntity listaRegalos;
 
     @PodamExclude
     @ManyToOne
