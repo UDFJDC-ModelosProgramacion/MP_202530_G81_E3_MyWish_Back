@@ -1,3 +1,4 @@
+
 package co.edu.udistrital.mdp.back.entities;
 
 import lombok.Data;
@@ -14,10 +15,18 @@ public class MensajeInvitacionEntity extends BaseEntity {
     
     @Temporal(TemporalType.TIMESTAMP)
     private Date fechaEnvio;
+
     private String mensaje;
 
     @PodamExclude
     @ManyToOne
     private CelebracionEntity celebracion;
 
+    @PodamExclude
+    @ManyToOne
+    private UsuarioEntity remitente; // 🧑‍💼 Quien envía la invitación (se obtiene del creador de la celebración)
+
+    @PodamExclude
+    @ManyToOne
+    private UsuarioEntity destinatario; // 🧍 Usuario al que se le envía el mensaje
 }
