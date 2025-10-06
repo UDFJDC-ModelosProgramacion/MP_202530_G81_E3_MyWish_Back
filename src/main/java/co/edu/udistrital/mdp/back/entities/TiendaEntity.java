@@ -20,10 +20,10 @@ public class TiendaEntity extends BaseEntity {
     @PodamExclude
     @OneToMany(mappedBy = "tienda")
     private List<UbicacionEntity> ubicaciones;
-    
+
     @PodamExclude
     @ManyToOne
-    private CatalogoTiendasEntity catalogo;
+    private CatalogoTiendasEntity catalogoTiendas;
 
     @PodamExclude
     @OneToMany(mappedBy = "tienda")
@@ -36,6 +36,6 @@ public class TiendaEntity extends BaseEntity {
     @PodamExclude
     @OneToMany(mappedBy = "tienda")
     private List<FotoEntity> fotos;
-
 }
+
 
