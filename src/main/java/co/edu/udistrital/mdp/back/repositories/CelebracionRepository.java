@@ -41,7 +41,6 @@ public interface CelebracionRepository extends JpaRepository<CelebracionEntity, 
     // Buscar celebraciones con cantidad de invitados mayor a
     List<CelebracionEntity> findByCantidadInvitadosGreaterThan(int cantidad);
 
-    // Buscar celebración por su ID (celebracionId)
-    CelebracionEntity findByCelebracionId(Long celebracionId);
+
 }
 
