@@ -113,7 +113,7 @@ public class CelebracionService {
         CelebracionEntity celebracion = celebracionOpt.get();
 
         // Regla 4: Al eliminar la celebración, inactivar los mensajes de invitación
-        List<MensajeInvitacionEntity> mensajes = mensajeInvitacionRepository.findByCelebracionId(celebracionId);
+        List<MensajeInvitacionEntity> mensajes = mensajeInvitacionRepository.findByCelebracion_Id(celebracionId);
         for (MensajeInvitacionEntity mensaje : mensajes) {
             mensajeInvitacionRepository.delete(mensaje);
 
