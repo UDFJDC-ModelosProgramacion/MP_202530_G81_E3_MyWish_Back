@@ -8,11 +8,12 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.context.annotation.Import;
 import org.springframework.transaction.annotation.Transactional;
 import uk.co.jemos.podam.api.PodamFactory;
 import uk.co.jemos.podam.api.PodamFactoryImpl;
-
+import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityNotFoundException;
 
 import java.util.ArrayList;
@@ -35,7 +36,7 @@ class UsuarioListaRegalosServiceTest {
     private UsuarioRepository usuarioRepository;
 
     @Autowired
-    private org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager entityManager;
+    private TestEntityManager entityManager;
 
     private PodamFactory factory = new PodamFactoryImpl();
     private List<UsuarioEntity> usuarioList = new ArrayList<>();
