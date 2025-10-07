@@ -3,14 +3,16 @@ package co.edu.udistrital.mdp.back.services;
 import co.edu.udistrital.mdp.back.entities.*;
 import co.edu.udistrital.mdp.back.repositories.*;
 import jakarta.mail.MessagingException;
-import jakarta.mail.internet.MimeMessage;
 import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Import;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.transaction.annotation.Transactional;
 import uk.co.jemos.podam.api.PodamFactory;
 import uk.co.jemos.podam.api.PodamFactoryImpl;
@@ -22,17 +24,15 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 @DataJpaTest
+@Transactional
 @Import(MensajeInvitacionService.class)
 class MensajeInvitacionServiceTest {
 
     @Autowired
-    private MensajeInvitacionService mensajeService;
+    private MensajeInvitacionService service;
 
     @Autowired
-    private TestEntityManager entityManager;
-
-    @Autowired
-    private UsuarioRepository usuarioRepo;
+    private MensajeInvitacionRepository mensajeRepo;
 
     @Autowired
     private CelebracionRepository celebracionRepo;
@@ -41,40 +41,21 @@ class MensajeInvitacionServiceTest {
     private ListaRegalosRepository listaRepo;
 
     @Autowired
-    private MensajeInvitacionRepository mensajeRepo;
+    private UsuarioRepository usuarioRepo;
+
+        @Autowired
+    private TestEntityManager entityManager;
+
+    @MockBean
+    private JavaMailSender mailSender; // Evita enviar correos reales
 
     private PodamFactory factory = new PodamFactoryImpl();
-    private List<UsuarioEntity> usuarioList = new ArrayList<>();
-    private List<CelebracionEntity> celebracionList = new ArrayList<>();
-    private List<ListaRegalosEntity> listaList = new ArrayList<>();
+    private List<UsuarioEntity> usuarios = new ArrayList<>();
+    private CelebracionEntity celebracion;
+    private ListaRegalosEntity lista;
 
     @BeforeEach
     void setUp() {
-        // Configurar un JavaMailSender “fake” que no envía correos
-        mensajeService.setMailSender(new org.springframework.mail.javamail.JavaMailSender() {
-            @Override
-            public MimeMessage createMimeMessage() {
-                return new MimeMessage((javax.mail.Session) null);
-            }
-
-            @Override
-            public MimeMessage createMimeMessage(java.io.InputStream contentStream) {
-                return new MimeMessage((javax.mail.Session) null);
-            }
-
-            @Override
-            public void send(MimeMessage mimeMessage) { /* No hace nada */ }
-
-            @Override
-            public void send(MimeMessage... mimeMessages) { /* No hace nada */ }
-
-            @Override
-            public void send(org.springframework.mail.SimpleMailMessage simpleMessage) { /* No hace nada */ }
-
-            @Override
-            public void send(org.springframework.mail.SimpleMailMessage... simpleMessages) { /* No hace nada */ }
-        });
-
         clearData();
         insertData();
     }
@@ -89,96 +70,137 @@ class MensajeInvitacionServiceTest {
     private void insertData() {
         // Crear usuarios
         for (int i = 0; i < 3; i++) {
-            UsuarioEntity usuario = factory.manufacturePojo(UsuarioEntity.class);
-            entityManager.persist(usuario);
-            usuarioList.add(usuario);
+            UsuarioEntity u = factory.manufacturePojo(UsuarioEntity.class);
+            u.setCorreo("usuario" + i + "@correo.com");
+            entityManager.persist(u);
+            usuarios.add(u);
         }
 
-        // Crear celebraciones
-        for (int i = 0; i < 2; i++) {
-            CelebracionEntity celebracion = factory.manufacturePojo(CelebracionEntity.class);
-            celebracion.setOrganizador(usuarioList.get(0));
-            entityManager.persist(celebracion);
-            celebracionList.add(celebracion);
-        }
+        // Crear celebración
+        celebracion = factory.manufacturePojo(CelebracionEntity.class);
+        celebracion.setOrganizador(usuarios.get(0));
+        entityManager.persist(celebracion);
 
-        // Crear listas de regalos
-        for (int i = 0; i < 2; i++) {
-            ListaRegalosEntity lista = factory.manufacturePojo(ListaRegalosEntity.class);
-            lista.setCreador(usuarioList.get(1));
-            entityManager.persist(lista);
-            listaList.add(lista);
-        }
+        // Crear lista de regalos
+        lista = factory.manufacturePojo(ListaRegalosEntity.class);
+        lista.setCreador(usuarios.get(1));
+        entityManager.persist(lista);
+
+        entityManager.flush();
     }
 
+    // =====================================================
+    // PRUEBAS DEL MÉTODO enviarInvitacion()
+    // =====================================================
+
     @Test
-    void testEnviarInvitacionCelebracion() throws MessagingException {
-        MensajeInvitacionEntity mensaje = mensajeService.enviarInvitacion(
+    void testEnviarInvitacionCelebracionSuccess() {
+        Mockito.when(mailSender.createMimeMessage()).thenReturn(Mockito.mock(jakarta.mail.internet.MimeMessage.class));
+
+        MensajeInvitacionEntity mensaje = service.enviarInvitacion(
                 "celebracion",
-                celebracionList.get(0).getId(),
-                usuarioList.get(2).getCorreo(),
-                "¡Ven a la fiesta!"
+                celebracion.getId(),
+                usuarios.get(2).getCorreo(),
+                "Te invito a mi fiesta"
         );
 
         assertNotNull(mensaje.getId());
-        assertEquals("¡Ven a la fiesta!", mensaje.getMensaje());
-        assertEquals(celebracionList.get(0).getId(), mensaje.getCelebracion().getId());
-        assertEquals(usuarioList.get(2).getId(), mensaje.getDestinatario().getId());
+        assertEquals(usuarios.get(2).getId(), mensaje.getDestinatario().getId());
+        assertEquals(celebracion.getId(), mensaje.getCelebracion().getId());
+        assertEquals(usuarios.get(0).getId(), mensaje.getRemitente().getId());
     }
 
     @Test
-    void testEnviarInvitacionListaRegalos() throws MessagingException {
-        MensajeInvitacionEntity mensaje = mensajeService.enviarInvitacion(
+    void testEnviarInvitacionListaSuccess() {
+        Mockito.when(mailSender.createMimeMessage()).thenReturn(Mockito.mock(jakarta.mail.internet.MimeMessage.class));
+
+        MensajeInvitacionEntity mensaje = service.enviarInvitacion(
                 "lista",
-                listaList.get(0).getId(),
-                usuarioList.get(2).getCorreo(),
-                "¡Participa en mi lista!"
+                lista.getId(),
+                usuarios.get(2).getCorreo(),
+                "Te invito a ver mi lista de regalos"
         );
 
         assertNotNull(mensaje.getId());
-        assertEquals("¡Participa en mi lista!", mensaje.getMensaje());
-        assertEquals(listaList.get(0).getId(), mensaje.getListaRegalos().getId());
-        assertEquals(usuarioList.get(2).getId(), mensaje.getDestinatario().getId());
-    }
-
-    @Test
-    void testGetAll() {
-        List<MensajeInvitacionEntity> all = mensajeService.getAll();
-        assertNotNull(all);
-        assertEquals(0, all.size());
-    }
-
-    @Test
-    void testUpdateAndDelete() {
-        MensajeInvitacionEntity mensaje = new MensajeInvitacionEntity();
-        mensaje.setDestinatario(usuarioList.get(2));
-        mensaje.setRemitente(usuarioList.get(0));
-        mensaje.setMensaje("Original");
-        mensaje.setFechaEnvio(new Date());
-        mensajeRepo.save(mensaje);
-
-        // Actualizar
-        MensajeInvitacionEntity nuevo = new MensajeInvitacionEntity();
-        nuevo.setMensaje("Actualizado");
-        nuevo.setFechaEnvio(new Date());
-        MensajeInvitacionEntity actualizado = mensajeService.update(mensaje.getId(), nuevo);
-
-        assertEquals("Actualizado", actualizado.getMensaje());
-
-        // Eliminar
-        mensajeService.delete(mensaje.getId());
-        assertThrows(EntityNotFoundException.class, () -> mensajeService.getById(mensaje.getId()));
+        assertEquals(lista.getId(), mensaje.getListaRegalos().getId());
+        assertEquals(usuarios.get(1).getId(), mensaje.getRemitente().getId());
     }
 
     @Test
     void testEnviarInvitacionUsuarioNoExiste() {
-        assertThrows(EntityNotFoundException.class,
-                () -> mensajeService.enviarInvitacion("celebracion", 1L, "correo@noexiste.com", "Mensaje"));
+        assertThrows(EntityNotFoundException.class, () -> {
+            service.enviarInvitacion("lista", lista.getId(), "inexistente@correo.com", "Hola");
+        });
+    }
+
+    @Test
+    void testEnviarInvitacionCelebracionNoExiste() {
+        assertThrows(EntityNotFoundException.class, () -> {
+            service.enviarInvitacion("celebracion", 999L, usuarios.get(1).getCorreo(), "Hola");
+        });
     }
 
     @Test
     void testEnviarInvitacionTipoInvalido() {
-        assertThrows(IllegalArgumentException.class,
-                () -> mensajeService.enviarInvitacion("invalido", 1L, usuarioList.get(0).getCorreo(), "Mensaje"));
+        assertThrows(IllegalArgumentException.class, () -> {
+            service.enviarInvitacion("evento", celebracion.getId(), usuarios.get(1).getCorreo(), "Mensaje");
+        });
+    }
+
+    // =====================================================
+    // CRUD
+    // =====================================================
+
+    @Test
+    void testGetAll() {
+        Mockito.when(mailSender.createMimeMessage()).thenReturn(Mockito.mock(jakarta.mail.internet.MimeMessage.class));
+        service.enviarInvitacion("celebracion", celebracion.getId(), usuarios.get(2).getCorreo(), "msg");
+        service.enviarInvitacion("lista", lista.getId(), usuarios.get(2).getCorreo(), "msg2");
+
+        List<MensajeInvitacionEntity> all = service.getAll();
+        assertEquals(2, all.size());
+    }
+
+    @Test
+    void testGetByIdSuccess() {
+        Mockito.when(mailSender.createMimeMessage()).thenReturn(Mockito.mock(jakarta.mail.internet.MimeMessage.class));
+        MensajeInvitacionEntity enviado = service.enviarInvitacion("celebracion", celebracion.getId(), usuarios.get(2).getCorreo(), "msg");
+
+        MensajeInvitacionEntity encontrado = service.getById(enviado.getId());
+        assertEquals(enviado.getId(), encontrado.getId());
+    }
+
+    @Test
+    void testGetByIdNotFound() {
+        assertThrows(EntityNotFoundException.class, () -> service.getById(999L));
+    }
+
+    @Test
+    void testUpdateSuccess() {
+        Mockito.when(mailSender.createMimeMessage()).thenReturn(Mockito.mock(jakarta.mail.internet.MimeMessage.class));
+        MensajeInvitacionEntity enviado = service.enviarInvitacion("celebracion", celebracion.getId(), usuarios.get(2).getCorreo(), "msg");
+
+        MensajeInvitacionEntity nuevo = new MensajeInvitacionEntity();
+        nuevo.setMensaje("Mensaje actualizado");
+        nuevo.setFechaEnvio(new Date());
+
+        MensajeInvitacionEntity actualizado = service.update(enviado.getId(), nuevo);
+
+        assertEquals("Mensaje actualizado", actualizado.getMensaje());
+    }
+
+    @Test
+    void testDeleteSuccess() {
+        Mockito.when(mailSender.createMimeMessage()).thenReturn(Mockito.mock(jakarta.mail.internet.MimeMessage.class));
+        MensajeInvitacionEntity enviado = service.enviarInvitacion("celebracion", celebracion.getId(), usuarios.get(2).getCorreo(), "msg");
+
+        service.delete(enviado.getId());
+
+        assertFalse(mensajeRepo.findById(enviado.getId()).isPresent());
+    }
+
+    @Test
+    void testDeleteNotFound() {
+        assertThrows(EntityNotFoundException.class, () -> service.delete(999L));
     }
 }
