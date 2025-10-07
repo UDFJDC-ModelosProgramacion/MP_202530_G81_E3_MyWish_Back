@@ -39,6 +39,6 @@ public interface MensajeInvitacionRepository extends JpaRepository<MensajeInvita
     long countByCelebracion(CelebracionEntity celebracion);
 
     // Buscar mensajes por el ID de la celebración
-    List<MensajeInvitacionEntity> findByCelebracionId(Long celebracionId);
+    List<MensajeInvitacionEntity> findByCelebracion_Id(Long celebracionId);
 
 }
