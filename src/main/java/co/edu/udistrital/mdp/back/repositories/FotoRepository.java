@@ -11,7 +11,8 @@ public interface FotoRepository extends JpaRepository<FotoEntity, Long> {
     Optional<FotoEntity> findByUrl(String url);
     List<FotoEntity> findByEsPrincipalTrue();
     List<FotoEntity> findByTipoArchivo(String tipoArchivo);
-    List<FotoEntity> findByRegaloId(Long regaloId);
-    List<FotoEntity> findByListaRegalosId(Long id);
-    
+    List<FotoEntity> findByRegaloId(Long id);
+    List<FotoEntity> findByRegalo_Id(Long regaloId);
+    List<FotoEntity> findByListaRegalosId(Long id);
+    
 }
