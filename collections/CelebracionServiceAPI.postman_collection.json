@@ -1,0 +1,158 @@
+{
+	"info": {
+		"_postman_id": "0fd31b32-d57c-4fc2-b351-a25a5cd502e7",
+		"name": "CelebracionServiceAPI",
+		"description": "Colección de endpoints del servicio CelebracionService (Spring Boot)",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "49211389",
+		"_collection_link": "https://warped-spaceship-1172481.postman.co/workspace/c8856f3b-8c0d-444b-8d6b-5d7c41f40e03/collection/49211389-0fd31b32-d57c-4fc2-b351-a25a5cd502e7?action=share&source=collection_link&creator=49211389"
+	},
+	"item": [
+		{
+			"name": "Crear Celebración",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"nombre\": \"Cumpleaños de Laura\",\n  \"descripcion\": \"Celebración de cumpleaños con amigos y familia\",\n  \"lugar\": \"Salón Comunal\",\n  \"color\": \"#FFD700\",\n  \"fecha\": \"2025-12-01\",\n  \"cantidadInvitados\": 30\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseURL}}/api/celebraciones?organizadorId=1",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"api",
+						"celebraciones"
+					],
+					"query": [
+						{
+							"key": "organizadorId",
+							"value": "1"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Actualizar Celebración",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"nombre\": \"Cumpleaños actualizado\",\n  \"descripcion\": \"Cambio de lugar por mal clima\",\n  \"lugar\": \"Restaurante Central\",\n  \"color\": \"#00BFFF\",\n  \"fecha\": \"2025-12-02\",\n  \"cantidadInvitados\": 25\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseURL}}/api/celebraciones/1",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"api",
+						"celebraciones",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Eliminar Celebración",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{baseURL}}/api/celebraciones/1",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"api",
+						"celebraciones",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Obtener todas las Celebraciones",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseURL}}/api/celebraciones",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"api",
+						"celebraciones"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Obtener Celebración por ID",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseURL}}/api/celebraciones/1",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"api",
+						"celebraciones",
+						"1"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "baseURL",
+			"value": "",
+			"type": "default"
+		}
+	]
+}

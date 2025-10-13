@@ -1,0 +1,134 @@
+{
+	"info": {
+		"_postman_id": "e127163f-e481-457e-b5c2-4a9012fd695a",
+		"name": "UsuarioCelebracionServiceAPI",
+		"description": "Colección Postman para probar los endpoints relacionados con la gestión de invitados en celebraciones.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "49211389",
+		"_collection_link": "https://warped-spaceship-1172481.postman.co/workspace/c8856f3b-8c0d-444b-8d6b-5d7c41f40e03/collection/49211389-e127163f-e481-457e-b5c2-4a9012fd695a?action=share&source=collection_link&creator=49211389"
+	},
+	"item": [
+		{
+			"name": "Agregar invitado a celebración",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"celebracionId\": 1,\n  \"usuarioId\": 2\n}"
+				},
+				"url": {
+					"raw": "{{baseURL}}/api/usuario-celebracion/agregar",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"api",
+						"usuario-celebracion",
+						"agregar"
+					]
+				},
+				"description": "Agrega un usuario como invitado a una celebración existente."
+			},
+			"response": []
+		},
+		{
+			"name": "Remover invitado de celebración",
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "{{baseURL}}/api/usuario-celebracion/remover?celebracionId=1&usuarioId=2",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"api",
+						"usuario-celebracion",
+						"remover"
+					],
+					"query": [
+						{
+							"key": "celebracionId",
+							"value": "1"
+						},
+						{
+							"key": "usuarioId",
+							"value": "2"
+						}
+					]
+				},
+				"description": "Remueve un usuario invitado de una celebración."
+			},
+			"response": []
+		},
+		{
+			"name": "Consultar si usuario está invitado",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseURL}}/api/usuario-celebracion/es-invitado?celebracionId=1&usuarioId=2",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"api",
+						"usuario-celebracion",
+						"es-invitado"
+					],
+					"query": [
+						{
+							"key": "celebracionId",
+							"value": "1"
+						},
+						{
+							"key": "usuarioId",
+							"value": "2"
+						}
+					]
+				},
+				"description": "Consulta si un usuario está invitado a una celebración."
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "baseURL",
+			"value": ""
+		}
+	]
+}
