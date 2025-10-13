@@ -84,4 +84,3 @@ public class CelebracionUsuarioServiceTest {
         assertThrows(IllegalArgumentException.class, () -> celebracionUsuarioService.removerInvitacion(1L, 20L));
     }
 }
-
