@@ -17,7 +17,7 @@ import co.edu.udistrital.mdp.back.entities.UsuarioEntity;
 @Repository
 public interface CelebracionRepository extends JpaRepository<CelebracionEntity, Long> {
 
-    // Buscar celebraciones por nombre
+    // Buscar celebraciones por nombre 
     List<CelebracionEntity> findByNombre(String nombre);
 
     // Buscar celebraciones por lugar

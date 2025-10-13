@@ -16,7 +16,7 @@ public class PrioridadRegaloEntity extends BaseEntity {
     private String descripcion;
     private String color;
     private Boolean esPorDefecto = false;
-
+ 
     // --- Relaciones ---
     
     @PodamExclude

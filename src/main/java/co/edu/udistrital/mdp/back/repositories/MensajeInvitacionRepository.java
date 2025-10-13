@@ -20,7 +20,7 @@ public interface MensajeInvitacionRepository extends JpaRepository<MensajeInvita
     // Buscar mensajes por fecha de envío
     List<MensajeInvitacionEntity> findByFechaEnvio(Date fechaEnvio);
 
-    // Buscar mensajes por rango de fechas de envío
+    // Buscar mensajes por rango de fechas de envío 
     List<MensajeInvitacionEntity> findByFechaEnvioBetween(Date fechaInicio, Date fechaFin);
 
     // Buscar mensajes que contienen texto específico

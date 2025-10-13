@@ -17,6 +17,6 @@ public interface FiltroRegaloRepository extends JpaRepository<FiltroRegaloEntity
      * @param criterio Criterio de filtro.
      * @return Filtro que coincide con el criterio.
      */
-    FiltroRegaloEntity findByCriterio(String criterio);
+    FiltroRegaloEntity findByCriterio(String criterio); 
 }
 

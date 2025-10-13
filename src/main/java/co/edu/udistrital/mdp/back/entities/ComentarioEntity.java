@@ -16,7 +16,7 @@ public class ComentarioEntity extends BaseEntity {
 
     private String texto;
 
-    private int calificacion;
+    private int calificacion; 
 
     // Relación con UsuarioEntity (muchos comentarios pueden ser hechos por un usuario)
     @ManyToOne

@@ -27,7 +27,7 @@ public class TiendaEntity extends BaseEntity {
 
     @PodamExclude
     @OneToMany(mappedBy = "tienda")
-    private List<ComentarioEntity> comentarios = new ArrayList<>();
+    private List<ComentarioEntity> comentarios = new ArrayList<>(); 
 
     @PodamExclude
     @OneToMany(mappedBy = "tienda")

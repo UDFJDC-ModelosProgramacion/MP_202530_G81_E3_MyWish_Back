@@ -18,4 +18,4 @@ public interface UsuarioRepository extends JpaRepository<UsuarioEntity, Long> {
      * @return UsuarioEntity si existe, null en caso contrario
      */
     UsuarioEntity findByCorreo(String correo);
-}
+} 

@@ -18,7 +18,7 @@ public class RegaloEntity extends BaseEntity {
     @PodamExclude
     @OneToOne
     private EstadoCompraEntity estadoCompra;
-
+ 
     @PodamExclude
     @ManyToOne
     private TiendaEntity tienda;

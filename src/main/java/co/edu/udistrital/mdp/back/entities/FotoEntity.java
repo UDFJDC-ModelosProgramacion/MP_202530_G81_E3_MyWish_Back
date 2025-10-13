@@ -24,7 +24,7 @@ public class FotoEntity extends BaseEntity {
     @PodamExclude
     @ManyToOne
     private ListaRegalosEntity listaRegalos;
-
+ 
     @PodamExclude
     @ManyToOne
     private TiendaEntity tienda;

@@ -16,7 +16,7 @@ import co.edu.udistrital.mdp.back.entities.ListaRegalosEntity;
 public interface ListaRegalosRepository extends JpaRepository<ListaRegalosEntity, Long> {
 
     // Buscar listas por nombre
-    List<ListaRegalosEntity> findByNombre(String nombre);
+    List<ListaRegalosEntity> findByNombre(String nombre); 
 
     // Buscar listas por color
     List<ListaRegalosEntity> findByColor(String color);
