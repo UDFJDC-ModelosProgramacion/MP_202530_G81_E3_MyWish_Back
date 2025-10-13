@@ -20,7 +20,7 @@ import java.util.Date;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
-
+ 
 @DataJpaTest
 @Transactional
 @Import(ListaRegalosService.class)

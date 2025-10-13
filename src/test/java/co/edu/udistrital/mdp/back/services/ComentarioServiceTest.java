@@ -78,7 +78,7 @@ class ComentarioServiceTest {
         assertNotNull(result);
         assertEquals(5, result.getCalificacion());
     }
-
+ 
     @Test
     void createComentario_sinTexto_error() {
         ComentarioEntity nuevo = new ComentarioEntity();

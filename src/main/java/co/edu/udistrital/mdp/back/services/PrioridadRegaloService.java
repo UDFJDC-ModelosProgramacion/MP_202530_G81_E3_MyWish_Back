@@ -147,4 +147,4 @@ public class PrioridadRegaloService {
         log.info("Inicia proceso de consulta de prioridades por nivel: {}", nivel);
         return prioridadRegaloRepository.findByNivel(nivel);
     }
-}
+}   

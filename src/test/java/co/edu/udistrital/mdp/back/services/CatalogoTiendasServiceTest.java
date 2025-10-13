@@ -17,7 +17,7 @@ import co.edu.udistrital.mdp.back.entities.CatalogoTiendasEntity;
 import co.edu.udistrital.mdp.back.entities.TiendaEntity;
 import co.edu.udistrital.mdp.back.repositories.CatalogoTiendasRepository;
 import co.edu.udistrital.mdp.back.repositories.TiendaRepository;
-
+ 
 public class CatalogoTiendasServiceTest {
 
     @Mock

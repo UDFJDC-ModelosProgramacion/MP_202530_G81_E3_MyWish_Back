@@ -22,7 +22,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @DataJpaTest
 @Transactional
-@Import(PrioridadRegaloService.class)
+@Import(PrioridadRegaloService.class) 
 class PrioridadRegaloServiceTest {
 
     @Autowired

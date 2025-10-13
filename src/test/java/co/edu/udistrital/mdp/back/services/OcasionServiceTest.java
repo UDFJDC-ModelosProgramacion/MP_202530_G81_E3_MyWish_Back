@@ -19,12 +19,12 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @DataJpaTest
 @Transactional
-@Import(OcasionService.class)
+@Import(OcasionService.class) 
 class OcasionServiceTest {
 
     @Autowired
     private OcasionService ocasionService;
-
+ 
     @Autowired
     private TestEntityManager entityManager;
 

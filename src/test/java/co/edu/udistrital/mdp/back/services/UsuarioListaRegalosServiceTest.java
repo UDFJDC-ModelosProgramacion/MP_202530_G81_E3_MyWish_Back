@@ -27,7 +27,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class UsuarioListaRegalosServiceTest {
 
     @Autowired
-    private UsuarioListaRegalosService service;
+    private UsuarioListaRegalosService service; 
 
     @Autowired
     private ListaRegalosRepository listaRepository;

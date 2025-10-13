@@ -189,4 +189,4 @@ public class FotoService {
         log.info("Eliminando archivo físico: {}", url);
         // Código para eliminar el archivo del sistema de archivos o servicio cloud
     }
-}
+} 

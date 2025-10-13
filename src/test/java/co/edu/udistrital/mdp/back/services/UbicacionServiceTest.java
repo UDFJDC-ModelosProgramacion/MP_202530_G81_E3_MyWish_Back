@@ -23,7 +23,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @DataJpaTest
 @Transactional
 @Import(UbicacionService.class)
-class UbicacionServiceTest {
+class UbicacionServiceTest { 
 
     @Autowired
     private UbicacionService ubicacionService;

@@ -11,7 +11,7 @@ import co.edu.udistrital.mdp.back.entities.TiendaEntity;
 import co.edu.udistrital.mdp.back.repositories.CatalogoTiendasRepository;
 import co.edu.udistrital.mdp.back.repositories.TiendaRepository;
 import lombok.extern.slf4j.Slf4j;
-
+ 
 @Slf4j
 @Service
 public class CatalogoTiendasService {

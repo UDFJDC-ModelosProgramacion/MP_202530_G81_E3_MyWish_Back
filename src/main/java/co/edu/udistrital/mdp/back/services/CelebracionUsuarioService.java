@@ -12,7 +12,7 @@ import co.edu.udistrital.mdp.back.entities.UsuarioEntity;
 import co.edu.udistrital.mdp.back.repositories.CelebracionRepository;
 import co.edu.udistrital.mdp.back.repositories.UsuarioRepository;
 import lombok.extern.slf4j.Slf4j;
-
+ 
 @Slf4j
 @Service
 public class CelebracionUsuarioService {

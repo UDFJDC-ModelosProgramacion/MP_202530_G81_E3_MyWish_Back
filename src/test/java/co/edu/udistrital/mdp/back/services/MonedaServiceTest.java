@@ -22,7 +22,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @Import(MonedaService.class)
 class MonedaServiceTest {
 
-    @Autowired
+    @Autowired 
     private MonedaService monedaService;
 
     @Autowired

@@ -106,3 +106,4 @@ public class UbicacionService {
         return ubicacionRepo.findByTiendaId(tiendaId);
     }
 }
+    

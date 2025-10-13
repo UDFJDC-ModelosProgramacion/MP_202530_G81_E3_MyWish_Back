@@ -19,7 +19,7 @@ import co.edu.udistrital.mdp.back.repositories.CelebracionRepository;
 import co.edu.udistrital.mdp.back.repositories.UsuarioRepository;
 
 public class CelebracionUsuarioServiceTest {
-
+ 
     @Mock
     private UsuarioRepository usuarioRepository;
 
