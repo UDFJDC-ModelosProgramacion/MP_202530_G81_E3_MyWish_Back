@@ -1,0 +1,149 @@
+{
+  "info": {
+    "_postman_id": "0b5f23a1-8f94-4c5d-80e8-f6c3b74ac8a2",
+    "name": "CelebracionUsuarioService",
+    "description": "Colección Postman para el servicio CelebracionUsuarioService. Gestiona las celebraciones e invitaciones de los usuarios.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Obtener celebraciones de usuario",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/{{usuarioId}}/celebraciones",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "{{usuarioId}}",
+            "celebraciones"
+          ],
+          "variable": [
+            {
+              "key": "usuarioId",
+              "value": "1",
+              "description": "ID del usuario del cual se obtendrán las celebraciones."
+            }
+          ]
+        },
+        "description": "Devuelve todas las celebraciones en las que el usuario está invitado."
+      },
+      "response": [
+        {
+          "name": "200 OK",
+          "originalRequest": {},
+          "_postman_previewlanguage": "json",
+          "body": "[\n  {\n    \"id\": 10,\n    \"nombre\": \"Cumpleaños de Ana\",\n    \"fecha\": \"2025-12-02\",\n    \"ubicacion\": \"Bogotá\",\n    \"descripcion\": \"Celebración del cumpleaños número 30 de Ana.\",\n    \"invitados\": [\n      { \"id\": 1, \"nombre\": \"Juan\" },\n      { \"id\": 2, \"nombre\": \"María\" }\n    ]\n  }\n]"
+        },
+        {
+          "name": "404 Not Found",
+          "originalRequest": {},
+          "body": "{ \"error\": \"Usuario no encontrado.\" }"
+        }
+      ]
+    },
+    {
+      "name": "Verificar si usuario está invitado a celebración",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/{{usuarioId}}/celebraciones/{{celebracionId}}/invitado",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "{{usuarioId}}",
+            "celebraciones",
+            "{{celebracionId}}",
+            "invitado"
+          ],
+          "variable": [
+            {
+              "key": "usuarioId",
+              "value": "1",
+              "description": "ID del usuario a verificar."
+            },
+            {
+              "key": "celebracionId",
+              "value": "10",
+              "description": "ID de la celebración."
+            }
+          ]
+        },
+        "description": "Verifica si un usuario específico está invitado a una celebración determinada."
+      },
+      "response": [
+        {
+          "name": "200 OK",
+          "originalRequest": {},
+          "_postman_previewlanguage": "json",
+          "body": "{ \"estaInvitado\": true }"
+        },
+        {
+          "name": "404 Not Found",
+          "originalRequest": {},
+          "body": "{ \"error\": \"Celebración o usuario no encontrado.\" }"
+        }
+      ]
+    },
+    {
+      "name": "Remover invitación de usuario en celebración",
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/{{usuarioId}}/celebraciones/{{celebracionId}}/invitado",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "{{usuarioId}}",
+            "celebraciones",
+            "{{celebracionId}}",
+            "invitado"
+          ],
+          "variable": [
+            {
+              "key": "usuarioId",
+              "value": "1",
+              "description": "ID del usuario cuya invitación se eliminará."
+            },
+            {
+              "key": "celebracionId",
+              "value": "10",
+              "description": "ID de la celebración."
+            }
+          ]
+        },
+        "description": "Elimina la invitación de un usuario a una celebración específica."
+      },
+      "response": [
+        {
+          "name": "200 OK",
+          "originalRequest": {},
+          "body": "{ \"mensaje\": \"Invitación eliminada correctamente.\" }"
+        },
+        {
+          "name": "400 Bad Request",
+          "originalRequest": {},
+          "body": "{ \"error\": \"Usuario no invitado en esta celebración.\" }"
+        },
+        {
+          "name": "404 Not Found",
+          "originalRequest": {},
+          "body": "{ \"error\": \"Celebración no encontrada.\" }"
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8080/api/usuarios",
+      "type": "string"
+    }
+  ]
+}
