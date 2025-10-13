@@ -1,0 +1,132 @@
+{
+    "info": {
+        "name": "Usuario_API",
+        "_postman_id": "usuario-api-collection",
+        "description": "Colección Postman para probar el servicio de Usuario",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    },
+    "item": [
+        {
+            "name": "Crear usuario",
+            "request": {
+                "method": "POST",
+                "header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                    }
+                ],
+                "body": {
+                    "mode": "raw",
+                    "raw": "{\n    \"correo\": \"sofia@example.com\",\n    \"nombre\": \"Sof\\u00eda Castro\",\n    \"fechaNacimiento\": \"2000-04-12\"\n}"
+                },
+                "url": {
+                    "raw": "http://localhost:8080/api/usuarios",
+                    "protocol": "http",
+                    "host": [
+                        "localhost"
+                    ],
+                    "port": "8080",
+                    "path": [
+                        "api",
+                        "usuarios"
+                    ]
+                }
+            },
+            "response": []
+        },
+        {
+            "name": "Actualizar correo de usuario",
+            "request": {
+                "method": "PUT",
+                "header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                    }
+                ],
+                "body": {
+                    "mode": "raw",
+                    "raw": "{\n    \"correo\": \"nuevo@example.com\"\n}"
+                },
+                "url": {
+                    "raw": "http://localhost:8080/api/usuarios/1/correo",
+                    "protocol": "http",
+                    "host": [
+                        "localhost"
+                    ],
+                    "port": "8080",
+                    "path": [
+                        "api",
+                        "usuarios",
+                        "1",
+                        "correo"
+                    ]
+                }
+            },
+            "response": []
+        },
+        {
+            "name": "Eliminar usuario",
+            "request": {
+                "method": "DELETE",
+                "header": [],
+                "url": {
+                    "raw": "http://localhost:8080/api/usuarios/1",
+                    "protocol": "http",
+                    "host": [
+                        "localhost"
+                    ],
+                    "port": "8080",
+                    "path": [
+                        "api",
+                        "usuarios",
+                        "1"
+                    ]
+                }
+            },
+            "response": []
+        },
+        {
+            "name": "Obtener todos los usuarios",
+            "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                    "raw": "http://localhost:8080/api/usuarios",
+                    "protocol": "http",
+                    "host": [
+                        "localhost"
+                    ],
+                    "port": "8080",
+                    "path": [
+                        "api",
+                        "usuarios"
+                    ]
+                }
+            },
+            "response": []
+        },
+        {
+            "name": "Obtener usuario por ID",
+            "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                    "raw": "http://localhost:8080/api/usuarios/1",
+                    "protocol": "http",
+                    "host": [
+                        "localhost"
+                    ],
+                    "port": "8080",
+                    "path": [
+                        "api",
+                        "usuarios",
+                        "1"
+                    ]
+                }
+            },
+            "response": []
+        }
+    ]
+}
