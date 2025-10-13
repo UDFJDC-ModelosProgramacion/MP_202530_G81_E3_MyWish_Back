@@ -24,7 +24,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @Transactional
 @Import(UsuarioCelebracionService.class)
 class UsuarioCelebracionServiceTest {
-
+ 
     @Autowired
     private UsuarioCelebracionService usuarioCelebracionService;
 

@@ -23,7 +23,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @Import(RegaloService.class)
 class RegaloServiceTest {
 
-    @Autowired
+    @Autowired 
     private RegaloService service;
 
     @Autowired

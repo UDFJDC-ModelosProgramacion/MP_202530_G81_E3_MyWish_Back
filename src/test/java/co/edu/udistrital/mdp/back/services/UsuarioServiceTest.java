@@ -26,7 +26,7 @@ public class UsuarioServiceTest {
 
     @Mock
     private ListaRegalosRepository listaRegalosRepository;
-
+ 
     @Mock
     private CelebracionRepository celebracionRepository;
 
