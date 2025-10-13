@@ -1,0 +1,171 @@
+{
+	"info": {
+		"_postman_id": "8cb745e7-55e5-4e88-b1a6-e7f6895d62d2",
+		"name": "ListaRegalosServiceAPI",
+		"description": "Colección de endpoints del servicio ListaRegalosService (Spring Boot)",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "49211389",
+		"_collection_link": "https://warped-spaceship-1172481.postman.co/workspace/c8856f3b-8c0d-444b-8d6b-5d7c41f40e03/collection/49211389-8cb745e7-55e5-4e88-b1a6-e7f6895d62d2?action=share&source=collection_link&creator=49211389"
+	},
+	"item": [
+		{
+			"name": "Crear Lista de Regalos",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"nombre\": \"Lista de cumpleaños de Ana\",\n  \"descripcion\": \"Regalos deseados para el cumpleaños\",\n  \"color\": \"#FF69B4\",\n  \"fecha\": \"2025-12-10T00:00:00.000+00:00\",\n  \"creador\": {\n    \"id\": 1\n  }\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseURL}}/api/listas-regalos",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"api",
+						"listas-regalos"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Actualizar Lista de Regalos",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"nombre\": \"Lista de regalos actualizada\",\n  \"descripcion\": \"Cambio de color y fecha\",\n  \"color\": \"#00BFFF\",\n  \"fecha\": \"2025-12-15T00:00:00.000+00:00\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseURL}}/api/listas-regalos/1",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"api",
+						"listas-regalos",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Eliminar Lista de Regalos",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{baseURL}}/api/listas-regalos/1",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"api",
+						"listas-regalos",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Obtener todas las Listas de Regalos",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseURL}}/api/listas-regalos",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"api",
+						"listas-regalos"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Obtener Lista de Regalos por ID",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseURL}}/api/listas-regalos/1",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"api",
+						"listas-regalos",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Obtener Listas de Regalos por Creador",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseURL}}/api/listas-regalos/creador/1",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"api",
+						"listas-regalos",
+						"creador",
+						"1"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "baseURL",
+			"value": ""
+		}
+	]
+}

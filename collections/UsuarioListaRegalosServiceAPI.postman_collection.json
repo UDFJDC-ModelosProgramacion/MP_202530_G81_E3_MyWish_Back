@@ -1,0 +1,134 @@
+{
+	"info": {
+		"_postman_id": "54ce3b73-f767-4484-97b3-a3c22acebd09",
+		"name": "UsuarioListaRegalosServiceAPI",
+		"description": "Colección Postman para probar los endpoints de gestión de invitados en listas de regalos.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "49211389",
+		"_collection_link": "https://warped-spaceship-1172481.postman.co/workspace/c8856f3b-8c0d-444b-8d6b-5d7c41f40e03/collection/49211389-54ce3b73-f767-4484-97b3-a3c22acebd09?action=share&source=collection_link&creator=49211389"
+	},
+	"item": [
+		{
+			"name": "Agregar invitado a lista de regalos",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"listaId\": 1,\n  \"usuarioId\": 2\n}"
+				},
+				"url": {
+					"raw": "{{baseURL}}/api/usuario-lista/agregar",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"api",
+						"usuario-lista",
+						"agregar"
+					]
+				},
+				"description": "Agrega un usuario como invitado a una lista de regalos existente."
+			},
+			"response": []
+		},
+		{
+			"name": "Remover invitado de lista de regalos",
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "{{baseURL}}/api/usuario-lista/remover?listaId=1&usuarioId=2",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"api",
+						"usuario-lista",
+						"remover"
+					],
+					"query": [
+						{
+							"key": "listaId",
+							"value": "1"
+						},
+						{
+							"key": "usuarioId",
+							"value": "2"
+						}
+					]
+				},
+				"description": "Remueve un usuario invitado de una lista de regalos."
+			},
+			"response": []
+		},
+		{
+			"name": "Consultar si usuario está invitado a lista de regalos",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseURL}}/api/usuario-lista/es-invitado?listaId=1&usuarioId=2",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"api",
+						"usuario-lista",
+						"es-invitado"
+					],
+					"query": [
+						{
+							"key": "listaId",
+							"value": "1"
+						},
+						{
+							"key": "usuarioId",
+							"value": "2"
+						}
+					]
+				},
+				"description": "Consulta si un usuario está invitado a una lista de regalos."
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "baseURL",
+			"value": ""
+		}
+	]
+}
