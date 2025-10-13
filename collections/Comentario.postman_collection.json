@@ -1,0 +1,156 @@
+{
+	"info": {
+		"_postman_id": "98573333-a468-4b1c-8baf-eb23a690a831",
+		"name": "Comentario",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "46175568",
+		"_collection_link": "https://daniel-563478.postman.co/workspace/Daniel's-Workspace~0016bf9e-0136-49f0-81a6-a683a01637da/collection/46175568-98573333-a468-4b1c-8baf-eb23a690a831?action=share&source=collection_link&creator=46175568"
+	},
+	"item": [
+		{
+			"name": "Comentario",
+			"item": [
+				{
+					"name": "Crear Comentario",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"texto\": \"Excelente atención\",\n  \"calificacion\": 5,\n  \"usuarioId\": 2,\n  \"tiendaId\": 4\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/comentarios",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"comentarios"
+							]
+						},
+						"description": "Crea un nuevo comentario asociado a un usuario y tienda."
+					},
+					"response": [
+						{
+							"name": "201 Created",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"texto\": \"Excelente atención\",\n  \"calificacion\": 5,\n  \"usuarioId\": 2,\n  \"tiendaId\": 4\n}"
+								},
+								"url": {
+									"raw": "{{baseUrl}}/comentarios",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"comentarios"
+									]
+								},
+								"description": "Crea un nuevo comentario asociado a un usuario y tienda."
+							},
+							"code": 201,
+							"_postman_previewlanguage": "Text",
+							"header": [],
+							"cookie": [],
+							"body": "{\n  \"id\": 10,\n  \"texto\": \"Excelente atención\",\n  \"calificacion\": 5\n}"
+						}
+					]
+				},
+				{
+					"name": "Listar Comentarios",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/comentarios",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"comentarios"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Obtener Comentario por ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/comentarios/1",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"comentarios",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Actualizar Comentario",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"texto\": \"Muy buena calidad\",\n  \"calificacion\": 4\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/comentarios/1",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"comentarios",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Eliminar Comentario",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/comentarios/1",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"comentarios",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"description": "Recurso para gestionar comentarios (crear, listar, actualizar, eliminar)."
+		}
+	]
+}

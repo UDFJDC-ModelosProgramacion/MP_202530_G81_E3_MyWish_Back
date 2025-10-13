@@ -1,0 +1,124 @@
+{
+	"info": {
+		"_postman_id": "44f42771-701f-42ff-b01b-4ebf884cf5fb",
+		"name": "Moneda",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "46175568",
+		"_collection_link": "https://daniel-563478.postman.co/workspace/Daniel's-Workspace~0016bf9e-0136-49f0-81a6-a683a01637da/collection/46175568-44f42771-701f-42ff-b01b-4ebf884cf5fb?action=share&source=collection_link&creator=46175568"
+	},
+	"item": [
+		{
+			"name": "Moneda",
+			"item": [
+				{
+					"name": "Crear Moneda",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"codigo\": \"USD\",\n  \"simbolo\": \"$\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/monedas",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"monedas"
+							]
+						},
+						"description": "Crea una nueva moneda.\n\n**Códigos de respuesta:**\n- 201 Created: moneda creada.\n- 400 Bad Request: código o símbolo inválidos o duplicados."
+					},
+					"response": []
+				},
+				{
+					"name": "Listar Monedas",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/monedas",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"monedas"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Obtener Moneda por ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/monedas/1",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"monedas",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Actualizar Moneda",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"codigo\": \"EUR\",\n  \"simbolo\": \"€\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/monedas/1",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"monedas",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Eliminar Moneda",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/monedas/1",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"monedas",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"description": "Recurso para gestionar monedas (crear, listar, actualizar, eliminar)."
+		}
+	]
+}
