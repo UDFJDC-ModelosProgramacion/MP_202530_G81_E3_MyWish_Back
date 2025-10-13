@@ -12,5 +12,5 @@ public interface CatalogoTiendasRepository extends JpaRepository<CatalogoTiendas
      * @param nombre Nombre del catálogo a buscar.
      * @return Lista de catálogos con ese nombre.
      */
-    List<CatalogoTiendasEntity> findByNombre(String nombre);
+    List<CatalogoTiendasEntity> findByNombre(String nombre); 
 }

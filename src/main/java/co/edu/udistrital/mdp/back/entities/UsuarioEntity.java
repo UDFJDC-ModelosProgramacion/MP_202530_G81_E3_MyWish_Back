@@ -52,7 +52,7 @@ public class UsuarioEntity extends BaseEntity {
     @ManyToMany(mappedBy = "invitados")
     private List<CelebracionEntity> celebracionesInvitado;
 
-    /** Usuario escribe varios comentarios */
+    /** Usuario escribe varios comentarios */ 
     @PodamExclude
     @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ComentarioEntity> comentarios = new ArrayList<>();

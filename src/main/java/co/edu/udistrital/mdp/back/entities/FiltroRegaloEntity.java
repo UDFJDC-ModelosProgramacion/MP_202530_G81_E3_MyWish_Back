@@ -17,7 +17,7 @@ public class FiltroRegaloEntity extends BaseEntity {
     /**
      * Criterio del filtro (por ejemplo, categoría, prioridad, etc.).
      */
-    private String criterio;
+    private String criterio; 
 
     /**
      * Valor asociado al criterio para filtrar los regalos.

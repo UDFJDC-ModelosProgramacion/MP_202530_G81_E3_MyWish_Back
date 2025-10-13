@@ -15,7 +15,7 @@ public class EstadoCompraEntity extends BaseEntity {
     private String descripcion;
     private String color;
     private Boolean esPorDefecto = false;
-
+ 
     // --- Relaciones ---
     
     @PodamExclude

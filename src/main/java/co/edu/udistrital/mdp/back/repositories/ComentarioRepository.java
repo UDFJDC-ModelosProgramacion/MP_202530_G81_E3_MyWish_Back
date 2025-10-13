@@ -6,5 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface ComentarioRepository extends JpaRepository<ComentarioEntity, Long> {
-    // Aquí puedes agregar consultas personalizadas si se necesitan
+    // Aquí puedes agregar consultas personalizadas si se necesitan 
 }

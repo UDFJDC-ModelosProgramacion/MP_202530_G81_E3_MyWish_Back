@@ -21,4 +21,5 @@ public class MonedaEntity extends BaseEntity  {
     @OneToMany(mappedBy = "moneda")
     private List<ListaRegalosEntity> listasRegalos;
 }
-
+ 
+ 

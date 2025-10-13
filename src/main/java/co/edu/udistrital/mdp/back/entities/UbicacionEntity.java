@@ -18,6 +18,6 @@ public class UbicacionEntity extends BaseEntity {
 
     @PodamExclude
     @ManyToOne // muchas ubicaciones pueden pertenecer a una misma tienda
-    private TiendaEntity tienda;
+    private TiendaEntity tienda; 
 
 }

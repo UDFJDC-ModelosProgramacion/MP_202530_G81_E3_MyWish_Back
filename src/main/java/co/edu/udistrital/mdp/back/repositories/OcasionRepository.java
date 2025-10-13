@@ -8,3 +8,4 @@ import org.springframework.stereotype.Repository;
 public interface OcasionRepository extends JpaRepository<OcasionEntity, Long> {
     // Aquí puedes agregar consultas personalizadas si se necesitan
 }
+  

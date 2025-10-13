@@ -13,7 +13,7 @@ public interface PrioridadRegaloRepository extends JpaRepository<PrioridadRegalo
     // Encontrar por nombre exacto
     Optional<PrioridadRegaloEntity> findByNombre(String nombre);
     
-    // Encontrar por nivel
+    // Encontrar por nivel 
     List<PrioridadRegaloEntity> findByNivel(Integer nivel);
     
     // Encontrar prioridades por defecto

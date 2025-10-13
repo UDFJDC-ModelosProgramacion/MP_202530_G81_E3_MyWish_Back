@@ -18,7 +18,7 @@ public class OcasionEntity extends BaseEntity {
     // Relación con ListaRegalosEntity (una ocasión puede estar en muchas listas)
     @OneToMany(mappedBy = "ocasion")
     private List<ListaRegalosEntity> listasRegalos;
-}
+} 
 
 
 

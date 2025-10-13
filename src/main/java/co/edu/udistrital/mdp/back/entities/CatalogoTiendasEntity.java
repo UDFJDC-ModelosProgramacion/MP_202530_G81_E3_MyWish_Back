@@ -19,7 +19,7 @@ import java.util.ArrayList;
 public class CatalogoTiendasEntity extends BaseEntity {
 
     /**
-     * Nombre descriptivo del catálogo de tiendas.
+     * Nombre descriptivo del catálogo de tiendas. 
      */
     private String nombre;
 

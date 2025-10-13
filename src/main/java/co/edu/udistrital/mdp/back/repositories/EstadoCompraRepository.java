@@ -17,7 +17,7 @@ public interface EstadoCompraRepository extends JpaRepository<EstadoCompraEntity
     
     // Encontrar estados por defecto
     List<EstadoCompraEntity> findByEsPorDefectoTrue();
-    
+     
     // Verificar si existe por nombre (para validaciones)
     boolean existsByNombre(String nombre);
     

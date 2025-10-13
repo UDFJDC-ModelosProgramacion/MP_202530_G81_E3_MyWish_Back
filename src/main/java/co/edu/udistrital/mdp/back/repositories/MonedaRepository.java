@@ -8,3 +8,4 @@ import org.springframework.stereotype.Repository;
 public interface MonedaRepository extends JpaRepository<MonedaEntity, Long> {
     // Aquí puedes agregar consultas personalizadas si se necesitan
 }
+ 

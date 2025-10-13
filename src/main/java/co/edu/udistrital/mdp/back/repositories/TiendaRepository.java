@@ -17,7 +17,7 @@ import co.edu.udistrital.mdp.back.entities.UbicacionEntity;
 public interface TiendaRepository extends JpaRepository<TiendaEntity, Long> {
 
     // Buscar tiendas por nombre
-    List<TiendaEntity> findByNombre(String nombre);
+    List<TiendaEntity> findByNombre(String nombre); 
 
     // Buscar tiendas por nombre que contenga una palabra clave (ignora mayúsculas/minúsculas)
     List<TiendaEntity> findByNombreContainingIgnoreCase(String keyword);

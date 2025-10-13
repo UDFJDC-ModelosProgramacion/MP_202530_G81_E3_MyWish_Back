@@ -22,7 +22,7 @@ public class MensajeInvitacionEntity extends BaseEntity {
     @ManyToOne(optional = true)
     private CelebracionEntity celebracion;
 
-    @PodamExclude
+    @PodamExclude 
     @ManyToOne(optional = true)
     private ListaRegalosEntity listaRegalos;
 

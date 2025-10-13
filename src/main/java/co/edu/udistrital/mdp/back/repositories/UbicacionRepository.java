@@ -19,7 +19,7 @@ public interface UbicacionRepository extends JpaRepository<UbicacionEntity, Long
     // Buscar ubicaciones por ciudad
     List<UbicacionEntity> findByCiudad(String ciudad);
 
-    // Buscar ubicaciones por país
+    // Buscar ubicaciones por país 
     List<UbicacionEntity> findByPais(String pais);
 
     // Buscar ubicaciones por dirección exacta

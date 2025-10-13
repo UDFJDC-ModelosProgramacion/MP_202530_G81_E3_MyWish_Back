@@ -23,7 +23,7 @@ import uk.co.jemos.podam.common.PodamExclude;
 @Entity
 public class ListaRegalosEntity extends BaseEntity {
 
-    private String nombre;
+    private String nombre; 
     private String descripcion;
     private String color;
 

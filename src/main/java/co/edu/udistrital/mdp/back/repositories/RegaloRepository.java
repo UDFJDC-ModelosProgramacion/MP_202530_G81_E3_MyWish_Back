@@ -11,7 +11,7 @@ import co.edu.udistrital.mdp.back.entities.EstadoCompraEntity;
 import co.edu.udistrital.mdp.back.entities.PrioridadRegaloEntity;
 
 /**
- * Repositorio para la entidad Regalo.
+ * Repositorio para la entidad Regalo. 
  * Permite realizar operaciones CRUD y consultas personalizadas
  * sobre los regalos en la base de datos.
  */
