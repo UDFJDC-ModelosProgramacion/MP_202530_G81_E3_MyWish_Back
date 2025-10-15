@@ -6,7 +6,6 @@ import jakarta.persistence.OneToOne;
 import lombok.Data;
 import uk.co.jemos.podam.common.PodamExclude;
 
-
 @Data
 @Entity
 public class RegaloEntity extends BaseEntity {
@@ -17,7 +16,7 @@ public class RegaloEntity extends BaseEntity {
     private String categoria;
 
     @PodamExclude
-    @OneToOne
+    @ManyToOne  // ✅ Cambiado de @OneToOne a @ManyToOne
     private EstadoCompraEntity estadoCompra;
 
     @PodamExclude
@@ -33,6 +32,6 @@ public class RegaloEntity extends BaseEntity {
     private ListaRegalosEntity listaRegalos;
 
     @PodamExclude
-    @OneToOne
+    @ManyToOne  // ✅ Cambiado de @OneToOne a @ManyToOne
     private PrioridadRegaloEntity prioridad;
 }
