@@ -21,6 +21,7 @@ public class FotoService {
     // =====================================================
     // CREATE
     // =====================================================
+
     @Transactional
     public FotoEntity createFoto(FotoEntity fotoEntity) {
 
@@ -66,6 +67,7 @@ public class FotoService {
     // =====================================================
     // UPDATE
     // =====================================================
+
     @Transactional
     public FotoEntity updateFoto(Long fotoId, FotoEntity fotoEntity) {
 
@@ -107,6 +109,7 @@ public class FotoService {
     // =====================================================
     // DELETE
     // =====================================================
+
     @Transactional
     public void deleteFoto(Long fotoId) {
 
@@ -130,6 +133,7 @@ public class FotoService {
     // =====================================================
     // GET
     // =====================================================
+
     @Transactional(readOnly = true)
     public List<FotoEntity> getAllFotos() {
         log.info("Inicia proceso de consulta de todas las fotos");
@@ -182,6 +186,7 @@ public class FotoService {
             }
         }
     }
+    
 
     private void eliminarArchivoFisico(String url) {
         // Implementación para eliminar el archivo físico del servidor
@@ -189,4 +194,5 @@ public class FotoService {
         log.info("Eliminando archivo físico: {}", url);
         // Código para eliminar el archivo del sistema de archivos o servicio cloud
     }
+
 }
