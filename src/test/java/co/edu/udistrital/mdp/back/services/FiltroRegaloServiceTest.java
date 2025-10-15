@@ -145,4 +145,5 @@ public class FiltroRegaloServiceTest {
                 () -> filtroRegaloService.eliminarFiltro(100L));
         assertEquals("El filtro no pertenece a una lista de regalos existente.", ex.getMessage());
     }
+
 }
