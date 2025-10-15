@@ -150,4 +150,5 @@ public class CatalogoTiendasServiceTest {
                 () -> catalogoTiendasService.eliminarTiendaDeCatalogo(1L, 10L));
         assertEquals("La tienda no pertenece a este catálogo.", ex.getMessage());
     }
+    
 }
