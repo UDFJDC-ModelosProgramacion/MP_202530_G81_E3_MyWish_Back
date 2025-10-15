@@ -32,9 +32,13 @@ public interface MensajeInvitacionRepository extends JpaRepository<MensajeInvita
     // Buscar mensajes enviados después de una fecha específica
     List<MensajeInvitacionEntity> findByFechaEnvioAfter(Date fecha);
 
-    // Buscar mensajes enviados antes de una fecha específica  
+    // Buscar mensajes enviados antes de una fecha específica
     List<MensajeInvitacionEntity> findByFechaEnvioBefore(Date fecha);
 
     // Contar mensajes por celebración
     long countByCelebracion(CelebracionEntity celebracion);
+
+    // Buscar mensajes por el ID de la celebración
+    List<MensajeInvitacionEntity> findByCelebracion_Id(Long celebracionId);
+
 }

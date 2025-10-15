@@ -26,10 +26,10 @@ public interface CelebracionRepository extends JpaRepository<CelebracionEntity, 
     // Buscar celebraciones por fecha
     List<CelebracionEntity> findByFecha(Date fecha);
 
-    // Buscar celebraciones por organizador (antes era CreadorEntity)
+    // Buscar celebraciones por organizador
     List<CelebracionEntity> findByOrganizador(UsuarioEntity organizador);
 
-    // Buscar celebraciones por organizador ID (antes era CreadorEntity)
+    // Buscar celebraciones por ID del organizador
     List<CelebracionEntity> findByOrganizadorId(Long organizadorId);
 
     // Buscar celebraciones por nombre y lugar
@@ -38,6 +38,9 @@ public interface CelebracionRepository extends JpaRepository<CelebracionEntity, 
     // Buscar celebraciones por rango de fechas
     List<CelebracionEntity> findByFechaBetween(Date fechaInicio, Date fechaFin);
 
-    // Buscar celebraciones por cantidad de invitados mayor a
+    // Buscar celebraciones con cantidad de invitados mayor a
     List<CelebracionEntity> findByCantidadInvitadosGreaterThan(int cantidad);
+
+
 }
+

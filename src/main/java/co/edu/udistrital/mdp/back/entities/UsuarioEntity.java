@@ -1,4 +1,3 @@
-
 package co.edu.udistrital.mdp.back.entities;
 
 import jakarta.persistence.CascadeType;
@@ -21,7 +20,7 @@ import java.util.List;
 @EqualsAndHashCode(callSuper = true, exclude = {
         "listasCreadas", "listasInvitado",
         "celebracionesOrganizadas", "celebracionesInvitado",
-        "comentarios"
+        "comentarios", "mensajesEnviados", "mensajesRecibidos"
 })
 public class UsuarioEntity extends BaseEntity {
 
@@ -57,4 +56,14 @@ public class UsuarioEntity extends BaseEntity {
     @PodamExclude
     @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ComentarioEntity> comentarios = new ArrayList<>();
+
+    /** Mensajes enviados por el usuario (como remitente) */
+    @PodamExclude
+    @OneToMany(mappedBy = "remitente", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<MensajeInvitacionEntity> mensajesEnviados = new ArrayList<>();
+
+    /** Mensajes recibidos por el usuario (como destinatario) */
+    @PodamExclude
+    @OneToMany(mappedBy = "destinatario", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<MensajeInvitacionEntity> mensajesRecibidos = new ArrayList<>();
 }

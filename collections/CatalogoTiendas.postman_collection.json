@@ -1,0 +1,80 @@
+{
+  "info": {
+    "name": "Catalogo Tiendas API",
+    "_postman_id": "c57c56f4-4582-4dcb-bd7d-9f842a6cb3c3",
+    "description": "Colección de pruebas para el servicio CatalogoTiendasService",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Crear Catálogo",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"nombre\": \"Catálogo Principal\",\n  \"descripcion\": \"Catálogo con tiendas destacadas\",\n  \"tiendas\": []\n}"
+        },
+        "url": {
+          "raw": "http://localhost:8080/api/catalogos",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8080",
+          "path": ["api", "catalogos"]
+        }
+      }
+    },
+    {
+      "name": "Actualizar Catálogo",
+      "request": {
+        "method": "PUT",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "[]"
+        },
+        "url": {
+          "raw": "http://localhost:8080/api/catalogos/1?nombre=Nuevo%20Nombre&descripcion=Actualizado",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8080",
+          "path": ["api", "catalogos", "1"],
+          "query": [
+            { "key": "nombre", "value": "Nuevo Nombre" },
+            { "key": "descripcion", "value": "Actualizado" }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Eliminar Catálogo",
+      "request": {
+        "method": "DELETE",
+        "url": {
+          "raw": "http://localhost:8080/api/catalogos/1",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8080",
+          "path": ["api", "catalogos", "1"]
+        }
+      }
+    },
+    {
+      "name": "Eliminar Tienda de Catálogo",
+      "request": {
+        "method": "DELETE",
+        "url": {
+          "raw": "http://localhost:8080/api/catalogos/1/tiendas/2",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8080",
+          "path": ["api", "catalogos", "1", "tiendas", "2"]
+        }
+      }
+    }
+  ]
+}
