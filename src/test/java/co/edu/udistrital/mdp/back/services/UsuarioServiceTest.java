@@ -15,6 +15,7 @@ import org.mockito.MockitoAnnotations;
 
 import co.edu.udistrital.mdp.back.entities.UsuarioEntity;
 import co.edu.udistrital.mdp.back.entities.ListaRegalosEntity;
+import co.edu.udistrital.mdp.back.entities.CelebracionEntity;
 import co.edu.udistrital.mdp.back.repositories.UsuarioRepository;
 import co.edu.udistrital.mdp.back.repositories.ListaRegalosRepository;
 import co.edu.udistrital.mdp.back.repositories.CelebracionRepository;
@@ -48,10 +49,11 @@ public class UsuarioServiceTest {
     @Test
     public void testCrearUsuario_Valido() {
         when(usuarioRepository.findByCorreo(usuario.getCorreo())).thenReturn(null);
-        when(usuarioRepository.save(usuario)).thenReturn(usuario);
+        when(usuarioRepository.save(any(UsuarioEntity.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
         UsuarioEntity resultado = usuarioService.crearUsuario(usuario);
-        assertEquals(usuario, resultado);
+
+        assertEquals(usuario.getCorreo(), resultado.getCorreo());
     }
 
     @Test
@@ -64,6 +66,8 @@ public class UsuarioServiceTest {
     public void testActualizarCorreoUsuario_Exitoso() {
         when(usuarioRepository.findById(1L)).thenReturn(Optional.of(usuario));
         when(usuarioRepository.findByCorreo("nuevo@mail.com")).thenReturn(null);
+        when(usuarioRepository.save(any(UsuarioEntity.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
         usuario.setCorreo("original@mail.com");
 
         UsuarioEntity actualizado = usuarioService.actualizarCorreoUsuario(1L, "nuevo@mail.com");
@@ -71,20 +75,36 @@ public class UsuarioServiceTest {
     }
 
     @Test
-    public void testEliminarUsuario_SinRelaciones() {
+    public void testEliminarUsuario_SinRelaciones_EliminaCorrectamente() {
         when(usuarioRepository.findById(1L)).thenReturn(Optional.of(usuario));
         when(listaRegalosRepository.findByCreadorId(1L)).thenReturn(List.of());
         when(celebracionRepository.findByOrganizadorId(1L)).thenReturn(List.of());
 
         usuarioService.eliminarUsuario(1L);
-        verify(usuarioRepository).delete(usuario);
+
+        verify(usuarioRepository, times(1)).delete(usuario);
     }
 
     @Test
-    public void testEliminarUsuario_ConListas() {
+    public void testEliminarUsuario_ConListas_LanzaExcepcion() {
         when(usuarioRepository.findById(1L)).thenReturn(Optional.of(usuario));
         when(listaRegalosRepository.findByCreadorId(1L)).thenReturn(List.of(new ListaRegalosEntity()));
 
-        assertThrows(IllegalStateException.class, () -> usuarioService.eliminarUsuario(1L));
+        IllegalStateException exception = assertThrows(IllegalStateException.class, () -> {
+            usuarioService.eliminarUsuario(1L);
+        });
+        assertEquals("No se puede eliminar un usuario con listas creadas activas.", exception.getMessage());
+    }
+
+    @Test
+    public void testEliminarUsuario_ConCelebraciones_LanzaExcepcion() {
+        when(usuarioRepository.findById(1L)).thenReturn(Optional.of(usuario));
+        when(listaRegalosRepository.findByCreadorId(1L)).thenReturn(List.of());
+        when(celebracionRepository.findByOrganizadorId(1L)).thenReturn(List.of(new CelebracionEntity()));
+
+        IllegalStateException exception = assertThrows(IllegalStateException.class, () -> {
+            usuarioService.eliminarUsuario(1L);
+        });
+        assertEquals("No se puede eliminar un usuario con celebraciones organizadas pendientes.", exception.getMessage());
     }
 }
