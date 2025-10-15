@@ -1,7 +1,9 @@
 package co.edu.udistrital.mdp.back.services;
 
 import co.edu.udistrital.mdp.back.entities.EstadoCompraEntity;
+import co.edu.udistrital.mdp.back.entities.RegaloEntity;
 import co.edu.udistrital.mdp.back.repositories.EstadoCompraRepository;
+import co.edu.udistrital.mdp.back.repositories.RegaloRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,9 +20,13 @@ public class EstadoCompraService {
     @Autowired
     private EstadoCompraRepository estadoCompraRepository;
 
+    @Autowired
+    private RegaloRepository regaloRepository;
+
     // =====================================================
     // CREATE
     // =====================================================
+
     @Transactional
     public EstadoCompraEntity createEstadoCompra(EstadoCompraEntity estadoCompraEntity) {
 
@@ -48,6 +54,7 @@ public class EstadoCompraService {
     // =====================================================
     // UPDATE
     // =====================================================
+
     @Transactional
     public EstadoCompraEntity updateEstadoCompra(Long estadoCompraId, EstadoCompraEntity estadoCompraEntity) {
 
@@ -64,7 +71,9 @@ public class EstadoCompraService {
         if (estadoCompraEntity.getNombre() != null && 
             !estadoCompraEntity.getNombre().equals(existente.getNombre())) {
             
-            if (!existente.getRegalos().isEmpty()) {
+            // Verificar usando el repositorio de regalos directamente
+            List<RegaloEntity> regalosAsociados = regaloRepository.findByEstadoCompra(existente);
+            if (!regalosAsociados.isEmpty()) {
                 throw new IllegalStateException("No se puede modificar el nombre de un estado de compra que está siendo utilizado por regalos.");
             }
             
@@ -90,6 +99,7 @@ public class EstadoCompraService {
     // =====================================================
     // DELETE
     // =====================================================
+
     @Transactional
     public void deleteEstadoCompra(Long estadoCompraId) {
 
@@ -103,12 +113,14 @@ public class EstadoCompraService {
         EstadoCompraEntity estadoCompra = estadoCompraOpt.get();
 
         // Regla 5: No se puede eliminar un estado de compra si está asignado a algún regalo
-        if (!estadoCompra.getRegalos().isEmpty()) {
+        // Verificar usando el repositorio de regalos directamente
+        List<RegaloEntity> regalosAsociados = regaloRepository.findByEstadoCompra(estadoCompra);
+        if (!regalosAsociados.isEmpty()) {
             throw new IllegalStateException("No se puede eliminar el estado de compra porque está siendo utilizado por regalos.");
         }
 
         // Regla 6: No se puede eliminar el estado de compra marcado como por defecto
-        if (estadoCompra.getEsPorDefecto()) {
+        if (Boolean.TRUE.equals(estadoCompra.getEsPorDefecto())) {
             throw new IllegalStateException("No se puede eliminar el estado de compra marcado como por defecto.");
         }
 
@@ -120,6 +132,7 @@ public class EstadoCompraService {
     // =====================================================
     // GET
     // =====================================================
+
     @Transactional(readOnly = true)
     public List<EstadoCompraEntity> getAllEstadosCompra() {
         log.info("Inicia proceso de consulta de todos los estados de compra");
@@ -139,4 +152,5 @@ public class EstadoCompraService {
         List<EstadoCompraEntity> estadosPorDefecto = estadoCompraRepository.findByEsPorDefectoTrue();
         return estadosPorDefecto.isEmpty() ? null : estadosPorDefecto.get(0);
     }
+    
 }

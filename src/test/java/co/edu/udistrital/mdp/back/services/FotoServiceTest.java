@@ -75,7 +75,9 @@ class FotoServiceTest {
             foto.setRegalo(regaloList.get(0));
             entityManager.persist(foto);
             fotoList.add(foto);
+            
         }
+
     }
 
     // =====================================================
@@ -231,9 +233,11 @@ class FotoServiceTest {
         assertTrue(resultado.getEsPrincipal());
     }
 
+
     // =====================================================
     // DELETE TESTS
     // =====================================================
+
 
     @Test
     void testDeleteFoto_Success() {
@@ -250,9 +254,11 @@ class FotoServiceTest {
                 fotoService.deleteFoto(999L));
     }
 
+
     // =====================================================
     // GET TESTS
     // =====================================================
+
 
     @Test
     void testGetAllFotos() {
@@ -299,9 +305,11 @@ class FotoServiceTest {
         assertTrue(principales.stream().allMatch(FotoEntity::getEsPrincipal));
     }
 
+
     // =====================================================
     // TESTS DE VALIDACIÓN DE FORMATOS
     // =====================================================
+
 
     @Test
     void testCreateFoto_FormatoGIF_Success() {

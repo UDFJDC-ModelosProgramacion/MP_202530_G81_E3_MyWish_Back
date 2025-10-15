@@ -113,4 +113,6 @@ public class CatalogoTiendasService {
         catalogo.getTiendas().remove(tienda);
         catalogoTiendasRepository.save(catalogo);
     }
+    
 }
+
