@@ -21,6 +21,7 @@ public class PrioridadRegaloService {
     // =====================================================
     // CREATE
     // =====================================================
+
     @Transactional
     public PrioridadRegaloEntity createPrioridadRegalo(PrioridadRegaloEntity prioridadRegaloEntity) {
 
@@ -56,6 +57,7 @@ public class PrioridadRegaloService {
     // =====================================================
     // UPDATE
     // =====================================================
+
     @Transactional
     public PrioridadRegaloEntity updatePrioridadRegalo(Long prioridadId, PrioridadRegaloEntity prioridadRegaloEntity) {
 
@@ -99,6 +101,7 @@ public class PrioridadRegaloService {
     // =====================================================
     // DELETE
     // =====================================================
+
     @Transactional
     public void deletePrioridadRegalo(Long prioridadId) {
 
@@ -129,6 +132,7 @@ public class PrioridadRegaloService {
     // =====================================================
     // GET
     // =====================================================
+
     @Transactional(readOnly = true)
     public List<PrioridadRegaloEntity> getAllPrioridadesRegalo() {
         log.info("Inicia proceso de consulta de todas las prioridades de regalo");
@@ -147,4 +151,5 @@ public class PrioridadRegaloService {
         log.info("Inicia proceso de consulta de prioridades por nivel: {}", nivel);
         return prioridadRegaloRepository.findByNivel(nivel);
     }
+    
 }
