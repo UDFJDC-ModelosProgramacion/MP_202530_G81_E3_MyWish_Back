@@ -21,6 +21,7 @@ public class EstadoCompraService {
     // =====================================================
     // CREATE
     // =====================================================
+
     @Transactional
     public EstadoCompraEntity createEstadoCompra(EstadoCompraEntity estadoCompraEntity) {
 
@@ -48,6 +49,7 @@ public class EstadoCompraService {
     // =====================================================
     // UPDATE
     // =====================================================
+
     @Transactional
     public EstadoCompraEntity updateEstadoCompra(Long estadoCompraId, EstadoCompraEntity estadoCompraEntity) {
 
@@ -90,6 +92,7 @@ public class EstadoCompraService {
     // =====================================================
     // DELETE
     // =====================================================
+
     @Transactional
     public void deleteEstadoCompra(Long estadoCompraId) {
 
@@ -120,6 +123,7 @@ public class EstadoCompraService {
     // =====================================================
     // GET
     // =====================================================
+
     @Transactional(readOnly = true)
     public List<EstadoCompraEntity> getAllEstadosCompra() {
         log.info("Inicia proceso de consulta de todos los estados de compra");
@@ -139,4 +143,5 @@ public class EstadoCompraService {
         List<EstadoCompraEntity> estadosPorDefecto = estadoCompraRepository.findByEsPorDefectoTrue();
         return estadosPorDefecto.isEmpty() ? null : estadosPorDefecto.get(0);
     }
+    
 }

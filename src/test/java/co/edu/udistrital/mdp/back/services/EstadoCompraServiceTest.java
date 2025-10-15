@@ -59,6 +59,7 @@ class EstadoCompraServiceTest {
             entityManager.persist(estado);
             estadoCompraList.add(estado);
         }
+
     }
 
     // =====================================================
@@ -253,4 +254,5 @@ class EstadoCompraServiceTest {
         assertNotNull(porDefecto);
         assertTrue(porDefecto.getEsPorDefecto());
     }
+    
 }
