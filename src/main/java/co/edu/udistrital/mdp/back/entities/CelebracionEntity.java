@@ -1,6 +1,7 @@
 package co.edu.udistrital.mdp.back.entities;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import jakarta.persistence.OneToOne;
@@ -32,7 +33,7 @@ public class CelebracionEntity extends BaseEntity {
 
     @PodamExclude
     @ManyToMany //no propietaria de la relacion
-    private List<UsuarioEntity> invitados;
+    private List<UsuarioEntity> invitados = new ArrayList<>();
 
     @PodamExclude
     @OneToOne
@@ -40,7 +41,7 @@ public class CelebracionEntity extends BaseEntity {
 
     @PodamExclude
     @OneToMany(mappedBy = "celebracion") // propietaria de la relacion
-    private List<MensajeInvitacionEntity> mensajesInvitacion;
+    private List<MensajeInvitacionEntity> mensajesInvitacion = new ArrayList<>();
 
 
 
