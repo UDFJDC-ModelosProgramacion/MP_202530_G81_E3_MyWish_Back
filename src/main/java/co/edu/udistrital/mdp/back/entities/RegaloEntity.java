@@ -17,7 +17,7 @@ public class RegaloEntity extends BaseEntity {
     private String categoria;
 
     @PodamExclude
-    @OneToOne
+    @ManyToOne  // ✅ Cambiado de @OneToOne a @ManyToOne
     private EstadoCompraEntity estadoCompra;
 
     @PodamExclude
@@ -33,6 +33,6 @@ public class RegaloEntity extends BaseEntity {
     private ListaRegalosEntity listaRegalos;
 
     @PodamExclude
-    @OneToOne
+    @ManyToOne  // ✅ Cambiado de @OneToOne a @ManyToOne
     private PrioridadRegaloEntity prioridad;
 }
