@@ -18,7 +18,7 @@ import co.edu.udistrital.mdp.back.entities.UsuarioEntity;
 import co.edu.udistrital.mdp.back.repositories.CelebracionRepository;
 import co.edu.udistrital.mdp.back.repositories.UsuarioRepository;
 
-public class CelebracionUsuarioServiceTest {
+class CelebracionUsuarioServiceTest {
 
     @Mock
     private UsuarioRepository usuarioRepository;
@@ -33,7 +33,7 @@ public class CelebracionUsuarioServiceTest {
     private CelebracionEntity celebracion;
 
     @BeforeEach
-    public void setup() {
+    void setup() {
         MockitoAnnotations.openMocks(this);
 
         usuario = new UsuarioEntity();
@@ -49,7 +49,7 @@ public class CelebracionUsuarioServiceTest {
     }
 
     @Test
-    public void testObtenerCelebracionesDeUsuario_Success() {
+    void testObtenerCelebracionesDeUsuario_Success() {
         when(usuarioRepository.findById(1L)).thenReturn(Optional.of(usuario));
         usuario.setCelebracionesInvitado(List.of(celebracion));
 
@@ -59,19 +59,19 @@ public class CelebracionUsuarioServiceTest {
     }
 
     @Test
-    public void testEstaInvitadoEnCelebracion_True() {
+    void testEstaInvitadoEnCelebracion_True() {
         when(celebracionRepository.findById(20L)).thenReturn(Optional.of(celebracion));
         assertTrue(celebracionUsuarioService.estaInvitadoEnCelebracion(1L, 20L));
     }
 
     @Test
-    public void testEstaInvitadoEnCelebracion_False() {
+    void testEstaInvitadoEnCelebracion_False() {
         when(celebracionRepository.findById(20L)).thenReturn(Optional.of(new CelebracionEntity()));
         assertFalse(celebracionUsuarioService.estaInvitadoEnCelebracion(1L, 20L));
     }
 
     @Test
-    public void testRemoverInvitacion_Success() {
+    void testRemoverInvitacion_Success() {
         when(celebracionRepository.findById(20L)).thenReturn(Optional.of(celebracion));
         celebracionUsuarioService.removerInvitacion(1L, 20L);
         verify(celebracionRepository).save(celebracion);
@@ -79,7 +79,7 @@ public class CelebracionUsuarioServiceTest {
     }
 
     @Test
-    public void testRemoverInvitacion_NotInvited() {
+    void testRemoverInvitacion_NotInvited() {
         when(celebracionRepository.findById(20L)).thenReturn(Optional.of(new CelebracionEntity()));
         assertThrows(IllegalArgumentException.class, () -> celebracionUsuarioService.removerInvitacion(1L, 20L));
     }
