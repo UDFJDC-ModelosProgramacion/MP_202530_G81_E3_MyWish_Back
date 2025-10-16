@@ -19,7 +19,7 @@ import co.edu.udistrital.mdp.back.entities.UsuarioEntity;
 import co.edu.udistrital.mdp.back.repositories.ListaRegalosRepository;
 import co.edu.udistrital.mdp.back.repositories.UsuarioRepository;
 
-public class ListaRegalosUsuarioServiceTest {
+class ListaRegalosUsuarioServiceTest {
 
     @Mock
     private UsuarioRepository usuarioRepository;
@@ -46,7 +46,7 @@ public class ListaRegalosUsuarioServiceTest {
     }
 
     @Test
-    public void testObtenerListasDeUsuario_Success() {
+    void testObtenerListasDeUsuario_Success() {
         when(usuarioRepository.findById(1L)).thenReturn(Optional.of(usuario));
         usuario.setListasInvitado(List.of(lista));
 
@@ -56,25 +56,25 @@ public class ListaRegalosUsuarioServiceTest {
     }
 
     @Test
-    public void testObtenerListasDeUsuario_UserNotFound() {
+    void testObtenerListasDeUsuario_UserNotFound() {
         when(usuarioRepository.findById(1L)).thenReturn(Optional.empty());
         assertThrows(EntityNotFoundException.class, () -> listaRegalosUsuarioService.obtenerListasDeUsuario(1L));
     }
 
     @Test
-    public void testEstaInvitadoEnLista_True() {
+    void testEstaInvitadoEnLista_True() {
         when(listaRegalosRepository.findById(10L)).thenReturn(Optional.of(lista));
         assertTrue(listaRegalosUsuarioService.estaInvitadoEnLista(1L, 10L));
     }
 
     @Test
-    public void testEstaInvitadoEnLista_False() {
+    void testEstaInvitadoEnLista_False() {
         when(listaRegalosRepository.findById(10L)).thenReturn(Optional.of(new ListaRegalosEntity()));
         assertFalse(listaRegalosUsuarioService.estaInvitadoEnLista(1L, 10L));
     }
 
     @Test
-    public void testRemoverInvitacion_Success() {
+    void testRemoverInvitacion_Success() {
         when(listaRegalosRepository.findById(10L)).thenReturn(Optional.of(lista));
         listaRegalosUsuarioService.removerInvitacion(1L, 10L);
         verify(listaRegalosRepository).save(lista);
@@ -82,7 +82,7 @@ public class ListaRegalosUsuarioServiceTest {
     }
 
     @Test
-    public void testRemoverInvitacion_NotInvited() {
+    void testRemoverInvitacion_NotInvited() {
         when(listaRegalosRepository.findById(10L)).thenReturn(Optional.of(new ListaRegalosEntity()));
         assertThrows(IllegalArgumentException.class, () -> listaRegalosUsuarioService.removerInvitacion(1L, 10L));
     }
