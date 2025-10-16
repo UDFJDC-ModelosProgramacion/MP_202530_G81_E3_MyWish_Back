@@ -18,7 +18,7 @@ import co.edu.udistrital.mdp.back.repositories.FiltroRegaloRepository;
 import co.edu.udistrital.mdp.back.repositories.ListaRegalosRepository;
 
 
-public class FiltroRegaloServiceTest {
+class FiltroRegaloServiceTest {
 
     @Mock
     private FiltroRegaloRepository filtroRegaloRepository;
@@ -33,7 +33,7 @@ public class FiltroRegaloServiceTest {
     private FiltroRegaloEntity filtro;
 
     @BeforeEach
-    public void setup() {
+    void setup() {
         MockitoAnnotations.openMocks(this);
 
         lista = new ListaRegalosEntity();
@@ -48,7 +48,7 @@ public class FiltroRegaloServiceTest {
     }
 
     @Test
-    public void testCrearFiltro_Success() {
+    void testCrearFiltro_Success() {
         when(listaRegalosRepository.findById(1L)).thenReturn(Optional.of(lista));
 
         FiltroRegaloEntity nuevoFiltro = new FiltroRegaloEntity();
@@ -67,7 +67,7 @@ public class FiltroRegaloServiceTest {
     }
 
     @Test
-    public void testCrearFiltro_Duplicado() {
+    void testCrearFiltro_Duplicado() {
         lista.getFiltrosRegalos().add(filtro);
         when(listaRegalosRepository.findById(1L)).thenReturn(Optional.of(lista));
 
@@ -77,7 +77,7 @@ public class FiltroRegaloServiceTest {
     }
 
     @Test
-    public void testCrearFiltro_CriterioOValorNulos() {
+    void testCrearFiltro_CriterioOValorNulos() {
         IllegalArgumentException ex1 = assertThrows(IllegalArgumentException.class,
                 () -> filtroRegaloService.crearFiltro(1L, null, "Rojo"));
         IllegalArgumentException ex2 = assertThrows(IllegalArgumentException.class,
@@ -88,7 +88,7 @@ public class FiltroRegaloServiceTest {
     }
 
     @Test
-    public void testActualizarFiltro_Success() {
+    void testActualizarFiltro_Success() {
         lista.getFiltrosRegalos().add(filtro);
         when(filtroRegaloRepository.findById(100L)).thenReturn(Optional.of(filtro));
         when(filtroRegaloRepository.save(filtro)).thenReturn(filtro);
@@ -99,7 +99,7 @@ public class FiltroRegaloServiceTest {
     }
 
     @Test
-    public void testActualizarFiltro_ValorVacio() {
+    void testActualizarFiltro_ValorVacio() {
         when(filtroRegaloRepository.findById(100L)).thenReturn(Optional.of(filtro));
 
         IllegalArgumentException ex = assertThrows(IllegalArgumentException.class,
@@ -108,7 +108,7 @@ public class FiltroRegaloServiceTest {
     }
 
     @Test
-    public void testActualizarFiltro_Duplicado() {
+    void testActualizarFiltro_Duplicado() {
         FiltroRegaloEntity otroFiltro = new FiltroRegaloEntity();
         otroFiltro.setId(101L);
         otroFiltro.setCriterio("Categoria");
@@ -125,7 +125,7 @@ public class FiltroRegaloServiceTest {
     }
 
     @Test
-    public void testEliminarFiltro_Success() {
+    void testEliminarFiltro_Success() {
         filtro.setListaRegalos(lista);
 
         when(filtroRegaloRepository.findById(100L)).thenReturn(Optional.of(filtro));
@@ -136,7 +136,7 @@ public class FiltroRegaloServiceTest {
     }
 
     @Test
-    public void testEliminarFiltro_SinLista() {
+    void testEliminarFiltro_SinLista() {
         filtro.setListaRegalos(null);
 
         when(filtroRegaloRepository.findById(100L)).thenReturn(Optional.of(filtro));
