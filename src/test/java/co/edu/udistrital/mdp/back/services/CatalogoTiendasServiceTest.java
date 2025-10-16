@@ -18,7 +18,7 @@ import co.edu.udistrital.mdp.back.entities.TiendaEntity;
 import co.edu.udistrital.mdp.back.repositories.CatalogoTiendasRepository;
 import co.edu.udistrital.mdp.back.repositories.TiendaRepository;
 
-public class CatalogoTiendasServiceTest {
+class CatalogoTiendasServiceTest {
 
     @Mock
     private CatalogoTiendasRepository catalogoTiendasRepository;
@@ -35,7 +35,7 @@ public class CatalogoTiendasServiceTest {
     private CatalogoTiendasEntity catalogo;
 
     @BeforeEach
-    public void setup() {
+    void setup() {
         MockitoAnnotations.openMocks(this);
 
         catalogo = new CatalogoTiendasEntity();
@@ -46,7 +46,7 @@ public class CatalogoTiendasServiceTest {
     }
 
     @Test
-    public void testCrearCatalogo_Success() {
+    void testCrearCatalogo_Success() {
         when(catalogoTiendasRepository.findByNombre("Catalogo1")).thenReturn(List.of());
         when(catalogoTiendasRepository.save(catalogo)).thenReturn(catalogo);
 
@@ -56,7 +56,7 @@ public class CatalogoTiendasServiceTest {
     }
 
     @Test
-    public void testCrearCatalogo_NombreVacio() {
+    void testCrearCatalogo_NombreVacio() {
         catalogo.setNombre("");
         IllegalArgumentException ex = assertThrows(IllegalArgumentException.class,
                 () -> catalogoTiendasService.crearCatalogo(catalogo));
@@ -64,7 +64,7 @@ public class CatalogoTiendasServiceTest {
     }
 
     @Test
-    public void testCrearCatalogo_Duplicado() {
+    void testCrearCatalogo_Duplicado() {
         when(catalogoTiendasRepository.findByNombre("Catalogo1")).thenReturn(List.of(new CatalogoTiendasEntity()));
         IllegalArgumentException ex = assertThrows(IllegalArgumentException.class,
                 () -> catalogoTiendasService.crearCatalogo(catalogo));
@@ -72,7 +72,7 @@ public class CatalogoTiendasServiceTest {
     }
 
     @Test
-    public void testActualizarCatalogo_Success() {
+    void testActualizarCatalogo_Success() {
         when(catalogoTiendasRepository.findById(1L)).thenReturn(Optional.of(catalogo));
         when(catalogoTiendasRepository.findByNombre("NuevoNombre")).thenReturn(List.of());
         when(catalogoTiendasRepository.save(catalogo)).thenReturn(catalogo);
@@ -86,7 +86,7 @@ public class CatalogoTiendasServiceTest {
     }
 
     @Test
-    public void testActualizarCatalogo_NombreDuplicado() {
+    void testActualizarCatalogo_NombreDuplicado() {
         CatalogoTiendasEntity otroCatalogo = new CatalogoTiendasEntity();
         otroCatalogo.setId(2L);
         otroCatalogo.setNombre("NuevoNombre");
@@ -100,7 +100,7 @@ public class CatalogoTiendasServiceTest {
     }
 
     @Test
-    public void testActualizarCatalogo_ListaTiendasVaciaNoPermitida() {
+    void testActualizarCatalogo_ListaTiendasVaciaNoPermitida() {
         catalogo.getTiendas().add(tiendaMock);
         when(catalogoTiendasRepository.findById(1L)).thenReturn(Optional.of(catalogo));
         when(catalogoTiendasRepository.findByNombre(anyString())).thenReturn(List.of());
@@ -111,7 +111,7 @@ public class CatalogoTiendasServiceTest {
     }
 
     @Test
-    public void testEliminarCatalogo_Success() {
+    void testEliminarCatalogo_Success() {
         catalogo.setTiendas(new ArrayList<>());
         when(catalogoTiendasRepository.findById(1L)).thenReturn(Optional.of(catalogo));
 
@@ -120,7 +120,7 @@ public class CatalogoTiendasServiceTest {
     }
 
     @Test
-    public void testEliminarCatalogo_ConTiendas() {
+    void testEliminarCatalogo_ConTiendas() {
         catalogo.getTiendas().add(tiendaMock);
         when(catalogoTiendasRepository.findById(1L)).thenReturn(Optional.of(catalogo));
 
@@ -130,7 +130,7 @@ public class CatalogoTiendasServiceTest {
     }
 
     @Test
-    public void testEliminarTiendaDeCatalogo_Success() {
+    void testEliminarTiendaDeCatalogo_Success() {
         catalogo.getTiendas().add(tiendaMock);
         when(catalogoTiendasRepository.findById(1L)).thenReturn(Optional.of(catalogo));
         when(tiendaRepository.findById(10L)).thenReturn(Optional.of(tiendaMock));
@@ -142,7 +142,7 @@ public class CatalogoTiendasServiceTest {
     }
 
     @Test
-    public void testEliminarTiendaDeCatalogo_TiendaNoPertenece() {
+    void testEliminarTiendaDeCatalogo_TiendaNoPertenece() {
         when(catalogoTiendasRepository.findById(1L)).thenReturn(Optional.of(catalogo));
         when(tiendaRepository.findById(10L)).thenReturn(Optional.of(tiendaMock));
 
