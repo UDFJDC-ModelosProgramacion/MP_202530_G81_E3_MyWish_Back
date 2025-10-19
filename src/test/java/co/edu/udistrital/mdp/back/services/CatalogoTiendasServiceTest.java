@@ -20,10 +20,14 @@ import co.edu.udistrital.mdp.back.repositories.TiendaRepository;
 import uk.co.jemos.podam.api.PodamFactory;
 import uk.co.jemos.podam.api.PodamFactoryImpl;
 
+<<<<<<< HEAD
 @DataJpaTest
 @Transactional
 @Import(CatalogoTiendasService.class)
 public class CatalogoTiendasServiceTest {
+=======
+class CatalogoTiendasServiceTest {
+>>>>>>> 9dfa48a3575148cdd0d23fd015d6f7a2feb3d13f
 
     @Autowired
     private CatalogoTiendasService catalogoTiendasService;
@@ -43,10 +47,15 @@ public class CatalogoTiendasServiceTest {
     private List<TiendaEntity> tiendasList = new ArrayList<>();
 
     @BeforeEach
+<<<<<<< HEAD
     void setUp() {
         clearData();
         insertData();
     }
+=======
+    void setup() {
+        MockitoAnnotations.openMocks(this);
+>>>>>>> 9dfa48a3575148cdd0d23fd015d6f7a2feb3d13f
 
     private void clearData() {
         entityManager.getEntityManager().createQuery("delete from CatalogoTiendasEntity").executeUpdate();
@@ -73,9 +82,14 @@ public class CatalogoTiendasServiceTest {
 
     @Test
     void testCrearCatalogo_Success() {
+<<<<<<< HEAD
         CatalogoTiendasEntity nuevo = factory.manufacturePojo(CatalogoTiendasEntity.class);
         nuevo.setNombre("NuevoCatalogo");
         nuevo.setTiendas(new ArrayList<>(tiendasList));
+=======
+        when(catalogoTiendasRepository.findByNombre("Catalogo1")).thenReturn(List.of());
+        when(catalogoTiendasRepository.save(catalogo)).thenReturn(catalogo);
+>>>>>>> 9dfa48a3575148cdd0d23fd015d6f7a2feb3d13f
 
         CatalogoTiendasEntity creado = catalogoTiendasService.crearCatalogo(nuevo);
 
@@ -85,9 +99,13 @@ public class CatalogoTiendasServiceTest {
 
     @Test
     void testCrearCatalogo_NombreVacio() {
+<<<<<<< HEAD
         CatalogoTiendasEntity nuevo = factory.manufacturePojo(CatalogoTiendasEntity.class);
         nuevo.setNombre("");
 
+=======
+        catalogo.setNombre("");
+>>>>>>> 9dfa48a3575148cdd0d23fd015d6f7a2feb3d13f
         IllegalArgumentException ex = assertThrows(IllegalArgumentException.class,
                 () -> catalogoTiendasService.crearCatalogo(nuevo));
 
@@ -96,9 +114,13 @@ public class CatalogoTiendasServiceTest {
 
     @Test
     void testCrearCatalogo_Duplicado() {
+<<<<<<< HEAD
         CatalogoTiendasEntity duplicado = factory.manufacturePojo(CatalogoTiendasEntity.class);
         duplicado.setNombre(catalogosList.get(0).getNombre());
 
+=======
+        when(catalogoTiendasRepository.findByNombre("Catalogo1")).thenReturn(List.of(new CatalogoTiendasEntity()));
+>>>>>>> 9dfa48a3575148cdd0d23fd015d6f7a2feb3d13f
         IllegalArgumentException ex = assertThrows(IllegalArgumentException.class,
                 () -> catalogoTiendasService.crearCatalogo(duplicado));
 
@@ -107,7 +129,13 @@ public class CatalogoTiendasServiceTest {
 
     @Test
     void testActualizarCatalogo_Success() {
+<<<<<<< HEAD
         CatalogoTiendasEntity catalogo = catalogosList.get(0);
+=======
+        when(catalogoTiendasRepository.findById(1L)).thenReturn(Optional.of(catalogo));
+        when(catalogoTiendasRepository.findByNombre("NuevoNombre")).thenReturn(List.of());
+        when(catalogoTiendasRepository.save(catalogo)).thenReturn(catalogo);
+>>>>>>> 9dfa48a3575148cdd0d23fd015d6f7a2feb3d13f
 
         CatalogoTiendasEntity actualizado = catalogoTiendasService.actualizarCatalogo(
                 catalogo.getId(),
@@ -123,8 +151,17 @@ public class CatalogoTiendasServiceTest {
 
     @Test
     void testActualizarCatalogo_NombreDuplicado() {
+<<<<<<< HEAD
         CatalogoTiendasEntity catalogo = catalogosList.get(0);
         String nombreDuplicado = catalogosList.get(1).getNombre();
+=======
+        CatalogoTiendasEntity otroCatalogo = new CatalogoTiendasEntity();
+        otroCatalogo.setId(2L);
+        otroCatalogo.setNombre("NuevoNombre");
+
+        when(catalogoTiendasRepository.findById(1L)).thenReturn(Optional.of(catalogo));
+        when(catalogoTiendasRepository.findByNombre("NuevoNombre")).thenReturn(List.of(otroCatalogo));
+>>>>>>> 9dfa48a3575148cdd0d23fd015d6f7a2feb3d13f
 
         IllegalArgumentException ex = assertThrows(IllegalArgumentException.class,
                 () -> catalogoTiendasService.actualizarCatalogo(catalogo.getId(), nombreDuplicado, "desc", new ArrayList<>()));
@@ -133,11 +170,18 @@ public class CatalogoTiendasServiceTest {
     }
 
     @Test
+<<<<<<< HEAD
     void testEliminarCatalogo_Success() {
         CatalogoTiendasEntity nuevo = factory.manufacturePojo(CatalogoTiendasEntity.class);
         nuevo.setNombre("Eliminar");
         nuevo.setTiendas(new ArrayList<>());
         entityManager.persist(nuevo);
+=======
+    void testActualizarCatalogo_ListaTiendasVaciaNoPermitida() {
+        catalogo.getTiendas().add(tiendaMock);
+        when(catalogoTiendasRepository.findById(1L)).thenReturn(Optional.of(catalogo));
+        when(catalogoTiendasRepository.findByNombre(anyString())).thenReturn(List.of());
+>>>>>>> 9dfa48a3575148cdd0d23fd015d6f7a2feb3d13f
 
         catalogoTiendasService.eliminarCatalogo(nuevo.getId());
 
@@ -145,8 +189,23 @@ public class CatalogoTiendasServiceTest {
     }
 
     @Test
+<<<<<<< HEAD
     void testEliminarCatalogo_ConTiendas() {
         CatalogoTiendasEntity catalogo = catalogosList.get(0);
+=======
+    void testEliminarCatalogo_Success() {
+        catalogo.setTiendas(new ArrayList<>());
+        when(catalogoTiendasRepository.findById(1L)).thenReturn(Optional.of(catalogo));
+
+        catalogoTiendasService.eliminarCatalogo(1L);
+        verify(catalogoTiendasRepository, times(1)).delete(catalogo);
+    }
+
+    @Test
+    void testEliminarCatalogo_ConTiendas() {
+        catalogo.getTiendas().add(tiendaMock);
+        when(catalogoTiendasRepository.findById(1L)).thenReturn(Optional.of(catalogo));
+>>>>>>> 9dfa48a3575148cdd0d23fd015d6f7a2feb3d13f
 
         IllegalStateException ex = assertThrows(IllegalStateException.class,
                 () -> catalogoTiendasService.eliminarCatalogo(catalogo.getId()));
@@ -156,8 +215,14 @@ public class CatalogoTiendasServiceTest {
 
     @Test
     void testEliminarTiendaDeCatalogo_Success() {
+<<<<<<< HEAD
         CatalogoTiendasEntity catalogo = catalogosList.get(0);
         TiendaEntity tienda = tiendasList.get(0);
+=======
+        catalogo.getTiendas().add(tiendaMock);
+        when(catalogoTiendasRepository.findById(1L)).thenReturn(Optional.of(catalogo));
+        when(tiendaRepository.findById(10L)).thenReturn(Optional.of(tiendaMock));
+>>>>>>> 9dfa48a3575148cdd0d23fd015d6f7a2feb3d13f
 
         catalogoTiendasService.eliminarTiendaDeCatalogo(catalogo.getId(), tienda.getId());
 
@@ -167,8 +232,13 @@ public class CatalogoTiendasServiceTest {
 
     @Test
     void testEliminarTiendaDeCatalogo_TiendaNoPertenece() {
+<<<<<<< HEAD
         CatalogoTiendasEntity catalogo = catalogosList.get(0);
         TiendaEntity tienda = tiendasList.get(1);
+=======
+        when(catalogoTiendasRepository.findById(1L)).thenReturn(Optional.of(catalogo));
+        when(tiendaRepository.findById(10L)).thenReturn(Optional.of(tiendaMock));
+>>>>>>> 9dfa48a3575148cdd0d23fd015d6f7a2feb3d13f
 
         IllegalArgumentException ex = assertThrows(IllegalArgumentException.class,
                 () -> catalogoTiendasService.eliminarTiendaDeCatalogo(catalogo.getId(), tienda.getId()));
