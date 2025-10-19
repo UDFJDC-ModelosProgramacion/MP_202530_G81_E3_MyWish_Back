@@ -1,89 +1,122 @@
 package co.edu.udistrital.mdp.back.services;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import jakarta.persistence.EntityNotFoundException;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.boot.test.context.TestConfiguration;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Import;
+import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 
 import co.edu.udistrital.mdp.back.entities.ListaRegalosEntity;
 import co.edu.udistrital.mdp.back.entities.UsuarioEntity;
 import co.edu.udistrital.mdp.back.repositories.ListaRegalosRepository;
 import co.edu.udistrital.mdp.back.repositories.UsuarioRepository;
+import uk.co.jemos.podam.api.PodamFactory;
+import uk.co.jemos.podam.api.PodamFactoryImpl;
 
+@DataJpaTest
+@Transactional
+@Import(ListaRegalosUsuarioService.class)
 class ListaRegalosUsuarioServiceTest {
 
-    @Mock
-    private UsuarioRepository usuarioRepository;
-
-    @Mock
-    private ListaRegalosRepository listaRegalosRepository;
-
-    @InjectMocks
+    @Autowired
     private ListaRegalosUsuarioService listaRegalosUsuarioService;
 
-    private UsuarioEntity usuario;
-    private ListaRegalosEntity lista;
+    @Autowired
+    private UsuarioRepository usuarioRepository;
+
+    @Autowired
+    private ListaRegalosRepository listaRegalosRepository;
+
+    @Autowired
+    private TestEntityManager entityManager;
+
+    private PodamFactory factory = new PodamFactoryImpl();
+
+    private List<UsuarioEntity> usuarios = new ArrayList<>();
+    private List<ListaRegalosEntity> listas = new ArrayList<>();
 
     @BeforeEach
-    public void setup() {
-        MockitoAnnotations.openMocks(this);
+    void setUp() {
+        clearData();
+        insertData();
+    }
 
-        usuario = new UsuarioEntity();
-        usuario.setId(1L);
+    private void clearData() {
+        entityManager.getEntityManager().createQuery("delete from ListaRegalosEntity").executeUpdate();
+        entityManager.getEntityManager().createQuery("delete from UsuarioEntity").executeUpdate();
+    }
 
-        lista = new ListaRegalosEntity();
-        lista.setId(10L);
+    private void insertData() {
+        // Crear usuario
+        UsuarioEntity usuario = factory.manufacturePojo(UsuarioEntity.class);
+        entityManager.persist(usuario);
+        usuarios.add(usuario);
+
+        // Crear lista y asociarla al usuario
+        ListaRegalosEntity lista = factory.manufacturePojo(ListaRegalosEntity.class);
         lista.getInvitados().add(usuario);
+        entityManager.persist(lista);
+        listas.add(lista);
     }
 
     @Test
     void testObtenerListasDeUsuario_Success() {
-        when(usuarioRepository.findById(1L)).thenReturn(Optional.of(usuario));
-        usuario.setListasInvitado(List.of(lista));
-
-        List<ListaRegalosEntity> listas = listaRegalosUsuarioService.obtenerListasDeUsuario(1L);
-        assertEquals(1, listas.size());
-        assertEquals(lista, listas.get(0));
+        Long usuarioId = usuarios.get(0).getId();
+        List<ListaRegalosEntity> result = listaRegalosUsuarioService.obtenerListasDeUsuario(usuarioId);
+        assertEquals(1, result.size());
+        assertEquals(listas.get(0).getId(), result.get(0).getId());
     }
 
     @Test
     void testObtenerListasDeUsuario_UserNotFound() {
-        when(usuarioRepository.findById(1L)).thenReturn(Optional.empty());
-        assertThrows(EntityNotFoundException.class, () -> listaRegalosUsuarioService.obtenerListasDeUsuario(1L));
+        assertThrows(EntityNotFoundException.class, 
+            () -> listaRegalosUsuarioService.obtenerListasDeUsuario(999L));
     }
 
     @Test
     void testEstaInvitadoEnLista_True() {
-        when(listaRegalosRepository.findById(10L)).thenReturn(Optional.of(lista));
-        assertTrue(listaRegalosUsuarioService.estaInvitadoEnLista(1L, 10L));
+        Long usuarioId = usuarios.get(0).getId();
+        Long listaId = listas.get(0).getId();
+        assertTrue(listaRegalosUsuarioService.estaInvitadoEnLista(usuarioId, listaId));
     }
 
     @Test
     void testEstaInvitadoEnLista_False() {
-        when(listaRegalosRepository.findById(10L)).thenReturn(Optional.of(new ListaRegalosEntity()));
-        assertFalse(listaRegalosUsuarioService.estaInvitadoEnLista(1L, 10L));
+        Long usuarioId = usuarios.get(0).getId();
+        ListaRegalosEntity nuevaLista = factory.manufacturePojo(ListaRegalosEntity.class);
+        entityManager.persist(nuevaLista);
+        assertFalse(listaRegalosUsuarioService.estaInvitadoEnLista(usuarioId, nuevaLista.getId()));
     }
 
     @Test
     void testRemoverInvitacion_Success() {
-        when(listaRegalosRepository.findById(10L)).thenReturn(Optional.of(lista));
-        listaRegalosUsuarioService.removerInvitacion(1L, 10L);
-        verify(listaRegalosRepository).save(lista);
-        assertTrue(lista.getInvitados().isEmpty());
+        Long usuarioId = usuarios.get(0).getId();
+        Long listaId = listas.get(0).getId();
+
+        listaRegalosUsuarioService.removerInvitacion(usuarioId, listaId);
+
+        ListaRegalosEntity listaActualizada = listaRegalosRepository.findById(listaId).get();
+        assertTrue(listaActualizada.getInvitados().isEmpty());
     }
 
     @Test
     void testRemoverInvitacion_NotInvited() {
-        when(listaRegalosRepository.findById(10L)).thenReturn(Optional.of(new ListaRegalosEntity()));
-        assertThrows(IllegalArgumentException.class, () -> listaRegalosUsuarioService.removerInvitacion(1L, 10L));
+        UsuarioEntity otroUsuario = factory.manufacturePojo(UsuarioEntity.class);
+        entityManager.persist(otroUsuario);
+        Long otroUsuarioId = otroUsuario.getId();
+        Long listaId = listas.get(0).getId();
+
+        assertThrows(IllegalArgumentException.class, 
+            () -> listaRegalosUsuarioService.removerInvitacion(otroUsuarioId, listaId));
     }
 }
