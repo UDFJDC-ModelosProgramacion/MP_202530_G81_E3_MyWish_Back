@@ -1,6 +1,7 @@
 package co.edu.udistrital.mdp.back.entities;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
 import lombok.Data;
 import uk.co.jemos.podam.common.PodamExclude;
@@ -15,7 +16,7 @@ public class FotoEntity extends BaseEntity {
     private Long tamanioBytes;
     private Boolean esPrincipal = false;
 
-    // --- Relaciones (OneToOne en lugar de ManyToOne) ---
+    // --- Relaciones 
     
     @PodamExclude
     @OneToOne(mappedBy = "foto")
@@ -25,11 +26,9 @@ public class FotoEntity extends BaseEntity {
     @OneToOne(mappedBy = "foto")
     private ListaRegalosEntity listaRegalos;
 
-    @PodamExclude
-    @OneToOne(mappedBy = "foto")
+    @ManyToOne
     private TiendaEntity tienda;
 
-    @PodamExclude
-    @OneToOne(mappedBy = "foto")
+    @ManyToOne
     private ComentarioEntity comentario;
 }
