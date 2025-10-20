@@ -52,11 +52,6 @@ public class MensajeInvitacionController {
     /**
      * Envía una invitación por correo electrónico y la guarda en la base de datos.
      *
-     * @param tipo Tipo de invitación ("celebracion" o "lista")
-     * @param entidadId ID de la celebración o lista asociada
-     * @param correoDestinatario Correo electrónico del usuario destinatario
-     * @param textoMensaje Texto del mensaje a enviar
-     * @return MensajeInvitacionDTO con la información guardada
      */
     @PostMapping("/enviar")
     @ResponseStatus(code = HttpStatus.CREATED)

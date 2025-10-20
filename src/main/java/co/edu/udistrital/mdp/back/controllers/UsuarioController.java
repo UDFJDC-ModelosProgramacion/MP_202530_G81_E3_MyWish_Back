@@ -38,8 +38,7 @@ public class UsuarioController {
 
     /**
      * Retorna la lista de todos los usuarios registrados.
-     * 
-     * @return Lista de {@link UsuarioDetailDTO} con todos los usuarios.
+     
      */
     @GetMapping
     @ResponseStatus(code = HttpStatus.OK)
@@ -57,16 +56,14 @@ public class UsuarioController {
     /**
      * Retorna un usuario según su ID.
      *
-     * @param id Identificador del usuario.
-     * @return {@link UsuarioDetailDTO} con los datos del usuario encontrado.
-     * @throws EntityNotFoundException si el usuario no existe.
+    
      */
     @GetMapping(value = "/{id}")
     @ResponseStatus(code = HttpStatus.OK)
     public UsuarioDetailDTO findOne(@PathVariable Long id) throws EntityNotFoundException {
         log.info("GET /usuarios/{} - Consultar usuario por ID", id);
 
-        // ⚠️ También requiere método getUsuario(id) en UsuarioService
+        // También requiere método getUsuario(id) en UsuarioService
         UsuarioEntity usuarioEntity = usuarioService.getUsuario(id);
 
         return modelMapper.map(usuarioEntity, UsuarioDetailDTO.class);
@@ -75,8 +72,7 @@ public class UsuarioController {
     /**
      * Crea un nuevo usuario.
      *
-     * @param usuarioDTO Datos del nuevo usuario.
-     * @return {@link UsuarioDTO} con la información del usuario creado.
+     
      */
     @PostMapping
     @ResponseStatus(code = HttpStatus.CREATED)
@@ -93,10 +89,7 @@ public class UsuarioController {
     /**
      * Actualiza los datos básicos de un usuario existente (por ejemplo, el correo).
      *
-     * @param id          Identificador del usuario.
-     * @param usuarioDTO  Datos actualizados del usuario.
-     * @return {@link UsuarioDTO} con la información actualizada.
-     * @throws EntityNotFoundException si el usuario no existe.
+     
      */
     @PutMapping(value = "/{id}")
     @ResponseStatus(code = HttpStatus.OK)
@@ -114,9 +107,7 @@ public class UsuarioController {
     /**
      * Elimina un usuario del sistema.
      *
-     * @param id Identificador del usuario a eliminar.
-     * @throws EntityNotFoundException si el usuario no existe.
-     * @throws IllegalStateException   si el usuario tiene listas o celebraciones activas.
+     
      */
     @DeleteMapping(value = "/{id}")
     @ResponseStatus(code = HttpStatus.NO_CONTENT)

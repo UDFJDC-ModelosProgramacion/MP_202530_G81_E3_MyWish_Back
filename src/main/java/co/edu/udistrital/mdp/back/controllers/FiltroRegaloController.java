@@ -29,10 +29,7 @@ public class FiltroRegaloController {
     /**
      * Crea un nuevo filtro de regalo para una lista de regalos específica.
      * 
-     * @param listaId ID de la lista de regalos a la que pertenece el filtro.
-     * @param filtroDTO Objeto que contiene los datos del nuevo filtro.
-     * @return El filtro creado en formato DTO.
-     * @throws IllegalArgumentException si los datos son inválidos o la lista no existe.
+
      */
     @PostMapping("/lista/{listaId}")
     @ResponseStatus(code = HttpStatus.CREATED)
@@ -48,10 +45,7 @@ public class FiltroRegaloController {
     /**
      * Actualiza el valor de un filtro existente.
      * 
-     * @param filtroId ID del filtro a actualizar.
-     * @param nuevoFiltroDTO Objeto que contiene el nuevo valor del filtro.
-     * @return El filtro actualizado en formato DTO.
-     * @throws IllegalArgumentException si el filtro no existe o los datos son inválidos.
+
      */
     @PutMapping("/{filtroId}")
     @ResponseStatus(code = HttpStatus.OK)
@@ -66,8 +60,7 @@ public class FiltroRegaloController {
     /**
      * Elimina un filtro de regalo por su ID.
      * 
-     * @param filtroId ID del filtro a eliminar.
-     * @throws IllegalArgumentException si el filtro no existe.
+}
      */
     @DeleteMapping("/{filtroId}")
     @ResponseStatus(code = HttpStatus.NO_CONTENT)

@@ -30,7 +30,6 @@ public class UbicacionController {
     /**
      * Obtiene todas las ubicaciones registradas.
      * 
-     * @return Lista de UbicacionDTO.
      */
     @GetMapping
     @ResponseStatus(code = HttpStatus.OK)
@@ -42,8 +41,7 @@ public class UbicacionController {
     /**
      * Obtiene una ubicación por su ID.
      * 
-     * @param id Identificador de la ubicación.
-     * @return Objeto UbicacionDTO correspondiente al ID.
+  
      */
     @GetMapping(value = "/{id}")
     @ResponseStatus(code = HttpStatus.OK)
@@ -55,8 +53,7 @@ public class UbicacionController {
     /**
      * Crea una nueva ubicación.
      * 
-     * @param ubicacionDTO Datos de la nueva ubicación.
-     * @return UbicacionDTO creada.
+ 
      */
     @PostMapping
     @ResponseStatus(code = HttpStatus.CREATED)
@@ -69,9 +66,7 @@ public class UbicacionController {
     /**
      * Actualiza una ubicación existente.
      * 
-     * @param id Identificador de la ubicación a actualizar.
-     * @param ubicacionDTO Datos nuevos de la ubicación.
-     * @return UbicacionDTO actualizada.
+  
      */
     @PutMapping(value = "/{id}")
     @ResponseStatus(code = HttpStatus.OK)
@@ -84,7 +79,6 @@ public class UbicacionController {
     /**
      * Elimina una ubicación por su ID.
      * 
-     * @param id Identificador de la ubicación a eliminar.
      */
     @DeleteMapping(value = "/{id}")
     @ResponseStatus(code = HttpStatus.NO_CONTENT)
@@ -95,8 +89,6 @@ public class UbicacionController {
     /**
      * Busca ubicaciones por ciudad.
      * 
-     * @param ciudad Nombre de la ciudad.
-     * @return Lista de ubicaciones que pertenecen a la ciudad.
      */
     @GetMapping("/ciudad/{ciudad}")
     @ResponseStatus(code = HttpStatus.OK)
@@ -108,8 +100,6 @@ public class UbicacionController {
     /**
      * Busca ubicaciones por país.
      * 
-     * @param pais Nombre del país.
-     * @return Lista de ubicaciones en ese país.
      */
     @GetMapping("/pais/{pais}")
     @ResponseStatus(code = HttpStatus.OK)
@@ -121,8 +111,7 @@ public class UbicacionController {
     /**
      * Busca ubicaciones por dirección exacta.
      * 
-     * @param direccion Dirección exacta.
-     * @return Lista de ubicaciones con esa dirección.
+
      */
     @GetMapping("/direccion/{direccion}")
     @ResponseStatus(code = HttpStatus.OK)
@@ -134,8 +123,7 @@ public class UbicacionController {
     /**
      * Busca ubicaciones asociadas a una tienda por su ID.
      * 
-     * @param tiendaId Identificador de la tienda.
-     * @return Lista de ubicaciones asociadas a esa tienda.
+
      */
     @GetMapping("/tienda/{tiendaId}")
     @ResponseStatus(code = HttpStatus.OK)

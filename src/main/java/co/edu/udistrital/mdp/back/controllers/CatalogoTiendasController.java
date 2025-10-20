@@ -33,7 +33,6 @@ public class CatalogoTiendasController {
     /**
      * Obtiene todos los catálogos de tiendas.
      *
-     * @return lista de catálogos en formato DTO.
      */
     @GetMapping
     @ResponseStatus(code = HttpStatus.OK)
@@ -47,9 +46,6 @@ public class CatalogoTiendasController {
     /**
      * Obtiene un catálogo específico por su ID.
      *
-     * @param id identificador del catálogo.
-     * @return catálogo encontrado en formato DTO.
-     * @throws EntityNotFoundException si no existe el catálogo.
      */
     @GetMapping(value = "/{id}")
     @ResponseStatus(code = HttpStatus.OK)
@@ -63,8 +59,6 @@ public class CatalogoTiendasController {
     /**
      * Crea un nuevo catálogo de tiendas.
      *
-     * @param catalogoDTO objeto con los datos del catálogo.
-     * @return catálogo creado en formato DTO.
      */
     @PostMapping
     @ResponseStatus(code = HttpStatus.CREATED)
@@ -79,9 +73,6 @@ public class CatalogoTiendasController {
     /**
      * Actualiza la información de un catálogo existente.
      *
-     * @param id               identificador del catálogo.
-     * @param catalogoDetailDTO datos nuevos del catálogo.
-     * @return catálogo actualizado en formato DTO.
      */
     @PutMapping(value = "/{id}")
     @ResponseStatus(code = HttpStatus.OK)
@@ -102,7 +93,6 @@ public class CatalogoTiendasController {
     /**
      * Elimina un catálogo por su ID.
      *
-     * @param id identificador del catálogo a eliminar.
      */
     @DeleteMapping(value = "/{id}")
     @ResponseStatus(code = HttpStatus.NO_CONTENT)
@@ -113,9 +103,6 @@ public class CatalogoTiendasController {
 
     /**
      * Elimina una tienda específica de un catálogo.
-     *
-     * @param catalogoId identificador del catálogo.
-     * @param tiendaId   identificador de la tienda.
      */
     @DeleteMapping(value = "/{catalogoId}/tiendas/{tiendaId}")
     @ResponseStatus(code = HttpStatus.NO_CONTENT)
