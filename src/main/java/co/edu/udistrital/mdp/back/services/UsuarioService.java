@@ -11,6 +11,7 @@ import co.edu.udistrital.mdp.back.entities.UsuarioEntity;
 import co.edu.udistrital.mdp.back.entities.ListaRegalosEntity;
 import co.edu.udistrital.mdp.back.entities.CelebracionEntity;
 import co.edu.udistrital.mdp.back.repositories.UsuarioRepository;
+import jakarta.persistence.EntityNotFoundException;
 import co.edu.udistrital.mdp.back.repositories.ListaRegalosRepository;
 import co.edu.udistrital.mdp.back.repositories.CelebracionRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -87,4 +88,14 @@ public class UsuarioService {
 
         usuarioRepository.delete(usuario);
     }
+
+    public List<UsuarioEntity> getAllUsuarios() {
+    return usuarioRepository.findAll();
+}
+
+public UsuarioEntity getUsuario(Long id) {
+    return usuarioRepository.findById(id)
+            .orElseThrow(() -> new EntityNotFoundException("Usuario no encontrado con ID: " + id));
+}
+
 }
