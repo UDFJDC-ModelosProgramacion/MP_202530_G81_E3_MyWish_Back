@@ -1,0 +1,139 @@
+{
+	"info": {
+		"_postman_id": "c267c2cd-c6b8-4dde-9620-ed56df0245c5",
+		"name": "Tienda",
+		"description": "Colección Postman para probar los endpoints CRUD de la entidad Tienda.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "49389956",
+		"_collection_link": "https://guada7-8062307.postman.co/workspace/guada7's-Workspace~1431b7da-09a7-469a-831a-94263500583e/collection/49389956-c267c2cd-c6b8-4dde-9620-ed56df0245c5?action=share&source=collection_link&creator=49389956"
+	},
+	"item": [
+		{
+			"name": "Crear Tienda",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"nombre\": \"Regalos Juanita\",\n  \"descripcion\": \"Tienda de artículos personalizados\",\n  \"link\": \"https://regalosjuanita.com\"\n}"
+				},
+				"url": {
+					"raw": "{{baseURL}}/tiendas",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"tiendas"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Obtener todas las Tiendas",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "{{baseURL}}/tiendas",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"tiendas"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Obtener Tienda por ID",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "{{baseURL}}/tiendas/1",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"tiendas",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Actualizar Tienda",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"nombre\": \"Regalos Juanita Express\",\n  \"descripcion\": \"Tienda actualizada con más productos\",\n  \"link\": \"https://regalosjuanita.com/express\"\n}"
+				},
+				"url": {
+					"raw": "{{baseURL}}/tiendas/1",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"tiendas",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Eliminar Tienda",
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "{{baseURL}}/tiendas/1",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"tiendas",
+						"1"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"variable": [
+		{
+			"key": "baseURL",
+			"value": "http://localhost:8080"
+		}
+	]
+}

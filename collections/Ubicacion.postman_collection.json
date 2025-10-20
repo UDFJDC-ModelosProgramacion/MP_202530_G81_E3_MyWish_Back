@@ -1,0 +1,139 @@
+{
+	"info": {
+		"_postman_id": "12d711f9-0c6d-49b0-abfe-49079a675464",
+		"name": "Ubicacion",
+		"description": "Colección Postman para probar los endpoints CRUD de la entidad Ubicacion.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "49389956",
+		"_collection_link": "https://guada7-8062307.postman.co/workspace/guada7's-Workspace~1431b7da-09a7-469a-831a-94263500583e/collection/49389956-12d711f9-0c6d-49b0-abfe-49079a675464?action=share&source=collection_link&creator=49389956"
+	},
+	"item": [
+		{
+			"name": "Crear Ubicacion",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"direccion\": \"Cra 7 #45-12\",\n  \"ciudad\": \"Bogotá\",\n  \"pais\": \"Colombia\",\n  \"tienda\": { \"id\": 1 }\n}"
+				},
+				"url": {
+					"raw": "{{baseURL}}/ubicaciones",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"ubicaciones"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Obtener todas las Ubicaciones",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "{{baseURL}}/ubicaciones",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"ubicaciones"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Obtener Ubicacion por ID",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "{{baseURL}}/ubicaciones/1",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"ubicaciones",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Actualizar Ubicacion",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"direccion\": \"Av. Caracas 45-10\",\n  \"ciudad\": \"Bogotá\",\n  \"pais\": \"Colombia\",\n  \"tienda\": { \"id\": 1 }\n}"
+				},
+				"url": {
+					"raw": "{{baseURL}}/ubicaciones/1",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"ubicaciones",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Eliminar Ubicacion",
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "{{baseURL}}/ubicaciones/1",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"ubicaciones",
+						"1"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"variable": [
+		{
+			"key": "baseURL",
+			"value": "http://localhost:8080"
+		}
+	]
+}

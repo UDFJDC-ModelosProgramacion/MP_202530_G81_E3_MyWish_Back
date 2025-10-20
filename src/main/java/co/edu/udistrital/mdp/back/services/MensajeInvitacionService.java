@@ -45,7 +45,10 @@ public class MensajeInvitacionService {
         mensaje.setFechaEnvio(new Date());
 
         UsuarioEntity remitente;
-        String asunto, titulo, nombreEntidad;
+
+        String asunto;
+        String titulo;
+        String nombreEntidad;
 
         // --- Según el tipo (celebración o lista) ---
         switch (tipo.toLowerCase()) {

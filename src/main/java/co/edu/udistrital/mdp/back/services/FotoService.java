@@ -21,53 +21,77 @@ public class FotoService {
     // =====================================================
     // CREATE
     // =====================================================
-
     @Transactional
-    public FotoEntity createFoto(FotoEntity fotoEntity) {
+public FotoEntity createFoto(FotoEntity fotoEntity) {
 
-        log.info("Inicia proceso de creación de la foto");
+    log.info("Inicia proceso de creación de la foto");
 
-        // Regla 1: La URL de la foto debe ser una dirección válida (http/https)
-        if (fotoEntity.getUrl() == null || 
-            (!fotoEntity.getUrl().startsWith("http://") && !fotoEntity.getUrl().startsWith("https://"))) {
-            throw new IllegalArgumentException("La URL de la foto debe ser una dirección válida (http/https).");
-        }
+    // =====================================================
+    // REGLAS DE VALIDACIÓN
+    // =====================================================
 
-        // Regla 2: El tamaño del archivo no puede exceder los 10MB
-        if (fotoEntity.getTamanioBytes() != null && fotoEntity.getTamanioBytes() > 10 * 1024 * 1024) {
-            throw new IllegalArgumentException("El tamaño del archivo no puede exceder los 10MB.");
-        }
-
-        // Regla 3: Solo se permiten formatos de imagen: JPG, PNG, GIF, WEBP
-        if (fotoEntity.getTipoArchivo() != null) {
-            String tipoArchivo = fotoEntity.getTipoArchivo().toLowerCase();
-            if (!tipoArchivo.equals("image/jpeg") && 
-                !tipoArchivo.equals("image/png") && 
-                !tipoArchivo.equals("image/gif") && 
-                !tipoArchivo.equals("image/webp")) {
-                throw new IllegalArgumentException("Solo se permiten formatos de imagen: JPG, PNG, GIF, WEBP.");
-            }
-        }
-
-        // Regla 4: Una foto debe estar asociada a una y solo una entidad
-        int entidadesAsociadas = 0;
-        if (fotoEntity.getRegalo() != null) entidadesAsociadas++;
-        if (fotoEntity.getListaRegalos() != null) entidadesAsociadas++;
-        if (fotoEntity.getTienda() != null) entidadesAsociadas++;
-        if (fotoEntity.getComentario() != null) entidadesAsociadas++;
-        
-        if (entidadesAsociadas != 1) {
-            throw new IllegalArgumentException("Una foto debe estar asociada a una y solo una entidad.");
-        }
-
-        log.info("Termina proceso de creación de la foto");
-        return fotoRepository.save(fotoEntity);
+    // Regla 1: La URL de la foto debe ser una dirección válida (http/https)
+    if (fotoEntity.getUrl() == null || 
+        (!fotoEntity.getUrl().startsWith("http://") && !fotoEntity.getUrl().startsWith("https://"))) {
+        throw new IllegalArgumentException("La URL de la foto debe ser una dirección válida (http/https).");
     }
+
+    // Regla 2: El tamaño del archivo no puede exceder los 10MB
+    if (fotoEntity.getTamanioBytes() != null && fotoEntity.getTamanioBytes() > 10 * 1024 * 1024) {
+        throw new IllegalArgumentException("El tamaño del archivo no puede exceder los 10MB.");
+    }
+
+    // Regla 3: Solo se permiten formatos de imagen: JPG, PNG, GIF, WEBP
+    if (fotoEntity.getTipoArchivo() != null) {
+        String tipoArchivo = fotoEntity.getTipoArchivo().toLowerCase();
+        if (!tipoArchivo.equals("image/jpeg") && 
+            !tipoArchivo.equals("image/png") && 
+            !tipoArchivo.equals("image/gif") && 
+            !tipoArchivo.equals("image/webp")) {
+            throw new IllegalArgumentException("Solo se permiten formatos de imagen: JPG, PNG, GIF, WEBP.");
+        }
+    }
+
+    // =====================================================
+    // VALIDACIONES DE RELACIONES
+    // =====================================================
+
+    // Regla 4: Una foto puede estar asociada a una entidad (Regalo, ListaRegalos, Tienda o Comentario),
+    // pero no a más de una al mismo tiempo.
+    int entidadesAsociadas = 0;
+    if (fotoEntity.getRegalo() != null) entidadesAsociadas++;
+    if (fotoEntity.getListaRegalos() != null) entidadesAsociadas++;
+    if (fotoEntity.getTienda() != null) entidadesAsociadas++;
+    if (fotoEntity.getComentario() != null) entidadesAsociadas++;
+
+    if (entidadesAsociadas > 1) {
+        throw new IllegalArgumentException("Una foto no puede estar asociada a más de una entidad al mismo tiempo.");
+    }
+
+    // Regla 5: Si la foto está asociada a un Regalo o una ListaRegalos (relación OneToOne),
+    // verificar que esa entidad no tenga ya una foto asignada.
+    if (fotoEntity.getRegalo() != null) {
+        List<FotoEntity> fotosExistentes = fotoRepository.findByRegaloId(fotoEntity.getRegalo().getId());
+        if (!fotosExistentes.isEmpty()) {
+            throw new IllegalStateException("El regalo ya tiene una foto asignada.");
+        }
+    }
+
+    if (fotoEntity.getListaRegalos() != null) {
+        List<FotoEntity> fotosExistentes = fotoRepository.findByListaRegalosId(fotoEntity.getListaRegalos().getId());
+        if (!fotosExistentes.isEmpty()) {
+            throw new IllegalStateException("La lista de regalos ya tiene una foto asignada.");
+        }
+    }
+
+    log.info("Termina proceso de creación de la foto");
+    return fotoRepository.save(fotoEntity);
+}
+
 
     // =====================================================
     // UPDATE
     // =====================================================
-
     @Transactional
     public FotoEntity updateFoto(Long fotoId, FotoEntity fotoEntity) {
 
@@ -109,7 +133,6 @@ public class FotoService {
     // =====================================================
     // DELETE
     // =====================================================
-
     @Transactional
     public void deleteFoto(Long fotoId) {
 
@@ -133,7 +156,6 @@ public class FotoService {
     // =====================================================
     // GET
     // =====================================================
-
     @Transactional(readOnly = true)
     public List<FotoEntity> getAllFotos() {
         log.info("Inicia proceso de consulta de todas las fotos");
@@ -154,6 +176,24 @@ public class FotoService {
     }
 
     @Transactional(readOnly = true)
+    public List<FotoEntity> getFotosByListaRegalosId(Long listaRegalosId) {
+        log.info("Inicia proceso de consulta de fotos por lista de regalos id: {}", listaRegalosId);
+        return fotoRepository.findByListaRegalosId(listaRegalosId);
+    }
+
+    @Transactional(readOnly = true)
+    public List<FotoEntity> getFotosByTiendaId(Long tiendaId) {
+        log.info("Inicia proceso de consulta de fotos por tienda id: {}", tiendaId);
+        return fotoRepository.findByTiendaId(tiendaId);
+    }
+
+    @Transactional(readOnly = true)
+    public List<FotoEntity> getFotosByComentarioId(Long comentarioId) {
+        log.info("Inicia proceso de consulta de fotos por comentario id: {}", comentarioId);
+        return fotoRepository.findByComentarioId(comentarioId);
+    }
+
+    @Transactional(readOnly = true)
     public List<FotoEntity> getFotosPrincipales() {
         log.info("Inicia proceso de consulta de fotos principales");
         return fotoRepository.findByEsPrincipalTrue();
@@ -163,30 +203,34 @@ public class FotoService {
     // MÉTODOS PRIVADOS
     // =====================================================
     private void desmarcarOtrasFotosPrincipales(FotoEntity fotoPrincipal) {
-        List<FotoEntity> fotosPrincipales;
+        // Para relaciones OneToOne, solo debería haber una foto por entidad
+        // Pero manejamos el caso de múltiples fotos para consistencia
         
         if (fotoPrincipal.getRegalo() != null) {
-            fotosPrincipales = fotoRepository.findByRegaloId(fotoPrincipal.getRegalo().getId());
+            List<FotoEntity> fotosRegalo = fotoRepository.findByRegaloId(fotoPrincipal.getRegalo().getId());
+            desmarcarOtrasEnLista(fotosRegalo, fotoPrincipal);
         } else if (fotoPrincipal.getListaRegalos() != null) {
-            fotosPrincipales = fotoRepository.findByListaRegalosId(fotoPrincipal.getListaRegalos().getId());
-        } else if (fotoPrincipal.getTienda() != null) {
-            // Implementar método similar para tiendas si es necesario
-            fotosPrincipales = List.of();
-        } else if (fotoPrincipal.getComentario() != null) {
-            // Implementar método similar para comentarios si es necesario
-            fotosPrincipales = List.of();
-        } else {
-            fotosPrincipales = List.of();
+            List<FotoEntity> fotosLista = fotoRepository.findByListaRegalosId(fotoPrincipal.getListaRegalos().getId());
+            desmarcarOtrasEnLista(fotosLista, fotoPrincipal);
         }
-        
-        for (FotoEntity foto : fotosPrincipales) {
+        // Para Tienda y Comentario (ManyToOne) pueden tener múltiples fotos
+        else if (fotoPrincipal.getTienda() != null) {
+            List<FotoEntity> fotosTienda = fotoRepository.findByTiendaId(fotoPrincipal.getTienda().getId());
+            desmarcarOtrasEnLista(fotosTienda, fotoPrincipal);
+        } else if (fotoPrincipal.getComentario() != null) {
+            List<FotoEntity> fotosComentario = fotoRepository.findByComentarioId(fotoPrincipal.getComentario().getId());
+            desmarcarOtrasEnLista(fotosComentario, fotoPrincipal);
+        }
+    }
+
+    private void desmarcarOtrasEnLista(List<FotoEntity> fotos, FotoEntity fotoPrincipal) {
+        for (FotoEntity foto : fotos) {
             if (!foto.getId().equals(fotoPrincipal.getId()) && foto.getEsPrincipal()) {
                 foto.setEsPrincipal(false);
                 fotoRepository.save(foto);
             }
         }
     }
-    
 
     private void eliminarArchivoFisico(String url) {
         // Implementación para eliminar el archivo físico del servidor
@@ -194,5 +238,4 @@ public class FotoService {
         log.info("Eliminando archivo físico: {}", url);
         // Código para eliminar el archivo del sistema de archivos o servicio cloud
     }
-
 }

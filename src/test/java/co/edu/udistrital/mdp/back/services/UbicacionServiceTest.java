@@ -4,7 +4,6 @@ import co.edu.udistrital.mdp.back.entities.TiendaEntity;
 import co.edu.udistrital.mdp.back.entities.UbicacionEntity;
 import co.edu.udistrital.mdp.back.repositories.TiendaRepository;
 import co.edu.udistrital.mdp.back.repositories.UbicacionRepository;
-import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -147,5 +146,64 @@ class UbicacionServiceTest {
         TiendaEntity t = tiendas.get(0);
         List<UbicacionEntity> result = ubicacionService.findByTiendaId(t.getId());
         assertFalse(result.isEmpty());
+    }
+
+    @Test
+    void testCreateUbicacionSinDireccionDebeFallar() {
+        UbicacionEntity nueva = factory.manufacturePojo(UbicacionEntity.class);
+        nueva.setDireccion(null);
+        nueva.setTienda(tiendas.get(0));
+        assertThrows(IllegalArgumentException.class, () -> ubicacionService.create(nueva));
+    }
+
+    @Test
+    void testCreateUbicacionSinCiudadDebeFallar() {
+        UbicacionEntity nueva = factory.manufacturePojo(UbicacionEntity.class);
+        nueva.setCiudad("   ");
+        nueva.setTienda(tiendas.get(0));
+        assertThrows(IllegalArgumentException.class, () -> ubicacionService.create(nueva));
+    }
+
+    @Test
+    void testCreateUbicacionSinPaisDebeFallar() {
+        UbicacionEntity nueva = factory.manufacturePojo(UbicacionEntity.class);
+        nueva.setPais(null);
+        nueva.setTienda(tiendas.get(0));
+        assertThrows(IllegalArgumentException.class, () -> ubicacionService.create(nueva));
+    }
+
+    @Test
+    void testCreateUbicacionSinTiendaDebeFallar() {
+        UbicacionEntity nueva = factory.manufacturePojo(UbicacionEntity.class);
+        nueva.setTienda(null);
+        assertThrows(IllegalArgumentException.class, () -> ubicacionService.create(nueva));
+    }
+
+    @Test
+    void testCreateUbicacionConTiendaInexistenteDebeFallar() {
+        TiendaEntity tiendaFalsa = factory.manufacturePojo(TiendaEntity.class);
+        tiendaFalsa.setId(9999L); // no existe en DB
+        UbicacionEntity nueva = factory.manufacturePojo(UbicacionEntity.class);
+        nueva.setTienda(tiendaFalsa);
+        assertThrows(IllegalArgumentException.class, () -> ubicacionService.create(nueva));
+    }
+
+    @Test
+    void testUpdateUbicacionConTiendaDiferenteDebeFallar() {
+        UbicacionEntity existente = ubicaciones.get(0);
+        UbicacionEntity cambios = factory.manufacturePojo(UbicacionEntity.class);
+        cambios.setTienda(tiendas.get(1)); // intenta cambiar tienda
+        assertThrows(IllegalArgumentException.class, () -> ubicacionService.update(existente.getId(), cambios));
+    }
+
+    @Test
+    void testUpdateUbicacionInexistenteDebeFallar() {
+        UbicacionEntity cambios = factory.manufacturePojo(UbicacionEntity.class);
+        assertThrows(IllegalArgumentException.class, () -> ubicacionService.update(9999L, cambios));
+    }
+
+    @Test
+    void testDeleteUbicacionInexistenteDebeFallar() {
+        assertThrows(IllegalArgumentException.class, () -> ubicacionService.delete(9999L));
     }
 }
