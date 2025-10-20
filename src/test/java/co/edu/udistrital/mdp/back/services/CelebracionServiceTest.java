@@ -86,8 +86,9 @@ class CelebracionServiceTest {
         nueva.setNombre(null);
         nueva.setFecha(LocalDate.now().plusDays(5));
 
-        assertThrows(IllegalArgumentException.class, () ->
-                celebracionService.createCelebracion(nueva, usuarioList.get(0).getId()));
+        Long usuarioId = usuarioList.get(0).getId();
+
+        assertThrows(IllegalArgumentException.class, () -> celebracionService.createCelebracion(nueva, usuarioId));
     }
 
     @Test
@@ -96,8 +97,8 @@ class CelebracionServiceTest {
         nueva.setNombre("Evento pasado");
         nueva.setFecha(LocalDate.now().minusDays(1));
 
-        assertThrows(IllegalArgumentException.class, () ->
-                celebracionService.createCelebracion(nueva, usuarioList.get(0).getId()));
+        assertThrows(IllegalArgumentException.class,
+                () -> celebracionService.createCelebracion(nueva, usuarioList.get(0).getId()));
     }
 
     @Test
@@ -106,8 +107,7 @@ class CelebracionServiceTest {
         nueva.setNombre("Evento válido");
         nueva.setFecha(LocalDate.now().plusDays(3));
 
-        assertThrows(EntityNotFoundException.class, () ->
-                celebracionService.createCelebracion(nueva, 999L));
+        assertThrows(EntityNotFoundException.class, () -> celebracionService.createCelebracion(nueva, 999L));
     }
 
     // =====================================================
@@ -130,8 +130,7 @@ class CelebracionServiceTest {
     @Test
     void testUpdateCelebracion_NoExiste_LanzaExcepcion() {
         CelebracionEntity actualizada = factory.manufacturePojo(CelebracionEntity.class);
-        assertThrows(EntityNotFoundException.class, () ->
-                celebracionService.updateCelebracion(999L, actualizada));
+        assertThrows(EntityNotFoundException.class, () -> celebracionService.updateCelebracion(999L, actualizada));
     }
 
     @Test
@@ -140,8 +139,8 @@ class CelebracionServiceTest {
         CelebracionEntity actualizada = factory.manufacturePojo(CelebracionEntity.class);
         actualizada.setOrganizador(usuarioList.get(1)); // diferente organizador
 
-        assertThrows(IllegalStateException.class, () ->
-                celebracionService.updateCelebracion(existente.getId(), actualizada));
+        assertThrows(IllegalStateException.class,
+                () -> celebracionService.updateCelebracion(existente.getId(), actualizada));
     }
 
     // =====================================================
@@ -160,7 +159,8 @@ class CelebracionServiceTest {
 
         assertNull(entityManager.find(CelebracionEntity.class, celebracion.getId()));
         List<MensajeInvitacionEntity> mensajes = entityManager.getEntityManager()
-                .createQuery("SELECT m FROM MensajeInvitacionEntity m WHERE m.celebracion.id = :id", MensajeInvitacionEntity.class)
+                .createQuery("SELECT m FROM MensajeInvitacionEntity m WHERE m.celebracion.id = :id",
+                        MensajeInvitacionEntity.class)
                 .setParameter("id", celebracion.getId())
                 .getResultList();
         assertTrue(mensajes.isEmpty());
@@ -168,8 +168,7 @@ class CelebracionServiceTest {
 
     @Test
     void testDeleteCelebracion_NoExiste_LanzaExcepcion() {
-        assertThrows(EntityNotFoundException.class, () ->
-                celebracionService.deleteCelebracion(999L));
+        assertThrows(EntityNotFoundException.class, () -> celebracionService.deleteCelebracion(999L));
     }
 
     // =====================================================
@@ -191,7 +190,6 @@ class CelebracionServiceTest {
 
     @Test
     void testGetCelebracionById_NoExiste_LanzaExcepcion() {
-        assertThrows(EntityNotFoundException.class, () ->
-                celebracionService.getCelebracionById(999L));
+        assertThrows(EntityNotFoundException.class, () -> celebracionService.getCelebracionById(999L));
     }
 }
