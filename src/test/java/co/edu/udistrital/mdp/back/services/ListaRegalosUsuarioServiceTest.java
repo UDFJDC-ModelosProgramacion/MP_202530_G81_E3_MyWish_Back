@@ -11,8 +11,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.boot.test.context.TestConfiguration;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 
@@ -56,16 +54,29 @@ class ListaRegalosUsuarioServiceTest {
         entityManager.getEntityManager().createQuery("delete from UsuarioEntity").executeUpdate();
     }
 
+    // Versión corregida de insertData() con relación bidireccional
     private void insertData() {
         // Crear usuario
         UsuarioEntity usuario = factory.manufacturePojo(UsuarioEntity.class);
+        if (usuario.getListasInvitado() == null) {
+            usuario.setListasInvitado(new ArrayList<>());
+        }
         entityManager.persist(usuario);
         usuarios.add(usuario);
 
         // Crear lista y asociarla al usuario
         ListaRegalosEntity lista = factory.manufacturePojo(ListaRegalosEntity.class);
+        if (lista.getInvitados() == null) {
+            lista.setInvitados(new ArrayList<>());
+        }
+
+        // Vinculación bidireccional
         lista.getInvitados().add(usuario);
+        usuario.getListasInvitado().add(lista);
+
         entityManager.persist(lista);
+        entityManager.merge(usuario); // actualiza relación en la DB
+
         listas.add(lista);
     }
 
@@ -94,6 +105,9 @@ class ListaRegalosUsuarioServiceTest {
     void testEstaInvitadoEnLista_False() {
         Long usuarioId = usuarios.get(0).getId();
         ListaRegalosEntity nuevaLista = factory.manufacturePojo(ListaRegalosEntity.class);
+        if (nuevaLista.getInvitados() == null) {
+            nuevaLista.setInvitados(new ArrayList<>());
+        }
         entityManager.persist(nuevaLista);
         assertFalse(listaRegalosUsuarioService.estaInvitadoEnLista(usuarioId, nuevaLista.getId()));
     }
@@ -112,6 +126,9 @@ class ListaRegalosUsuarioServiceTest {
     @Test
     void testRemoverInvitacion_NotInvited() {
         UsuarioEntity otroUsuario = factory.manufacturePojo(UsuarioEntity.class);
+        if (otroUsuario.getListasInvitado() == null) {
+            otroUsuario.setListasInvitado(new ArrayList<>());
+        }
         entityManager.persist(otroUsuario);
         Long otroUsuarioId = otroUsuario.getId();
         Long listaId = listas.get(0).getId();

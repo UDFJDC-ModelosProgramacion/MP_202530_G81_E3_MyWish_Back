@@ -1,5 +1,6 @@
 package co.edu.udistrital.mdp.back.services;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import jakarta.persistence.EntityNotFoundException;
@@ -23,31 +24,53 @@ public class ListaRegalosUsuarioService {
     @Autowired
     private ListaRegalosRepository listaRegalosRepository;
 
+    /**
+     * Obtiene todas las listas de regalos donde el usuario está invitado.
+     * Inicializa lista vacía si el usuario no tiene ninguna lista.
+     */
     public List<ListaRegalosEntity> obtenerListasDeUsuario(Long usuarioId) {
         log.info("Obteniendo listas de regalos del usuario {}", usuarioId);
 
         UsuarioEntity usuario = usuarioRepository.findById(usuarioId)
                 .orElseThrow(() -> new EntityNotFoundException("Usuario no encontrado con id " + usuarioId));
 
-        return usuario.getListasInvitado();
+        List<ListaRegalosEntity> listas = usuario.getListasInvitado();
+        return listas != null ? listas : List.of();
     }
 
+    /**
+     * Verifica si un usuario está invitado en una lista.
+     * Inicializa lista de invitados si es null.
+     */
     public boolean estaInvitadoEnLista(Long usuarioId, Long listaId) {
         log.info("Verificando invitación del usuario {} en lista {}", usuarioId, listaId);
 
         ListaRegalosEntity lista = listaRegalosRepository.findById(listaId)
                 .orElseThrow(() -> new EntityNotFoundException("Lista no encontrada con id " + listaId));
 
+        if (lista.getInvitados() == null) {
+            lista.setInvitados(new ArrayList<>());
+        }
+
         return lista.getInvitados().stream()
                 .anyMatch(u -> u.getId().equals(usuarioId));
     }
 
+    /**
+     * Remueve la invitación de un usuario en una lista.
+     * Inicializa lista de invitados si es null.
+     * Lanza IllegalArgumentException si el usuario no estaba invitado.
+     */
     @Transactional
     public void removerInvitacion(Long usuarioId, Long listaId) {
         log.info("Removiendo invitación de usuario {} en lista {}", usuarioId, listaId);
 
         ListaRegalosEntity lista = listaRegalosRepository.findById(listaId)
                 .orElseThrow(() -> new EntityNotFoundException("Lista no encontrada con id " + listaId));
+
+        if (lista.getInvitados() == null) {
+            lista.setInvitados(new ArrayList<>());
+        }
 
         boolean eliminado = lista.getInvitados().removeIf(u -> u.getId().equals(usuarioId));
 
