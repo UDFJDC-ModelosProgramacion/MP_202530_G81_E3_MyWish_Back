@@ -1,16 +1,13 @@
 package co.edu.udistrital.mdp.back.controllers;
 
 
-import java.util.List;
 
 import org.modelmapper.ModelMapper;
-import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import co.edu.udistrital.mdp.back.entities.ListaRegalosEntity;
-import co.edu.udistrital.mdp.back.dto.ListaRegalosDTO;
 import co.edu.udistrital.mdp.back.dto.ListaRegalosDetailDTO;
 import co.edu.udistrital.mdp.back.services.UsuarioListaRegalosService;
 import jakarta.persistence.EntityNotFoundException;
