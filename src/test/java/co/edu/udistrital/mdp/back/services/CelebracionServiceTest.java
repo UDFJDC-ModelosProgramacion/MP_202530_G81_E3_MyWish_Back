@@ -97,8 +97,9 @@ class CelebracionServiceTest {
         nueva.setNombre("Evento pasado");
         nueva.setFecha(LocalDate.now().minusDays(1));
 
-        assertThrows(IllegalArgumentException.class,
-                () -> celebracionService.createCelebracion(nueva, usuarioList.get(0).getId()));
+        Long usuarioId = usuarioList.get(0).getId();
+
+        assertThrows(IllegalArgumentException.class, () -> celebracionService.createCelebracion(nueva, usuarioId));
     }
 
     @Test
@@ -139,8 +140,10 @@ class CelebracionServiceTest {
         CelebracionEntity actualizada = factory.manufacturePojo(CelebracionEntity.class);
         actualizada.setOrganizador(usuarioList.get(1)); // diferente organizador
 
+        Long celebracionId = existente.getId();
+
         assertThrows(IllegalStateException.class,
-                () -> celebracionService.updateCelebracion(existente.getId(), actualizada));
+                () -> celebracionService.updateCelebracion(celebracionId, actualizada));
     }
 
     // =====================================================
