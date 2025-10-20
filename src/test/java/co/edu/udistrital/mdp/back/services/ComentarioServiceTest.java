@@ -87,8 +87,10 @@ class ComentarioServiceTest {
         nuevo.setUsuario(usuario);
         nuevo.setTienda(tienda);
 
-        assertThrows(IllegalArgumentException.class, () -> comentarioService.createComentario(nuevo));
+        assertThrows(IllegalArgumentException.class,
+    () -> comentarioService.createComentario(nuevo));
     }
+
 
     @Test
     void updateComentario_valido_ok() {
@@ -100,8 +102,8 @@ class ComentarioServiceTest {
     @Test
     void updateComentario_calificacionInvalida_error() {
         ComentarioEntity original = comentarioList.get(0);
-        assertThrows(IllegalArgumentException.class, () ->
-                comentarioService.updateComentario(original.getId(), "Texto", 10));
+        assertThrows(IllegalArgumentException.class,
+    () -> comentarioService.updateComentario(original.getId(), "Texto", 10));
     }
 }
 
