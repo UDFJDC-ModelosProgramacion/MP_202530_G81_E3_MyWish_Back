@@ -1,29 +1,15 @@
-package co.edu.udistrital.mdp.back.dtos;
+package co.edu.udistrital.mdp.back.dto;
 
-import lombok.Getter;
-import lombok.Setter;
-import co.edu.udistrital.mdp.back.entities.MonedaEntity;
+import lombok.Data;
 
-@Getter
-@Setter
+/**
+ * DTO para la entidad MonedaEntity.
+ * Representa la información básica que se expone en el API.
+ */
+@Data
 public class MonedaDTO {
 
+    private Long id;
     private String codigo;
     private String simbolo;
-
-    public MonedaDTO() {}
-
-    public MonedaDTO(MonedaEntity entity) {
-        if (entity != null) {
-            this.codigo = entity.getCodigo();
-            this.simbolo = entity.getSimbolo();
-        }
-    }
-
-    public MonedaEntity toEntity() {
-        MonedaEntity entity = new MonedaEntity();
-        entity.setCodigo(this.codigo);
-        entity.setSimbolo(this.simbolo);
-        return entity;
-    }
 }
