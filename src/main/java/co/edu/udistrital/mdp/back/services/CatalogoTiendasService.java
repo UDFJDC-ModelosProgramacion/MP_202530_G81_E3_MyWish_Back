@@ -1,5 +1,4 @@
 package co.edu.udistrital.mdp.back.services;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,6 +10,7 @@ import co.edu.udistrital.mdp.back.entities.CatalogoTiendasEntity;
 import co.edu.udistrital.mdp.back.entities.TiendaEntity;
 import co.edu.udistrital.mdp.back.repositories.CatalogoTiendasRepository;
 import co.edu.udistrital.mdp.back.repositories.TiendaRepository;
+
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -51,11 +51,6 @@ public class CatalogoTiendasService {
             throw new IllegalArgumentException(MENSAJE_NOMBRE_CATALOGO_DUPLICADO);
         }
 
-        if (catalogo.getTiendas() == null) {
-            catalogo.setTiendas(new ArrayList<>());
-        }
-
-        // Inicializar lista de tiendas si es null
         if (catalogo.getTiendas() == null) {
             catalogo.setTiendas(new ArrayList<>());
         }
@@ -135,12 +130,11 @@ public class CatalogoTiendasService {
     }
 
     public List<CatalogoTiendasEntity> getAll() {
-    return catalogoTiendasRepository.findAll();
-}
+        return catalogoTiendasRepository.findAll();
+    }
 
-public CatalogoTiendasEntity getById(Long id) {
-    return catalogoTiendasRepository.findById(id)
-        .orElseThrow(() -> new IllegalArgumentException("Catálogo no encontrado"));
-}
-
+    public CatalogoTiendasEntity getById(Long id) {
+        return catalogoTiendasRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException(MENSAJE_CATALOGO_NO_ENCONTRADO));
+    }
 }
