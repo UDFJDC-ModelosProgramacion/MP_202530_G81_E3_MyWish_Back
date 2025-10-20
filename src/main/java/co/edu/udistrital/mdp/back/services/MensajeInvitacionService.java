@@ -1,6 +1,7 @@
 package co.edu.udistrital.mdp.back.services;
 
 import co.edu.udistrital.mdp.back.entities.*;
+import co.edu.udistrital.mdp.back.exceptions.CorreoNoEnviadoException;
 import co.edu.udistrital.mdp.back.repositories.*;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
@@ -76,11 +77,12 @@ public class MensajeInvitacionService {
         mensaje.setRemitente(remitente);
 
         // Enviar correo
-        try {
-            enviarCorreo(destinatario.getCorreo(), remitente.getNombre(), asunto, titulo, textoMensaje);
-        } catch (MessagingException e) {
-            throw new RuntimeException("Error al enviar el correo: " + e.getMessage(), e);
-        }
+       try {
+    enviarCorreo(destinatario.getCorreo(), remitente.getNombre(), asunto, titulo, textoMensaje);
+} catch (MessagingException e) {
+    throw new CorreoNoEnviadoException("Error al enviar el correo: " + e.getMessage(), e);
+}
+
 
         // Guardar en BD
         return mensajeRepo.save(mensaje);

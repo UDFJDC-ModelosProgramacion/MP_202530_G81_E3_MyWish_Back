@@ -42,7 +42,7 @@ class MensajeInvitacionServiceTest {
     @Autowired
     private UsuarioRepository usuarioRepo;
 
-        @Autowired
+    @Autowired
     private TestEntityManager entityManager;
 
     @MockBean
@@ -100,8 +100,7 @@ class MensajeInvitacionServiceTest {
                 "celebracion",
                 celebracion.getId(),
                 usuarios.get(2).getCorreo(),
-                "Te invito a mi fiesta"
-        );
+                "Te invito a mi fiesta");
 
         assertNotNull(mensaje.getId());
         assertEquals(usuarios.get(2).getId(), mensaje.getDestinatario().getId());
@@ -117,8 +116,7 @@ class MensajeInvitacionServiceTest {
                 "lista",
                 lista.getId(),
                 usuarios.get(2).getCorreo(),
-                "Te invito a ver mi lista de regalos"
-        );
+                "Te invito a ver mi lista de regalos");
 
         assertNotNull(mensaje.getId());
         assertEquals(lista.getId(), mensaje.getListaRegalos().getId());
@@ -127,23 +125,33 @@ class MensajeInvitacionServiceTest {
 
     @Test
     void testEnviarInvitacionUsuarioNoExiste() {
-        assertThrows(EntityNotFoundException.class, () -> {
-            service.enviarInvitacion("lista", lista.getId(), "inexistente@correo.com", "Hola");
-        });
+        Long listaId = lista.getId();
+        String correoInexistente = "inexistente@correo.com";
+        String mensaje = "Hola";
+
+        assertThrows(EntityNotFoundException.class,
+                () -> service.enviarInvitacion("lista", listaId, correoInexistente, mensaje));
     }
 
     @Test
     void testEnviarInvitacionCelebracionNoExiste() {
-        assertThrows(EntityNotFoundException.class, () -> {
-            service.enviarInvitacion("celebracion", 999L, usuarios.get(1).getCorreo(), "Hola");
-        });
+        Long idInexistente = 999L;
+        String correoDestinatario = usuarios.get(1).getCorreo();
+        String mensaje = "Hola";
+
+        assertThrows(EntityNotFoundException.class,
+                () -> service.enviarInvitacion("celebracion", idInexistente, correoDestinatario, mensaje));
     }
 
     @Test
     void testEnviarInvitacionTipoInvalido() {
-        assertThrows(IllegalArgumentException.class, () -> {
-            service.enviarInvitacion("evento", celebracion.getId(), usuarios.get(1).getCorreo(), "Mensaje");
-        });
+        String tipoInvalido = "evento";
+        Long celebracionId = celebracion.getId();
+        String correoDestinatario = usuarios.get(1).getCorreo();
+        String mensaje = "Mensaje";
+
+        assertThrows(IllegalArgumentException.class,
+                () -> service.enviarInvitacion(tipoInvalido, celebracionId, correoDestinatario, mensaje));
     }
 
     // =====================================================
@@ -163,7 +171,8 @@ class MensajeInvitacionServiceTest {
     @Test
     void testGetByIdSuccess() {
         Mockito.when(mailSender.createMimeMessage()).thenReturn(Mockito.mock(jakarta.mail.internet.MimeMessage.class));
-        MensajeInvitacionEntity enviado = service.enviarInvitacion("celebracion", celebracion.getId(), usuarios.get(2).getCorreo(), "msg");
+        MensajeInvitacionEntity enviado = service.enviarInvitacion("celebracion", celebracion.getId(),
+                usuarios.get(2).getCorreo(), "msg");
 
         MensajeInvitacionEntity encontrado = service.getById(enviado.getId());
         assertEquals(enviado.getId(), encontrado.getId());
@@ -177,7 +186,8 @@ class MensajeInvitacionServiceTest {
     @Test
     void testUpdateSuccess() {
         Mockito.when(mailSender.createMimeMessage()).thenReturn(Mockito.mock(jakarta.mail.internet.MimeMessage.class));
-        MensajeInvitacionEntity enviado = service.enviarInvitacion("celebracion", celebracion.getId(), usuarios.get(2).getCorreo(), "msg");
+        MensajeInvitacionEntity enviado = service.enviarInvitacion("celebracion", celebracion.getId(),
+                usuarios.get(2).getCorreo(), "msg");
 
         MensajeInvitacionEntity nuevo = new MensajeInvitacionEntity();
         nuevo.setMensaje("Mensaje actualizado");
@@ -191,7 +201,8 @@ class MensajeInvitacionServiceTest {
     @Test
     void testDeleteSuccess() {
         Mockito.when(mailSender.createMimeMessage()).thenReturn(Mockito.mock(jakarta.mail.internet.MimeMessage.class));
-        MensajeInvitacionEntity enviado = service.enviarInvitacion("celebracion", celebracion.getId(), usuarios.get(2).getCorreo(), "msg");
+        MensajeInvitacionEntity enviado = service.enviarInvitacion("celebracion", celebracion.getId(),
+                usuarios.get(2).getCorreo(), "msg");
 
         service.delete(enviado.getId());
 

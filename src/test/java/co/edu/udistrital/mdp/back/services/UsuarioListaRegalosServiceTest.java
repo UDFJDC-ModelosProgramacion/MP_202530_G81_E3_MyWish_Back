@@ -85,9 +85,12 @@ class UsuarioListaRegalosServiceTest {
         ListaRegalosEntity lista = listaList.get(0);
         UsuarioEntity creador = lista.getCreador();
 
-        assertThrows(IllegalArgumentException.class, () -> {
-            service.addInvitado(lista.getId(), creador.getId());
-        });
+        Long listaId = lista.getId();
+        Long creadorId = creador.getId();
+
+        assertThrows(
+                IllegalArgumentException.class,
+                () -> service.addInvitado(listaId, creadorId));
     }
 
     @Test
@@ -95,9 +98,12 @@ class UsuarioListaRegalosServiceTest {
         ListaRegalosEntity lista = listaList.get(0);
         UsuarioEntity invitadoExistente = usuarioList.get(1);
 
-        assertThrows(IllegalArgumentException.class, () -> {
-            service.addInvitado(lista.getId(), invitadoExistente.getId());
-        });
+        Long listaId = lista.getId();
+        Long invitadoId = invitadoExistente.getId();
+
+        assertThrows(
+                IllegalArgumentException.class,
+                () -> service.addInvitado(listaId, invitadoId));
     }
 
     @Test
@@ -129,16 +135,23 @@ class UsuarioListaRegalosServiceTest {
     @Test
     void testAddInvitadoListaNotFoundThrows() {
         UsuarioEntity usuario = usuarioList.get(1);
-        assertThrows(EntityNotFoundException.class, () -> {
-            service.addInvitado(999L, usuario.getId());
-        });
+        Long usuarioId = usuario.getId();
+        Long listaId = 999L; // id inexistente
+
+        assertThrows(
+                EntityNotFoundException.class,
+                () -> service.addInvitado(listaId, usuarioId));
     }
 
     @Test
     void testAddInvitadoUsuarioNotFoundThrows() {
         ListaRegalosEntity lista = listaList.get(0);
-        assertThrows(EntityNotFoundException.class, () -> {
-            service.addInvitado(lista.getId(), 999L);
-        });
+        Long listaId = lista.getId();
+        Long usuarioIdInexistente = 999L;
+
+        assertThrows(
+                EntityNotFoundException.class,
+                () -> service.addInvitado(listaId, usuarioIdInexistente));
     }
+
 }
