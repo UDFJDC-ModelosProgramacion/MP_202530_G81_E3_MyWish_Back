@@ -60,6 +60,7 @@ class PrioridadRegaloServiceTest {
             entityManager.persist(prioridad);
             prioridadList.add(prioridad);
         }
+
     }
 
     // =====================================================
@@ -276,4 +277,5 @@ class PrioridadRegaloServiceTest {
         assertFalse(lista.isEmpty());
         assertEquals(nivel, lista.get(0).getNivel());
     }
+    
 }

@@ -1,0 +1,111 @@
+{
+	"info": {
+		"_postman_id": "a1b2c3d4-e5f6-4a5b-8c9d-0e1f2a3b4c5d",
+		"name": "PrioridadRegaloServiceAPI",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Crear Prioridad",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"nombre\": \"Alta\",\n  \"descripcion\": \"Prioridad alta\",\n  \"nivel\": 1,\n  \"color\": \"#FF0000\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseURL}}/api/prioridades-regalo",
+					"host": ["{{baseURL}}"],
+					"path": ["api", "prioridades-regalo"]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Actualizar Prioridad",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"descripcion\": \"Descripción actualizada\",\n  \"color\": \"#00FF00\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseURL}}/api/prioridades-regalo/1",
+					"host": ["{{baseURL}}"],
+					"path": ["api", "prioridades-regalo", "1"]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Eliminar Prioridad",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{baseURL}}/api/prioridades-regalo/1",
+					"host": ["{{baseURL}}"],
+					"path": ["api", "prioridades-regalo", "1"]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Obtener todas las Prioridades",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseURL}}/api/prioridades-regalo",
+					"host": ["{{baseURL}}"],
+					"path": ["api", "prioridades-regalo"]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Obtener Prioridad por ID",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseURL}}/api/prioridades-regalo/1",
+					"host": ["{{baseURL}}"],
+					"path": ["api", "prioridades-regalo", "1"]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Obtener por Nivel",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseURL}}/api/prioridades-regalo/nivel/1",
+					"host": ["{{baseURL}}"],
+					"path": ["api", "prioridades-regalo", "nivel", "1"]
+				}
+			},
+			"response": []
+		}
+	],
+	"variable": [
+		{
+			"key": "baseURL",
+			"value": "http://localhost:8080"
+		}
+	]
+}

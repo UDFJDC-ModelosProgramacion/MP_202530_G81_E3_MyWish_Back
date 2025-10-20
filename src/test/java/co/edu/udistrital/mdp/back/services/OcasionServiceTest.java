@@ -69,7 +69,8 @@ class OcasionServiceTest {
         OcasionEntity nueva = new OcasionEntity();
         nueva.setNombre("");
 
-        assertThrows(IllegalArgumentException.class, () -> ocasionService.createOcasion(nueva));
+        assertThrows(IllegalArgumentException.class,
+        () -> ocasionService.createOcasion(nueva));
     }
 
     @Test
@@ -85,7 +86,7 @@ class OcasionServiceTest {
         OcasionEntity original = ocasionList.get(0);
         OcasionEntity otra = ocasionList.get(1);
 
-        assertThrows(IllegalArgumentException.class, () ->
-                ocasionService.updateOcasion(original.getId(), otra.getNombre()));
+        assertThrows(IllegalArgumentException.class,
+        () -> ocasionService.updateOcasion(original.getId(), otra.getNombre()));
     }
 }

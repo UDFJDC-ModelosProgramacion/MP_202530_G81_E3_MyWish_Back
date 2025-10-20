@@ -1,0 +1,111 @@
+{
+	"info": {
+		"_postman_id": "f5e6d7c8-b9a0-4c5d-8e7f-6a5b4c3d2e1f",
+		"name": "EstadoCompraServiceAPI",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Crear Estado",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"nombre\": \"Comprado\",\n  \"descripcion\": \"Regalo comprado\",\n  \"color\": \"#00FF00\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseURL}}/api/estados-compra",
+					"host": ["{{baseURL}}"],
+					"path": ["api", "estados-compra"]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Actualizar Estado",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"descripcion\": \"Descripción actualizada\",\n  \"color\": \"#0000FF\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseURL}}/api/estados-compra/1",
+					"host": ["{{baseURL}}"],
+					"path": ["api", "estados-compra", "1"]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Eliminar Estado",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{baseURL}}/api/estados-compra/1",
+					"host": ["{{baseURL}}"],
+					"path": ["api", "estados-compra", "1"]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Obtener todos los Estados",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseURL}}/api/estados-compra",
+					"host": ["{{baseURL}}"],
+					"path": ["api", "estados-compra"]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Obtener Estado por ID",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseURL}}/api/estados-compra/1",
+					"host": ["{{baseURL}}"],
+					"path": ["api", "estados-compra", "1"]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Obtener Estado Por Defecto",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseURL}}/api/estados-compra/por-defecto",
+					"host": ["{{baseURL}}"],
+					"path": ["api", "estados-compra", "por-defecto"]
+				}
+			},
+			"response": []
+		}
+	],
+	"variable": [
+		{
+			"key": "baseURL",
+			"value": "http://localhost:8080"
+		}
+	]
+}

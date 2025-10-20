@@ -2,7 +2,6 @@ package co.edu.udistrital.mdp.back.services;
 
 import co.edu.udistrital.mdp.back.entities.*;
 import co.edu.udistrital.mdp.back.repositories.*;
-import jakarta.mail.MessagingException;
 import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

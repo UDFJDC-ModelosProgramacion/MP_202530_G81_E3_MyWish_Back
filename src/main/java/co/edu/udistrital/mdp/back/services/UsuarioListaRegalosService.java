@@ -1,9 +1,5 @@
 package co.edu.udistrital.mdp.back.services;
 
-
-
-import java.util.Optional;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,7 +26,8 @@ public class UsuarioListaRegalosService {
      * Agregar un invitado a una lista de regalos
      */
     @Transactional
-    public ListaRegalosEntity addInvitado(Long listaId, Long usuarioId) throws EntityNotFoundException, IllegalArgumentException {
+    public ListaRegalosEntity addInvitado(Long listaId, Long usuarioId)
+            throws EntityNotFoundException, IllegalArgumentException {
         log.info("Inicia proceso de agregar invitado a la lista de regalos");
 
         ListaRegalosEntity lista = listaRegalosRepository.findById(listaId)
@@ -70,17 +67,13 @@ public class UsuarioListaRegalosService {
         UsuarioEntity usuario = usuarioRepository.findById(usuarioId)
                 .orElseThrow(() -> new EntityNotFoundException("Usuario no encontrado con id " + usuarioId));
 
-        // Buscar y remover invitado
-        UsuarioEntity invitadoAEliminar = null;
-        for (UsuarioEntity u : lista.getInvitados()) {
-            if (u.getId().equals(usuarioId)) {
-                invitadoAEliminar = u;
-                break;
-            }
+        // Verificar que el usuario esté realmente invitado
+        if (!lista.getInvitados().contains(usuario)) {
+            throw new EntityNotFoundException("El usuario con id " + usuarioId + " no está invitado en esta lista");
         }
-        if (invitadoAEliminar != null) {
-            lista.getInvitados().remove(invitadoAEliminar);
-        }
+
+        // Remover el usuario de la lista de invitados
+        lista.getInvitados().remove(usuario);
 
         log.info("Termina proceso de remover invitado de la lista de regalos");
         return listaRegalosRepository.save(lista);

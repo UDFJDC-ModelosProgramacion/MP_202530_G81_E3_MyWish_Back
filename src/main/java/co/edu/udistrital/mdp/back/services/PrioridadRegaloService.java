@@ -1,7 +1,9 @@
 package co.edu.udistrital.mdp.back.services;
 
 import co.edu.udistrital.mdp.back.entities.PrioridadRegaloEntity;
+import co.edu.udistrital.mdp.back.entities.RegaloEntity;
 import co.edu.udistrital.mdp.back.repositories.PrioridadRegaloRepository;
+import co.edu.udistrital.mdp.back.repositories.RegaloRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,9 +20,13 @@ public class PrioridadRegaloService {
     @Autowired
     private PrioridadRegaloRepository prioridadRegaloRepository;
 
+    @Autowired
+    private RegaloRepository regaloRepository;
+
     // =====================================================
     // CREATE
     // =====================================================
+
     @Transactional
     public PrioridadRegaloEntity createPrioridadRegalo(PrioridadRegaloEntity prioridadRegaloEntity) {
 
@@ -56,6 +62,7 @@ public class PrioridadRegaloService {
     // =====================================================
     // UPDATE
     // =====================================================
+
     @Transactional
     public PrioridadRegaloEntity updatePrioridadRegalo(Long prioridadId, PrioridadRegaloEntity prioridadRegaloEntity) {
 
@@ -72,7 +79,9 @@ public class PrioridadRegaloService {
         if (prioridadRegaloEntity.getNivel() != null && 
             !prioridadRegaloEntity.getNivel().equals(existente.getNivel())) {
             
-            if (!existente.getRegalos().isEmpty()) {
+            // Verificar usando el repositorio de regalos directamente
+            List<RegaloEntity> regalosAsociados = regaloRepository.findByPrioridad(existente);
+            if (!regalosAsociados.isEmpty()) {
                 throw new IllegalStateException("No se puede modificar el nivel de una prioridad que está siendo utilizada por regalos.");
             }
             
@@ -99,6 +108,7 @@ public class PrioridadRegaloService {
     // =====================================================
     // DELETE
     // =====================================================
+
     @Transactional
     public void deletePrioridadRegalo(Long prioridadId) {
 
@@ -112,12 +122,14 @@ public class PrioridadRegaloService {
         PrioridadRegaloEntity prioridad = prioridadOpt.get();
 
         // Regla 6: No se puede eliminar una prioridad si está asignada a algún regalo
-        if (!prioridad.getRegalos().isEmpty()) {
+        // Verificar usando el repositorio de regalos directamente
+        List<RegaloEntity> regalosAsociados = regaloRepository.findByPrioridad(prioridad);
+        if (!regalosAsociados.isEmpty()) {
             throw new IllegalStateException("No se puede eliminar la prioridad porque está siendo utilizada por regalos.");
         }
 
         // Regla 7: No se puede eliminar la prioridad marcada como por defecto
-        if (prioridad.getEsPorDefecto()) {
+        if (Boolean.TRUE.equals(prioridad.getEsPorDefecto())) {
             throw new IllegalStateException("No se puede eliminar la prioridad marcada como por defecto.");
         }
 
@@ -129,6 +141,7 @@ public class PrioridadRegaloService {
     // =====================================================
     // GET
     // =====================================================
+
     @Transactional(readOnly = true)
     public List<PrioridadRegaloEntity> getAllPrioridadesRegalo() {
         log.info("Inicia proceso de consulta de todas las prioridades de regalo");
@@ -147,4 +160,5 @@ public class PrioridadRegaloService {
         log.info("Inicia proceso de consulta de prioridades por nivel: {}", nivel);
         return prioridadRegaloRepository.findByNivel(nivel);
     }
+
 }

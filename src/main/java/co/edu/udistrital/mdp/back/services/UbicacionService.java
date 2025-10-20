@@ -21,6 +21,7 @@ public class UbicacionService {
     @Autowired
     private TiendaRepository tiendaRepo;
 
+    
     public List<UbicacionEntity> getAll() {
         log.info("Obteniendo todas las ubicaciones");
         return ubicacionRepo.findAll();
@@ -32,9 +33,7 @@ public class UbicacionService {
                 .orElseThrow(() -> new IllegalArgumentException("No se encontró la ubicación con id: " + id));
     }
 
-    /**
-     * Crea una nueva ubicación.
-     */
+
     public UbicacionEntity create(UbicacionEntity nueva) {
         log.info("Creando nueva ubicación en ciudad: {}, país: {}", nueva.getCiudad(), nueva.getPais());
 
@@ -61,9 +60,7 @@ public class UbicacionService {
         return ubicacionRepo.save(nueva);
     }
 
-    /**
-     * Actualiza una ubicación existente.
-     */
+
     public UbicacionEntity update(Long id, UbicacionEntity nueva) {
         log.info("Actualizando ubicación con id {}", id);
 
@@ -96,6 +93,7 @@ public class UbicacionService {
         return ubicacionRepo.save(existente);
     }
 
+    
     public void delete(Long id) {
         log.info("Eliminando ubicación con id {}", id);
         UbicacionEntity ubicacion = ubicacionRepo.findById(id)

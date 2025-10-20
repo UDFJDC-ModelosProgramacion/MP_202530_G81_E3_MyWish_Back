@@ -1,90 +1,138 @@
 package co.edu.udistrital.mdp.back.services;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
+import org.springframework.context.annotation.Import;
+import org.springframework.transaction.annotation.Transactional;
 
 import co.edu.udistrital.mdp.back.entities.UsuarioEntity;
 import co.edu.udistrital.mdp.back.entities.ListaRegalosEntity;
+import co.edu.udistrital.mdp.back.entities.CelebracionEntity;
 import co.edu.udistrital.mdp.back.repositories.UsuarioRepository;
 import co.edu.udistrital.mdp.back.repositories.ListaRegalosRepository;
 import co.edu.udistrital.mdp.back.repositories.CelebracionRepository;
+import uk.co.jemos.podam.api.PodamFactory;
+import uk.co.jemos.podam.api.PodamFactoryImpl;
 
-public class UsuarioServiceTest {
+@DataJpaTest
+@Transactional
+@Import(UsuarioService.class)
+class UsuarioServiceTest {
 
-    @Mock
-    private UsuarioRepository usuarioRepository;
-
-    @Mock
-    private ListaRegalosRepository listaRegalosRepository;
-
-    @Mock
-    private CelebracionRepository celebracionRepository;
-
-    @InjectMocks
+    @Autowired
     private UsuarioService usuarioService;
 
-    private UsuarioEntity usuario;
+    @Autowired
+    private TestEntityManager entityManager;
+
+    @Autowired
+    private UsuarioRepository usuarioRepository;
+
+    @Autowired
+    private ListaRegalosRepository listaRegalosRepository;
+
+    @Autowired
+    private CelebracionRepository celebracionRepository;
+
+    private PodamFactory factory = new PodamFactoryImpl();
+    private List<UsuarioEntity> usuarios = new ArrayList<>();
 
     @BeforeEach
-    public void setup() {
-        MockitoAnnotations.openMocks(this);
+    void setUp() {
+        clearData();
+        insertData();
+    }
 
-        usuario = new UsuarioEntity();
-        usuario.setId(1L);
-        usuario.setCorreo("test@example.com");
-        usuario.setFechaNacimiento(new Date(System.currentTimeMillis() - 100000)); // fecha pasada
+    private void clearData() {
+        entityManager.getEntityManager().createQuery("DELETE FROM ListaRegalosEntity").executeUpdate();
+        entityManager.getEntityManager().createQuery("DELETE FROM CelebracionEntity").executeUpdate();
+        entityManager.getEntityManager().createQuery("DELETE FROM UsuarioEntity").executeUpdate();
+    }
+
+    private void insertData() {
+        for (int i = 0; i < 3; i++) {
+            UsuarioEntity usuario = factory.manufacturePojo(UsuarioEntity.class);
+            usuario.setFechaNacimiento(new Date(System.currentTimeMillis() - 1000000));
+            entityManager.persist(usuario);
+            usuarios.add(usuario);
+        }
     }
 
     @Test
-    public void testCrearUsuario_Valido() {
-        when(usuarioRepository.findByCorreo(usuario.getCorreo())).thenReturn(null);
-        when(usuarioRepository.save(usuario)).thenReturn(usuario);
+    void testCrearUsuario_Valido() {
+        UsuarioEntity nuevo = factory.manufacturePojo(UsuarioEntity.class);
+        nuevo.setCorreo("test@example.com");
+        nuevo.setFechaNacimiento(new Date());
 
-        UsuarioEntity resultado = usuarioService.crearUsuario(usuario);
-        assertEquals(usuario, resultado);
+        UsuarioEntity creado = usuarioService.crearUsuario(nuevo);
+
+        assertNotNull(creado.getId());
+        assertEquals("test@example.com", creado.getCorreo());
     }
 
     @Test
-    public void testCrearUsuario_CorreoNulo() {
-        usuario.setCorreo(null);
-        assertThrows(IllegalArgumentException.class, () -> usuarioService.crearUsuario(usuario));
+    void testCrearUsuario_CorreoNulo() {
+        UsuarioEntity nuevo = factory.manufacturePojo(UsuarioEntity.class);
+        nuevo.setCorreo(null);
+
+        assertThrows(IllegalArgumentException.class, () -> usuarioService.crearUsuario(nuevo));
     }
 
     @Test
-    public void testActualizarCorreoUsuario_Exitoso() {
-        when(usuarioRepository.findById(1L)).thenReturn(Optional.of(usuario));
-        when(usuarioRepository.findByCorreo("nuevo@mail.com")).thenReturn(null);
-        usuario.setCorreo("original@mail.com");
+    void testActualizarCorreoUsuario_Exitoso() {
+        UsuarioEntity usuario = usuarios.get(0);
+        String nuevoCorreo = "nuevo@mail.com";
 
-        UsuarioEntity actualizado = usuarioService.actualizarCorreoUsuario(1L, "nuevo@mail.com");
-        assertEquals("nuevo@mail.com", actualizado.getCorreo());
+        UsuarioEntity actualizado = usuarioService.actualizarCorreoUsuario(usuario.getId(), nuevoCorreo);
+
+        assertEquals(nuevoCorreo, actualizado.getCorreo());
     }
 
     @Test
-    public void testEliminarUsuario_SinRelaciones() {
-        when(usuarioRepository.findById(1L)).thenReturn(Optional.of(usuario));
-        when(listaRegalosRepository.findByCreadorId(1L)).thenReturn(List.of());
-        when(celebracionRepository.findByOrganizadorId(1L)).thenReturn(List.of());
+    void testEliminarUsuario_SinRelaciones_EliminaCorrectamente() {
+        UsuarioEntity usuario = usuarios.get(1);
 
-        usuarioService.eliminarUsuario(1L);
-        verify(usuarioRepository).delete(usuario);
+        usuarioService.eliminarUsuario(usuario.getId());
+
+        assertFalse(usuarioRepository.findById(usuario.getId()).isPresent());
     }
 
     @Test
-    public void testEliminarUsuario_ConListas() {
-        when(usuarioRepository.findById(1L)).thenReturn(Optional.of(usuario));
-        when(listaRegalosRepository.findByCreadorId(1L)).thenReturn(List.of(new ListaRegalosEntity()));
+    void testEliminarUsuario_ConListas_LanzaExcepcion() {
+        UsuarioEntity usuario = usuarios.get(0);
 
-        assertThrows(IllegalStateException.class, () -> usuarioService.eliminarUsuario(1L));
+        ListaRegalosEntity lista = factory.manufacturePojo(ListaRegalosEntity.class);
+        lista.setCreador(usuario);
+        entityManager.persist(lista);
+
+        IllegalStateException ex = assertThrows(IllegalStateException.class, () ->
+                usuarioService.eliminarUsuario(usuario.getId())
+        );
+
+        assertEquals("No se puede eliminar un usuario con listas creadas activas.", ex.getMessage());
+    }
+
+    @Test
+    void testEliminarUsuario_ConCelebraciones_LanzaExcepcion() {
+        UsuarioEntity usuario = usuarios.get(0);
+
+        CelebracionEntity celebracion = factory.manufacturePojo(CelebracionEntity.class);
+        celebracion.setOrganizador(usuario);
+        entityManager.persist(celebracion);
+
+        IllegalStateException ex = assertThrows(IllegalStateException.class, () ->
+                usuarioService.eliminarUsuario(usuario.getId())
+        );
+
+        assertEquals("No se puede eliminar un usuario con celebraciones organizadas pendientes.", ex.getMessage());
     }
 }

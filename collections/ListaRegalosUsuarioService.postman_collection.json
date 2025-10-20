@@ -1,0 +1,151 @@
+{
+  "info": {
+    "_postman_id": "3c1d2f7e-7e56-4f7c-8af6-9e0a4b7b6ac9",
+    "name": "ListaRegalosUsuarioService",
+    "description": "Colección Postman para el servicio ListaRegalosUsuarioService. Gestiona listas de regalos e invitaciones de usuarios.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Obtener listas de usuario",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/{{usuarioId}}/listas",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "{{usuarioId}}",
+            "listas"
+          ],
+          "variable": [
+            {
+              "key": "usuarioId",
+              "value": "1",
+              "description": "ID del usuario."
+            }
+          ]
+        },
+        "description": "Devuelve todas las listas de regalos en las que el usuario está invitado."
+      },
+      "response": [
+        {
+          "name": "200 OK",
+          "originalRequest": {},
+          "_postman_previewlanguage": "json",
+          "header": [],
+          "body": "[\n  {\n    \"id\": 1,\n    \"nombre\": \"Cumpleaños Juan\",\n    \"descripcion\": \"Lista de regalos para el cumpleaños de Juan.\",\n    \"fechaEvento\": \"2025-10-15\",\n    \"invitados\": [\n      {\n        \"id\": 3,\n        \"nombre\": \"María\"\n      }\n    ]\n  }\n]"
+        },
+        {
+          "name": "404 Not Found",
+          "originalRequest": {},
+          "body": "{ \"error\": \"Usuario no encontrado.\" }"
+        }
+      ]
+    },
+    {
+      "name": "Verificar si usuario está invitado",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/{{usuarioId}}/listas/{{listaId}}/invitado",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "{{usuarioId}}",
+            "listas",
+            "{{listaId}}",
+            "invitado"
+          ],
+          "variable": [
+            {
+              "key": "usuarioId",
+              "value": "1",
+              "description": "ID del usuario."
+            },
+            {
+              "key": "listaId",
+              "value": "2",
+              "description": "ID de la lista de regalos."
+            }
+          ]
+        },
+        "description": "Verifica si un usuario específico está invitado a una lista de regalos."
+      },
+      "response": [
+        {
+          "name": "200 OK",
+          "originalRequest": {},
+          "_postman_previewlanguage": "json",
+          "body": "{ \"estaInvitado\": true }"
+        },
+        {
+          "name": "404 Not Found",
+          "originalRequest": {},
+          "body": "{ \"error\": \"Lista o usuario no encontrado.\" }"
+        }
+      ]
+    },
+    {
+      "name": "Remover invitación de usuario",
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/{{usuarioId}}/listas/{{listaId}}/invitado",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "{{usuarioId}}",
+            "listas",
+            "{{listaId}}",
+            "invitado"
+          ],
+          "variable": [
+            {
+              "key": "usuarioId",
+              "value": "1",
+              "description": "ID del usuario a eliminar."
+            },
+            {
+              "key": "listaId",
+              "value": "2",
+              "description": "ID de la lista de regalos."
+            }
+          ]
+        },
+        "description": "Elimina la invitación de un usuario a una lista de regalos específica."
+      },
+      "response": [
+        {
+          "name": "200 OK",
+          "originalRequest": {},
+          "_postman_previewlanguage": "json",
+          "body": "{ \"mensaje\": \"Invitación eliminada correctamente.\" }"
+        },
+        {
+          "name": "400 Bad Request",
+          "originalRequest": {},
+          "body": "{ \"error\": \"Usuario no estaba invitado en esta lista.\" }"
+        },
+        {
+          "name": "404 Not Found",
+          "originalRequest": {},
+          "body": "{ \"error\": \"Lista no encontrada.\" }"
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8080/api/usuarios",
+      "type": "string"
+    }
+  ]
+}

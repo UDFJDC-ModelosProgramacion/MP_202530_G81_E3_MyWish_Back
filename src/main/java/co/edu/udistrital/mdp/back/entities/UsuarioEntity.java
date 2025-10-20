@@ -35,22 +35,22 @@ public class UsuarioEntity extends BaseEntity {
     /** Usuario crea varias listas de regalos */
     @PodamExclude
     @OneToMany(mappedBy = "creador")
-    private List<ListaRegalosEntity> listasCreadas;
+    private List<ListaRegalosEntity> listasCreadas = new ArrayList<>();
 
     /** Usuario es invitado a varias listas de regalos */
     @PodamExclude
     @ManyToMany(mappedBy = "invitados")
-    private List<ListaRegalosEntity> listasInvitado;
+    private List<ListaRegalosEntity> listasInvitado = new ArrayList<>();
 
     /** Usuario organiza varias celebraciones */
     @PodamExclude
     @OneToMany(mappedBy = "organizador")
-    private List<CelebracionEntity> celebracionesOrganizadas;
+    private List<CelebracionEntity> celebracionesOrganizadas = new ArrayList<>();
 
     /** Usuario es invitado a varias celebraciones */
     @PodamExclude
     @ManyToMany(mappedBy = "invitados")
-    private List<CelebracionEntity> celebracionesInvitado;
+    private List<CelebracionEntity> celebracionesInvitado = new ArrayList<>();
 
     /** Usuario escribe varios comentarios */
     @PodamExclude
