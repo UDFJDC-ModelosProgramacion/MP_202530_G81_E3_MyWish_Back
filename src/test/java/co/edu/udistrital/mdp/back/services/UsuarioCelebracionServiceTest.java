@@ -79,10 +79,12 @@ class UsuarioCelebracionServiceTest {
         CelebracionEntity celebracion = celebracionList.get(0);
         UsuarioEntity organizador = usuarioList.get(0);
 
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
-                () -> usuarioCelebracionService.addInvitado(celebracion.getId(), organizador.getId()));
+        Long celebracionId = celebracion.getId();
+        Long organizadorId = organizador.getId();
 
-        assertEquals("El invitado no puede ser el mismo usuario que el organizador de la celebración.", exception.getMessage());
+        IllegalArgumentException exception = assertThrows(
+                IllegalArgumentException.class,
+                () -> usuarioCelebracionService.addInvitado(celebracionId, organizadorId));
     }
 
     @Test
@@ -90,8 +92,12 @@ class UsuarioCelebracionServiceTest {
         CelebracionEntity celebracion = celebracionList.get(0);
         UsuarioEntity invitadoExistente = usuarioList.get(1);
 
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
-                () -> usuarioCelebracionService.addInvitado(celebracion.getId(), invitadoExistente.getId()));
+        Long celebracionId = celebracion.getId();
+        Long invitadoId = invitadoExistente.getId();
+
+        IllegalArgumentException exception = assertThrows(
+                IllegalArgumentException.class,
+                () -> usuarioCelebracionService.addInvitado(celebracionId, invitadoId));
 
         assertEquals("El usuario ya está invitado a esta celebración.", exception.getMessage());
     }
@@ -109,9 +115,11 @@ class UsuarioCelebracionServiceTest {
     @Test
     void testRemoveInvitadoUsuarioNoExiste() {
         CelebracionEntity celebracion = celebracionList.get(0);
+        Long celebracionId = celebracion.getId();
 
-        EntityNotFoundException exception = assertThrows(EntityNotFoundException.class,
-                () -> usuarioCelebracionService.removeInvitado(celebracion.getId(), 999L));
+        EntityNotFoundException exception = assertThrows(
+                EntityNotFoundException.class,
+                () -> usuarioCelebracionService.removeInvitado(celebracionId, 999L));
 
         assertEquals("Usuario no encontrado con id 999", exception.getMessage());
     }

@@ -141,8 +141,7 @@ class ListaRegalosServiceTest {
     void testUpdateListaRegalos_NoExiste_LanzaExcepcion() {
         ListaRegalosEntity actualizada = factory.manufacturePojo(ListaRegalosEntity.class);
         actualizada.setCreador(usuarioList.get(0));
-        assertThrows(EntityNotFoundException.class, () ->
-                listaRegalosService.updateListaRegalos(999L, actualizada));
+        assertThrows(EntityNotFoundException.class, () -> listaRegalosService.updateListaRegalos(999L, actualizada));
     }
 
     @Test
@@ -151,19 +150,24 @@ class ListaRegalosServiceTest {
         ListaRegalosEntity actualizada = factory.manufacturePojo(ListaRegalosEntity.class);
         actualizada.setCreador(usuarioList.get(1)); // otro creador
 
-        assertThrows(IllegalArgumentException.class, () ->
-                listaRegalosService.updateListaRegalos(existente.getId(), actualizada));
+        Long listaId = existente.getId();
+
+        assertThrows(IllegalArgumentException.class,
+                () -> listaRegalosService.updateListaRegalos(listaId, actualizada));
     }
 
     @Test
-    void testUpdateListaRegalos_FechaPasada_LanzaExcepcion() {
+    void testUpdateListaRegalos_FechaAnterior_LanzaExcepcion() {
         ListaRegalosEntity existente = listaRegalosList.get(0);
+
         ListaRegalosEntity actualizada = factory.manufacturePojo(ListaRegalosEntity.class);
         actualizada.setCreador(existente.getCreador());
         actualizada.setFecha(new Date(System.currentTimeMillis() - 86400000)); // ayer
 
-        assertThrows(IllegalArgumentException.class, () ->
-                listaRegalosService.updateListaRegalos(existente.getId(), actualizada));
+        Long listaId = existente.getId();
+
+        assertThrows(IllegalArgumentException.class,
+                () -> listaRegalosService.updateListaRegalos(listaId, actualizada));
     }
 
     // =====================================================
