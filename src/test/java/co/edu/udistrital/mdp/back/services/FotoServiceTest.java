@@ -20,7 +20,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @DataJpaTest
 @Transactional
 @Import(FotoService.class)
-public class FotoServiceTest {
+ class FotoServiceTest {
 
     @Autowired
     private FotoService fotoService;
