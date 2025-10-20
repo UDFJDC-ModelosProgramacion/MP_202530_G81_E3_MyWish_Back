@@ -5,6 +5,7 @@ import co.edu.udistrital.mdp.back.repositories.*;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,6 +19,9 @@ public class RegaloService {
     @Autowired private TiendaRepository tiendaRepo;
     @Autowired private EstadoCompraRepository estadoRepo;
     @Autowired private PrioridadRegaloRepository prioridadRepo;
+    @Autowired
+    @Lazy
+    private RegaloService self;
 
     @Transactional(readOnly = true)
     public List<RegaloEntity> getAll() {
@@ -41,7 +45,7 @@ public class RegaloService {
     @Transactional
     public RegaloEntity update(Long id, RegaloEntity nuevo) {
         log.info("Actualizando regalo con id {}", id);
-        RegaloEntity existente = getById(id);
+        RegaloEntity existente = self.getById(id);
 
         existente.setDescripcion(nuevo.getDescripcion());
         existente.setLinkCompra(nuevo.getLinkCompra());
@@ -59,7 +63,7 @@ public class RegaloService {
     @Transactional
     public void delete(Long id) {
         log.info("Eliminando regalo con id {}", id);
-        RegaloEntity existente = getById(id);
+        RegaloEntity existente = self.getById(id);
         regaloRepo.delete(existente);
     }
 
