@@ -5,36 +5,76 @@ import co.edu.udistrital.mdp.back.repositories.FotoRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.*;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
+import org.springframework.context.annotation.Import;
+import org.springframework.transaction.annotation.Transactional;
+import uk.co.jemos.podam.api.PodamFactory;
+import uk.co.jemos.podam.api.PodamFactoryImpl;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
 
-@SpringBootTest
+@DataJpaTest
+@Transactional
+@Import(FotoService.class)
 class FotoServiceTest {
 
-    @Mock
-    private FotoRepository fotoRepository;
-
-    @InjectMocks
+    @Autowired
     private FotoService fotoService;
 
-    private FotoEntity fotoBase;
+    @Autowired
+    private FotoRepository fotoRepository;
+
+    @Autowired
+    private TestEntityManager entityManager;
+
+    private PodamFactory factory = new PodamFactoryImpl();
+    private List<FotoEntity> fotoList = new ArrayList<>();
+    private TiendaEntity tienda;
+    private ComentarioEntity comentario;
+    private RegaloEntity regalo;
+    private ListaRegalosEntity listaRegalos;
 
     @BeforeEach
     void setUp() {
-        MockitoAnnotations.openMocks(this);
+        clearData();
+        insertData();
+    }
 
-        fotoBase = new FotoEntity();
-        fotoBase.setId(1L);
-        fotoBase.setUrl("https://example.com/foto.jpg");
-        fotoBase.setDescripcion("Foto de prueba");
-        fotoBase.setTipoArchivo("image/jpeg");
-        fotoBase.setTamanioBytes(1024L);
-        fotoBase.setEsPrincipal(false);
+    private void clearData() {
+        entityManager.getEntityManager().createQuery("delete from FotoEntity").executeUpdate();
+        entityManager.getEntityManager().createQuery("delete from TiendaEntity").executeUpdate();
+        entityManager.getEntityManager().createQuery("delete from ComentarioEntity").executeUpdate();
+        entityManager.getEntityManager().createQuery("delete from RegaloEntity").executeUpdate();
+        entityManager.getEntityManager().createQuery("delete from ListaRegalosEntity").executeUpdate();
+    }
+
+    private void insertData() {
+        tienda = factory.manufacturePojo(TiendaEntity.class);
+        entityManager.persist(tienda);
+
+        comentario = factory.manufacturePojo(ComentarioEntity.class);
+        entityManager.persist(comentario);
+
+        regalo = factory.manufacturePojo(RegaloEntity.class);
+        entityManager.persist(regalo);
+
+        listaRegalos = factory.manufacturePojo(ListaRegalosEntity.class);
+        entityManager.persist(listaRegalos);
+
+        for (int i = 0; i < 3; i++) {
+            FotoEntity foto = factory.manufacturePojo(FotoEntity.class);
+            foto.setUrl("https://ejemplo.com/foto" + i + ".jpg");
+            foto.setTipoArchivo("image/jpeg");
+            foto.setTamanioBytes(500000L);
+            foto.setTienda(tienda);
+            entityManager.persist(foto);
+            fotoList.add(foto);
+        }
     }
 
     // =====================================================
@@ -42,63 +82,57 @@ class FotoServiceTest {
     // =====================================================
 
     @Test
-    void createFoto_conUrlInvalida_deberiaLanzarExcepcion() {
-        fotoBase.setUrl("ftp://archivo.jpg");
-        assertThrows(IllegalArgumentException.class, () -> fotoService.createFoto(fotoBase));
+    void testCreateFotoSuccess() {
+        FotoEntity nueva = factory.manufacturePojo(FotoEntity.class);
+        nueva.setUrl("https://valid.com/foto.jpg");
+        nueva.setTipoArchivo("image/png");
+        nueva.setTamanioBytes(1000000L);
+        nueva.setTienda(tienda);
+
+        FotoEntity result = fotoService.createFoto(nueva);
+
+        assertNotNull(result.getId());
+        assertEquals("https://valid.com/foto.jpg", result.getUrl());
+        assertEquals(tienda.getId(), result.getTienda().getId());
     }
 
     @Test
-    void createFoto_conTamanioExcesivo_deberiaLanzarExcepcion() {
-        fotoBase.setUrl("https://imagen.jpg");
-        fotoBase.setTamanioBytes(20 * 1024 * 1024L); // 20 MB
-        assertThrows(IllegalArgumentException.class, () -> fotoService.createFoto(fotoBase));
+    void testCreateFotoUrlInvalidaThrows() {
+        FotoEntity foto = factory.manufacturePojo(FotoEntity.class);
+        foto.setUrl("ftp://invalida.jpg");
+        foto.setTienda(tienda);
+
+        assertThrows(IllegalArgumentException.class, () -> fotoService.createFoto(foto));
     }
 
     @Test
-    void createFoto_conTipoArchivoInvalido_deberiaLanzarExcepcion() {
-        fotoBase.setUrl("https://imagen.xyz");
-        fotoBase.setTipoArchivo("application/pdf");
-        assertThrows(IllegalArgumentException.class, () -> fotoService.createFoto(fotoBase));
+    void testCreateFotoTamanioExcedeThrows() {
+        FotoEntity foto = factory.manufacturePojo(FotoEntity.class);
+        foto.setUrl("https://valida.com/foto.jpg");
+        foto.setTamanioBytes(15L * 1024 * 1024); // 15 MB
+        foto.setTienda(tienda);
+
+        assertThrows(IllegalArgumentException.class, () -> fotoService.createFoto(foto));
     }
 
     @Test
-    void createFoto_sinEntidadAsociada_deberiaLanzarExcepcion() {
-        fotoBase.setUrl("https://imagen.jpg");
-        assertThrows(IllegalArgumentException.class, () -> fotoService.createFoto(fotoBase));
+    void testCreateFotoTipoArchivoInvalidoThrows() {
+        FotoEntity foto = factory.manufacturePojo(FotoEntity.class);
+        foto.setUrl("https://valida.com/foto.jpg");
+        foto.setTipoArchivo("application/pdf");
+        foto.setTienda(tienda);
+
+        assertThrows(IllegalArgumentException.class, () -> fotoService.createFoto(foto));
     }
 
     @Test
-    void createFoto_conMultiplesEntidadesAsociadas_deberiaLanzarExcepcion() {
-        fotoBase.setUrl("https://imagen.jpg");
-        fotoBase.setRegalo(new RegaloEntity());
-        fotoBase.setTienda(new TiendaEntity());
-        assertThrows(IllegalArgumentException.class, () -> fotoService.createFoto(fotoBase));
-    }
+    void testCreateFotoConMultiplesEntidadesThrows() {
+        FotoEntity foto = factory.manufacturePojo(FotoEntity.class);
+        foto.setUrl("https://valida.com/foto.jpg");
+        foto.setTienda(tienda);
+        foto.setComentario(comentario);
 
-    @Test
-    void createFoto_regaloYaTieneFoto_deberiaLanzarExcepcion() {
-        RegaloEntity regalo = new RegaloEntity();
-        regalo.setId(1L);
-        fotoBase.setRegalo(regalo);
-
-        when(fotoRepository.findByRegaloId(1L)).thenReturn(List.of(new FotoEntity()));
-
-        fotoBase.setUrl("https://imagen.jpg");
-
-        assertThrows(IllegalStateException.class, () -> fotoService.createFoto(fotoBase));
-    }
-
-    @Test
-    void createFoto_validaYUnicaDebeGuardar() {
-        TiendaEntity tienda = new TiendaEntity();
-        tienda.setId(5L);
-        fotoBase.setTienda(tienda);
-        when(fotoRepository.save(any(FotoEntity.class))).thenReturn(fotoBase);
-
-        FotoEntity creada = fotoService.createFoto(fotoBase);
-
-        assertNotNull(creada);
-        verify(fotoRepository, times(1)).save(fotoBase);
+        assertThrows(IllegalArgumentException.class, () -> fotoService.createFoto(foto));
     }
 
     // =====================================================
@@ -106,49 +140,33 @@ class FotoServiceTest {
     // =====================================================
 
     @Test
-    void updateFoto_inexistente_deberiaLanzarExcepcion() {
-        when(fotoRepository.findById(99L)).thenReturn(Optional.empty());
-        assertThrows(EntityNotFoundException.class, () -> fotoService.updateFoto(99L, fotoBase));
+    void testUpdateFotoDescripcionYPrincipalSuccess() {
+        FotoEntity existente = fotoList.get(0);
+        FotoEntity cambios = new FotoEntity();
+        cambios.setDescripcion("Nueva descripción");
+        cambios.setEsPrincipal(true);
+
+        FotoEntity result = fotoService.updateFoto(existente.getId(), cambios);
+
+        assertEquals("Nueva descripción", result.getDescripcion());
+        assertTrue(result.getEsPrincipal());
     }
 
     @Test
-    void updateFoto_cambiaEntidadAsociada_deberiaLanzarExcepcion() {
-        RegaloEntity regalo = new RegaloEntity();
-        regalo.setId(1L);
-        fotoBase.setRegalo(regalo);
+    void testUpdateFotoNoExisteThrows() {
+        FotoEntity cambios = new FotoEntity();
+        cambios.setDescripcion("Cambio");
 
-        FotoEntity existente = new FotoEntity();
-        existente.setId(1L);
-        existente.setTienda(new TiendaEntity());
-
-        when(fotoRepository.findById(1L)).thenReturn(Optional.of(existente));
-
-        assertThrows(IllegalStateException.class, () -> fotoService.updateFoto(1L, fotoBase));
+        assertThrows(EntityNotFoundException.class, () -> fotoService.updateFoto(999L, cambios));
     }
 
     @Test
-    void updateFoto_cambiaDescripcionYPrincipalDebeActualizar() {
-        TiendaEntity tienda = new TiendaEntity();
-        tienda.setId(10L);
+    void testUpdateFotoCambiaEntidadThrows() {
+        FotoEntity existente = fotoList.get(0);
+        FotoEntity cambios = new FotoEntity();
+        cambios.setRegalo(regalo);
 
-        FotoEntity existente = new FotoEntity();
-        existente.setId(1L);
-        existente.setTienda(tienda);
-        existente.setEsPrincipal(false);
-
-        when(fotoRepository.findById(1L)).thenReturn(Optional.of(existente));
-        when(fotoRepository.findByTiendaId(10L)).thenReturn(List.of(existente));
-        when(fotoRepository.save(any(FotoEntity.class))).thenReturn(existente);
-
-        fotoBase.setTienda(tienda);
-        fotoBase.setDescripcion("Nueva descripción");
-        fotoBase.setEsPrincipal(true);
-
-        FotoEntity actualizado = fotoService.updateFoto(1L, fotoBase);
-
-        assertEquals("Nueva descripción", actualizado.getDescripcion());
-        assertTrue(actualizado.getEsPrincipal());
-        verify(fotoRepository, atLeastOnce()).save(any(FotoEntity.class));
+        assertThrows(IllegalStateException.class, () -> fotoService.updateFoto(existente.getId(), cambios));
     }
 
     // =====================================================
@@ -156,18 +174,17 @@ class FotoServiceTest {
     // =====================================================
 
     @Test
-    void deleteFoto_inexistente_deberiaLanzarExcepcion() {
-        when(fotoRepository.findById(77L)).thenReturn(Optional.empty());
-        assertThrows(EntityNotFoundException.class, () -> fotoService.deleteFoto(77L));
+    void testDeleteFotoSuccess() {
+        FotoEntity existente = fotoList.get(1);
+        fotoService.deleteFoto(existente.getId());
+
+        FotoEntity deleted = entityManager.find(FotoEntity.class, existente.getId());
+        assertNull(deleted);
     }
 
     @Test
-    void deleteFoto_existenteDebeEliminar() {
-        when(fotoRepository.findById(1L)).thenReturn(Optional.of(fotoBase));
-
-        fotoService.deleteFoto(1L);
-
-        verify(fotoRepository, times(1)).delete(fotoBase);
+    void testDeleteFotoNoExisteThrows() {
+        assertThrows(EntityNotFoundException.class, () -> fotoService.deleteFoto(999L));
     }
 
     // =====================================================
@@ -175,24 +192,25 @@ class FotoServiceTest {
     // =====================================================
 
     @Test
-    void getFotoById_inexistente_deberiaLanzarExcepcion() {
-        when(fotoRepository.findById(1L)).thenReturn(Optional.empty());
-        assertThrows(EntityNotFoundException.class, () -> fotoService.getFotoById(1L));
+    void testGetFotoByIdSuccess() {
+        FotoEntity existente = fotoList.get(0);
+        FotoEntity result = fotoService.getFotoById(existente.getId());
+
+        assertEquals(existente.getId(), result.getId());
     }
 
     @Test
-    void getFotoById_existenteDebeRetornar() {
-        when(fotoRepository.findById(1L)).thenReturn(Optional.of(fotoBase));
-        FotoEntity foto = fotoService.getFotoById(1L);
-        assertEquals(fotoBase, foto);
+    void testGetFotoByIdNoExisteThrows() {
+        assertThrows(EntityNotFoundException.class, () -> fotoService.getFotoById(999L));
     }
 
     @Test
-    void getAllFotos_debeRetornarLista() {
-        when(fotoRepository.findAll()).thenReturn(List.of(fotoBase));
-        List<FotoEntity> lista = fotoService.getAllFotos();
-        assertEquals(1, lista.size());
-        verify(fotoRepository, times(1)).findAll();
+    void testGetFotosPrincipales() {
+        fotoList.get(0).setEsPrincipal(true);
+        entityManager.persist(fotoList.get(0));
+
+        List<FotoEntity> principales = fotoService.getFotosPrincipales();
+        assertFalse(principales.isEmpty());
+        assertTrue(principales.stream().allMatch(FotoEntity::getEsPrincipal));
     }
 }
-
