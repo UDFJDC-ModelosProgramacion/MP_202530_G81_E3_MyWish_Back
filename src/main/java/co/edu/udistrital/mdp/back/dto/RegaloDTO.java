@@ -22,4 +22,5 @@ public class RegaloDTO {
     private FotoDTO foto;
 
     private PrioridadRegaloDTO prioridad;
+    
 }
