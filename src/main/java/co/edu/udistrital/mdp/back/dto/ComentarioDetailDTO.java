@@ -6,12 +6,10 @@ import lombok.Data;
 
 /**
  * DetailDTO para ComentarioEntity.
- * Incluye las asociaciones con usuario, tienda y fotos.
+ * Incluye únicamente las listas asociadas (fotos).
  */
 @Data
 public class ComentarioDetailDTO extends ComentarioDTO {
 
-    private UsuarioDTO usuario;
-    private TiendaDTO tienda;
     private List<FotoDTO> fotos = new ArrayList<>();
 }
