@@ -4,7 +4,6 @@ package co.edu.udistrital.mdp.back.controllers;
 import co.edu.udistrital.mdp.back.dto.ListaRegalosDTO;
 import co.edu.udistrital.mdp.back.dto.ListaRegalosDetailDTO;
 import co.edu.udistrital.mdp.back.entities.ListaRegalosEntity;
-import co.edu.udistrital.mdp.back.exceptions.IllegalOperationException;
 import co.edu.udistrital.mdp.back.services.ListaRegalosService;
 import jakarta.persistence.EntityNotFoundException;
 import org.modelmapper.ModelMapper;
