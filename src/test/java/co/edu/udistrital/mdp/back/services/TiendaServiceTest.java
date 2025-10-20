@@ -1,84 +1,170 @@
 package co.edu.udistrital.mdp.back.services;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
-
-import java.util.List;
-import java.util.Optional;
-
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-
 import co.edu.udistrital.mdp.back.entities.TiendaEntity;
 import co.edu.udistrital.mdp.back.repositories.TiendaRepository;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
+import org.springframework.context.annotation.Import;
+import org.springframework.transaction.annotation.Transactional;
+import uk.co.jemos.podam.api.PodamFactory;
+import uk.co.jemos.podam.api.PodamFactoryImpl;
 
+import java.util.ArrayList;
+import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
+@DataJpaTest
+@Transactional
+@Import(TiendaService.class)
 class TiendaServiceTest {
 
-    @Mock
-    private TiendaRepository tiendaRepo;
-
-    @InjectMocks
+    @Autowired
     private TiendaService tiendaService;
 
-    private TiendaEntity tienda;
+    @Autowired
+    private TiendaRepository tiendaRepository;
+
+    @Autowired
+    private TestEntityManager entityManager;
+
+    private PodamFactory factory = new PodamFactoryImpl();
+    private List<TiendaEntity> tiendas = new ArrayList<>();
 
     @BeforeEach
     void setUp() {
-        MockitoAnnotations.openMocks(this);
-        tienda = new TiendaEntity();
-        tienda.setId(1L);
-        tienda.setNombre("Tienda Test");
-        tienda.setDescripcion("Descripción de prueba");
+        clearData();
+        insertData();
     }
+
+    private void clearData() {
+        entityManager.getEntityManager().createQuery("delete from TiendaEntity").executeUpdate();
+    }
+
+    private void insertData() {
+        for (int i = 0; i < 3; i++) {
+            TiendaEntity tienda = factory.manufacturePojo(TiendaEntity.class);
+            tienda.setLink("https://tienda" + i + ".com"); // ✅ garantizar link válido
+            entityManager.persist(tienda);
+            tiendas.add(tienda);
+        }
+    }
+
+    // ---------------------------------------------------------------------
+    // TESTS CRUD
+    // ---------------------------------------------------------------------
 
     @Test
     void testGetAll() {
-        when(tiendaRepo.findAll()).thenReturn(List.of(tienda));
-        List<TiendaEntity> result = tiendaService.getAll();
-        assertEquals(1, result.size());
-        assertEquals("Tienda Test", result.get(0).getNombre());
+        List<TiendaEntity> list = tiendaService.getAll();
+        assertEquals(3, list.size());
     }
 
     @Test
-    void testGetById() {
-        when(tiendaRepo.findById(1L)).thenReturn(Optional.of(tienda));
-        TiendaEntity result = tiendaService.getById(1L);
-        assertEquals("Tienda Test", result.getNombre());
+    void testGetByIdSuccess() {
+        TiendaEntity entity = tiendas.get(0);
+        TiendaEntity found = tiendaService.getById(entity.getId());
+        assertNotNull(found);
+        assertEquals(entity.getNombre(), found.getNombre());
     }
 
     @Test
-    void testCreate() {
-        when(tiendaRepo.save(any(TiendaEntity.class))).thenReturn(tienda);
-        TiendaEntity result = tiendaService.create(tienda);
-        assertEquals("Tienda Test", result.getNombre());
+    void testGetByIdNotFound() {
+        assertThrows(IllegalArgumentException.class, () -> tiendaService.getById(999L));
     }
 
     @Test
-    void testUpdate() {
-        when(tiendaRepo.findById(1L)).thenReturn(Optional.of(tienda));
-        when(tiendaRepo.save(any(TiendaEntity.class))).thenReturn(tienda);
-        TiendaEntity nueva = new TiendaEntity();
-        nueva.setNombre("Tienda Actualizada");
+    void testCreateTienda() {
+        TiendaEntity nueva = factory.manufacturePojo(TiendaEntity.class);
+        nueva.setNombre("Nueva Tienda");
+        nueva.setDescripcion("Tienda de prueba");
+        nueva.setLink("https://example.com"); // ✅ asegurar link válido
 
-        TiendaEntity result = tiendaService.update(1L, nueva);
-        assertEquals("Tienda Actualizada", result.getNombre());
+        TiendaEntity creada = tiendaService.create(nueva);
+
+        assertNotNull(creada);
+        assertEquals(nueva.getNombre(), creada.getNombre());
+        assertEquals(4, tiendaRepository.findAll().size());
     }
 
     @Test
-    void testDelete() {
-        when(tiendaRepo.findById(1L)).thenReturn(Optional.of(tienda));
-        doNothing().when(tiendaRepo).delete(tienda);
-        assertDoesNotThrow(() -> tiendaService.delete(1L));
+    void testUpdateTienda() {
+        TiendaEntity existente = tiendas.get(0);
+        TiendaEntity cambios = factory.manufacturePojo(TiendaEntity.class);
+        cambios.setLink("https://nuevalink.com"); // ✅ link válido
+
+        TiendaEntity actualizada = tiendaService.update(existente.getId(), cambios);
+        assertEquals(cambios.getNombre(), actualizada.getNombre());
+        assertEquals(cambios.getDescripcion(), actualizada.getDescripcion());
     }
+
+    @Test
+    void testUpdateTiendaInexistenteDebeFallar() {
+        TiendaEntity cambios = factory.manufacturePojo(TiendaEntity.class);
+        cambios.setLink("https://valid.com");
+        assertThrows(IllegalArgumentException.class, () -> tiendaService.update(9999L, cambios));
+    }
+
+    @Test
+    void testDeleteTienda() {
+        TiendaEntity entity = tiendas.get(0);
+        tiendaService.delete(entity.getId());
+        assertFalse(tiendaRepository.findById(entity.getId()).isPresent());
+    }
+
+    @Test
+    void testDeleteTiendaInexistenteDebeFallar() {
+        assertThrows(IllegalArgumentException.class, () -> tiendaService.delete(9999L));
+    }
+
+    // ---------------------------------------------------------------------
+    // TESTS DE REGLAS DE NEGOCIO
+    // ---------------------------------------------------------------------
 
     @Test
     void testFindByNombre() {
-        when(tiendaRepo.findByNombreContainingIgnoreCase("test")).thenReturn(List.of(tienda));
-        List<TiendaEntity> result = tiendaService.findByNombre("test");
-        assertEquals(1, result.size());
+        TiendaEntity t = tiendas.get(0);
+        List<TiendaEntity> result = tiendaService.findByNombre(t.getNombre());
+        assertFalse(result.isEmpty());
+    }
+
+    @Test
+    void testCreateTiendaSinNombreDebeFallar() {
+        TiendaEntity nueva = factory.manufacturePojo(TiendaEntity.class);
+        nueva.setNombre("   ");
+        nueva.setLink("https://example.com");
+        assertThrows(IllegalArgumentException.class, () -> tiendaService.create(nueva));
+    }
+
+    @Test
+    void testCreateTiendaSinDescripcionDebeFallar() {
+        TiendaEntity nueva = factory.manufacturePojo(TiendaEntity.class);
+        nueva.setDescripcion(null);
+        nueva.setLink("https://example.com");
+        assertThrows(IllegalArgumentException.class, () -> tiendaService.create(nueva));
+    }
+
+    @Test
+    void testCreateTiendaConLinkInvalidoDebeFallar() {
+        TiendaEntity nueva = factory.manufacturePojo(TiendaEntity.class);
+        nueva.setLink("tienda-invalida.com"); // ❌ sin http
+        nueva.setDescripcion("Descripción válida");
+        nueva.setNombre("Tienda X");
+        assertThrows(IllegalArgumentException.class, () -> tiendaService.create(nueva));
+    }
+
+    @Test
+    void testCrearTiendaConNombreDuplicadoDebeFallar() {
+        TiendaEntity existente = tiendas.get(0);
+
+        TiendaEntity duplicada = factory.manufacturePojo(TiendaEntity.class);
+        duplicada.setNombre(existente.getNombre());
+        duplicada.setDescripcion("Otra tienda con mismo nombre");
+        duplicada.setLink("https://example2.com");
+
+        assertThrows(IllegalArgumentException.class, () -> tiendaService.create(duplicada));
     }
 }
