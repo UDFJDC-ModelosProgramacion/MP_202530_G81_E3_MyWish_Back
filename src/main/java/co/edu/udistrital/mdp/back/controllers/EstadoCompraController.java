@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/estados-compra")
+@RequestMapping("/estados-compra")
 public class EstadoCompraController {
 
     @Autowired
