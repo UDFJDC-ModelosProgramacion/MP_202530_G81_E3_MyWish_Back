@@ -1,5 +1,6 @@
 package co.edu.udistrital.mdp.back.entities;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
@@ -29,6 +30,6 @@ public class FotoEntity extends BaseEntity {
     @ManyToOne
     private TiendaEntity tienda;
 
-    @ManyToOne
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private ComentarioEntity comentario;
 }
