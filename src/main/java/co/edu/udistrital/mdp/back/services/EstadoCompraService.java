@@ -1,5 +1,4 @@
 package co.edu.udistrital.mdp.back.services;
-
 import co.edu.udistrital.mdp.back.entities.EstadoCompraEntity;
 import co.edu.udistrital.mdp.back.entities.RegaloEntity;
 import co.edu.udistrital.mdp.back.repositories.EstadoCompraRepository;
@@ -17,6 +16,13 @@ import java.util.Optional;
 @Service
 public class EstadoCompraService {
 
+    private static final String MENSAJE_ESTADO_NO_EXISTE = "El estado de compra con id ";
+    private static final String MENSAJE_ESTADO_NO_EXISTE_FIN = " no existe.";
+    private static final String MENSAJE_ESTADO_NOMBRE_USADO = "Ya existe un estado de compra con el nombre: ";
+    private static final String MENSAJE_ESTADO_USADO_POR_REGALOS = "No se puede modificar/eliminar el estado de compra porque está siendo utilizado por regalos.";
+    private static final String MENSAJE_ESTADO_POR_DEFECTO = "No se puede eliminar el estado de compra marcado como por defecto.";
+    private static final String MENSAJE_ESTADO_SIN_NOMBRE = "No se puede crear un estado de compra sin nombre.";
+
     @Autowired
     private EstadoCompraRepository estadoCompraRepository;
 
@@ -26,23 +32,18 @@ public class EstadoCompraService {
     // =====================================================
     // CREATE
     // =====================================================
-
     @Transactional
     public EstadoCompraEntity createEstadoCompra(EstadoCompraEntity estadoCompraEntity) {
-
         log.info("Inicia proceso de creación del estado de compra");
 
-        // Regla 1: No se puede crear un estado de compra sin nombre
         if (estadoCompraEntity.getNombre() == null || estadoCompraEntity.getNombre().trim().isEmpty()) {
-            throw new IllegalArgumentException("No se puede crear un estado de compra sin nombre.");
+            throw new IllegalArgumentException(MENSAJE_ESTADO_SIN_NOMBRE);
         }
 
-        // Regla 2: No puede existir más de un estado de compra con el mismo nombre
         if (estadoCompraRepository.existsByNombre(estadoCompraEntity.getNombre())) {
-            throw new IllegalArgumentException("Ya existe un estado de compra con el nombre: " + estadoCompraEntity.getNombre());
+            throw new IllegalArgumentException(MENSAJE_ESTADO_NOMBRE_USADO + estadoCompraEntity.getNombre());
         }
 
-        // Regla 3: El estado "Pendiente" debe crearse automáticamente como estado por defecto
         if ("Pendiente".equalsIgnoreCase(estadoCompraEntity.getNombre())) {
             estadoCompraEntity.setEsPorDefecto(true);
         }
@@ -54,40 +55,30 @@ public class EstadoCompraService {
     // =====================================================
     // UPDATE
     // =====================================================
-
     @Transactional
     public EstadoCompraEntity updateEstadoCompra(Long estadoCompraId, EstadoCompraEntity estadoCompraEntity) {
-
         log.info("Inicia proceso de actualización del estado de compra con id: {}", estadoCompraId);
 
-        Optional<EstadoCompraEntity> estadoCompraOpt = estadoCompraRepository.findById(estadoCompraId);
-        if (estadoCompraOpt.isEmpty()) {
-            throw new EntityNotFoundException("El estado de compra con id " + estadoCompraId + " no existe.");
-        }
+        EstadoCompraEntity existente = estadoCompraRepository.findById(estadoCompraId)
+                .orElseThrow(() -> new EntityNotFoundException(MENSAJE_ESTADO_NO_EXISTE + estadoCompraId + MENSAJE_ESTADO_NO_EXISTE_FIN));
 
-        EstadoCompraEntity existente = estadoCompraOpt.get();
-
-        // Regla 4: No se puede modificar el nombre de un estado de compra si está siendo utilizado por regalos
-        if (estadoCompraEntity.getNombre() != null && 
-            !estadoCompraEntity.getNombre().equals(existente.getNombre())) {
-            
-            // Verificar usando el repositorio de regalos directamente
+        if (estadoCompraEntity.getNombre() != null && !estadoCompraEntity.getNombre().equals(existente.getNombre())) {
             List<RegaloEntity> regalosAsociados = regaloRepository.findByEstadoCompra(existente);
             if (!regalosAsociados.isEmpty()) {
-                throw new IllegalStateException("No se puede modificar el nombre de un estado de compra que está siendo utilizado por regalos.");
+                throw new IllegalStateException(MENSAJE_ESTADO_USADO_POR_REGALOS);
             }
-            
-            // Verificar que el nuevo nombre no exista
+
             if (estadoCompraRepository.existsByNombre(estadoCompraEntity.getNombre())) {
-                throw new IllegalArgumentException("Ya existe un estado de compra con el nombre: " + estadoCompraEntity.getNombre());
+                throw new IllegalArgumentException(MENSAJE_ESTADO_NOMBRE_USADO + estadoCompraEntity.getNombre());
             }
+
             existente.setNombre(estadoCompraEntity.getNombre());
         }
 
-        // Actualización de datos válidos
         if (estadoCompraEntity.getDescripcion() != null) {
             existente.setDescripcion(estadoCompraEntity.getDescripcion());
         }
+
         if (estadoCompraEntity.getColor() != null) {
             existente.setColor(estadoCompraEntity.getColor());
         }
@@ -99,40 +90,29 @@ public class EstadoCompraService {
     // =====================================================
     // DELETE
     // =====================================================
-
     @Transactional
     public void deleteEstadoCompra(Long estadoCompraId) {
-
         log.info("Inicia proceso de eliminación del estado de compra con id: {}", estadoCompraId);
 
-        Optional<EstadoCompraEntity> estadoCompraOpt = estadoCompraRepository.findById(estadoCompraId);
-        if (estadoCompraOpt.isEmpty()) {
-            throw new EntityNotFoundException("El estado de compra con id " + estadoCompraId + " no existe.");
-        }
+        EstadoCompraEntity estadoCompra = estadoCompraRepository.findById(estadoCompraId)
+                .orElseThrow(() -> new EntityNotFoundException(MENSAJE_ESTADO_NO_EXISTE + estadoCompraId + MENSAJE_ESTADO_NO_EXISTE_FIN));
 
-        EstadoCompraEntity estadoCompra = estadoCompraOpt.get();
-
-        // Regla 5: No se puede eliminar un estado de compra si está asignado a algún regalo
-        // Verificar usando el repositorio de regalos directamente
         List<RegaloEntity> regalosAsociados = regaloRepository.findByEstadoCompra(estadoCompra);
         if (!regalosAsociados.isEmpty()) {
-            throw new IllegalStateException("No se puede eliminar el estado de compra porque está siendo utilizado por regalos.");
+            throw new IllegalStateException(MENSAJE_ESTADO_USADO_POR_REGALOS);
         }
 
-        // Regla 6: No se puede eliminar el estado de compra marcado como por defecto
         if (Boolean.TRUE.equals(estadoCompra.getEsPorDefecto())) {
-            throw new IllegalStateException("No se puede eliminar el estado de compra marcado como por defecto.");
+            throw new IllegalStateException(MENSAJE_ESTADO_POR_DEFECTO);
         }
 
         estadoCompraRepository.delete(estadoCompra);
-
         log.info("Termina proceso de eliminación del estado de compra con id: {}", estadoCompraId);
     }
 
     // =====================================================
     // GET
     // =====================================================
-
     @Transactional(readOnly = true)
     public List<EstadoCompraEntity> getAllEstadosCompra() {
         log.info("Inicia proceso de consulta de todos los estados de compra");
@@ -143,7 +123,7 @@ public class EstadoCompraService {
     public EstadoCompraEntity getEstadoCompraById(Long estadoCompraId) {
         log.info("Inicia proceso de consulta del estado de compra con id: {}", estadoCompraId);
         return estadoCompraRepository.findById(estadoCompraId)
-                .orElseThrow(() -> new EntityNotFoundException("El estado de compra con id " + estadoCompraId + " no existe."));
+                .orElseThrow(() -> new EntityNotFoundException(MENSAJE_ESTADO_NO_EXISTE + estadoCompraId + MENSAJE_ESTADO_NO_EXISTE_FIN));
     }
 
     @Transactional(readOnly = true)
@@ -152,5 +132,4 @@ public class EstadoCompraService {
         List<EstadoCompraEntity> estadosPorDefecto = estadoCompraRepository.findByEsPorDefectoTrue();
         return estadosPorDefecto.isEmpty() ? null : estadosPorDefecto.get(0);
     }
-    
 }
