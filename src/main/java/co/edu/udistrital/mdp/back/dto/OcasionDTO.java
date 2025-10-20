@@ -1,27 +1,14 @@
-package co.edu.udistrital.mdp.back.dtos;
+package co.edu.udistrital.mdp.back.dto;
 
-import lombok.Getter;
-import lombok.Setter;
-import co.edu.udistrital.mdp.back.entities.OcasionEntity;
+import lombok.Data;
 
-@Getter
-@Setter
+/**
+ * DTO para la entidad OcasionEntity.
+ * Representa la información básica que se envía o recibe desde el API.
+ */
+@Data
 public class OcasionDTO {
 
+    private Long id;
     private String nombre;
-
-    public OcasionDTO() {}
-
-    public OcasionDTO(OcasionEntity entity) {
-        if (entity != null) {
-            this.nombre = entity.getNombre();
-        }
-    }
-
-    public OcasionEntity toEntity() {
-        OcasionEntity entity = new OcasionEntity();
-        entity.setNombre(this.nombre);
-        return entity;
-    }
 }
-
