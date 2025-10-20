@@ -1,0 +1,10 @@
+package co.edu.udistrital.mdp.back.dto;
+
+import lombok.Data;
+@Data
+
+public class FiltroRegaloDTO {
+    private String criterio;
+    private String valor;
+    private ListaRegalosDTO listaRegalos;
+}
