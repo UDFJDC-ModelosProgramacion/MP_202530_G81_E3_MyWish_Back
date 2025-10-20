@@ -71,7 +71,8 @@ class MonedaServiceTest {
         nueva.setCodigo("");
         nueva.setSimbolo("$");
 
-        assertThrows(IllegalArgumentException.class, () -> monedaService.createMoneda(nueva));
+        assertThrows(IllegalArgumentException.class,
+        () -> monedaService.createMoneda(nueva));
     }
 
     @Test
@@ -87,7 +88,7 @@ class MonedaServiceTest {
         MonedaEntity original = monedaList.get(0);
         MonedaEntity otra = monedaList.get(1);
 
-        assertThrows(IllegalArgumentException.class, () ->
-                monedaService.updateMoneda(original.getId(), otra.getCodigo(), "₱"));
+        assertThrows(IllegalArgumentException.class,
+        () -> monedaService.updateMoneda(original.getId(), otra.getCodigo(), "P"));
     }
 }
