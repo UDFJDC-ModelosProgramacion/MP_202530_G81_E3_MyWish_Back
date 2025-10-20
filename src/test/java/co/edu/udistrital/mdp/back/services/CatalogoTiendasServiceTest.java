@@ -20,14 +20,10 @@ import co.edu.udistrital.mdp.back.repositories.TiendaRepository;
 import uk.co.jemos.podam.api.PodamFactory;
 import uk.co.jemos.podam.api.PodamFactoryImpl;
 
-<<<<<<< HEAD
 @DataJpaTest
 @Transactional
 @Import(CatalogoTiendasService.class)
 public class CatalogoTiendasServiceTest {
-=======
-class CatalogoTiendasServiceTest {
->>>>>>> 9dfa48a3575148cdd0d23fd015d6f7a2feb3d13f
 
     @Autowired
     private CatalogoTiendasService catalogoTiendasService;
@@ -43,19 +39,16 @@ class CatalogoTiendasServiceTest {
 
     private PodamFactory factory = new PodamFactoryImpl();
 
-    private List<CatalogoTiendasEntity> catalogosList = new ArrayList<>();
-    private List<TiendaEntity> tiendasList = new ArrayList<>();
+    private List<CatalogoTiendasEntity> catalogosList;
+    private List<TiendaEntity> tiendasList;
 
     @BeforeEach
-<<<<<<< HEAD
     void setUp() {
+        catalogosList = new ArrayList<>();
+        tiendasList = new ArrayList<>();
         clearData();
         insertData();
     }
-=======
-    void setup() {
-        MockitoAnnotations.openMocks(this);
->>>>>>> 9dfa48a3575148cdd0d23fd015d6f7a2feb3d13f
 
     private void clearData() {
         entityManager.getEntityManager().createQuery("delete from CatalogoTiendasEntity").executeUpdate();
@@ -63,14 +56,12 @@ class CatalogoTiendasServiceTest {
     }
 
     private void insertData() {
-        // Crear tiendas
         for (int i = 0; i < 2; i++) {
             TiendaEntity tienda = factory.manufacturePojo(TiendaEntity.class);
             entityManager.persist(tienda);
             tiendasList.add(tienda);
         }
 
-        // Crear catálogos
         for (int i = 0; i < 2; i++) {
             CatalogoTiendasEntity catalogo = factory.manufacturePojo(CatalogoTiendasEntity.class);
             catalogo.setNombre("Catalogo" + i);
@@ -81,61 +72,58 @@ class CatalogoTiendasServiceTest {
     }
 
     @Test
-    void testCrearCatalogo_Success() {
-<<<<<<< HEAD
+    void crearCatalogo_deberiaPersistirCorrectamente() {
         CatalogoTiendasEntity nuevo = factory.manufacturePojo(CatalogoTiendasEntity.class);
         nuevo.setNombre("NuevoCatalogo");
         nuevo.setTiendas(new ArrayList<>(tiendasList));
-=======
-        when(catalogoTiendasRepository.findByNombre("Catalogo1")).thenReturn(List.of());
-        when(catalogoTiendasRepository.save(catalogo)).thenReturn(catalogo);
->>>>>>> 9dfa48a3575148cdd0d23fd015d6f7a2feb3d13f
 
         CatalogoTiendasEntity creado = catalogoTiendasService.crearCatalogo(nuevo);
 
         assertNotNull(creado.getId());
         assertEquals("NuevoCatalogo", creado.getNombre());
+
+        CatalogoTiendasEntity persistido = catalogoTiendasRepository.findById(creado.getId()).orElse(null);
+        assertNotNull(persistido);
     }
 
     @Test
-    void testCrearCatalogo_NombreVacio() {
-<<<<<<< HEAD
+    void crearCatalogo_deberiaLanzarExcepcion_siNombreVacio() {
         CatalogoTiendasEntity nuevo = factory.manufacturePojo(CatalogoTiendasEntity.class);
         nuevo.setNombre("");
 
-=======
-        catalogo.setNombre("");
->>>>>>> 9dfa48a3575148cdd0d23fd015d6f7a2feb3d13f
         IllegalArgumentException ex = assertThrows(IllegalArgumentException.class,
                 () -> catalogoTiendasService.crearCatalogo(nuevo));
 
-        assertEquals("El nombre del catálogo no puede ser nulo o vacío.", ex.getMessage());
+        assertEquals(CatalogoTiendasService.MENSAJE_NOMBRE_VACIO, ex.getMessage());
     }
 
     @Test
-    void testCrearCatalogo_Duplicado() {
-<<<<<<< HEAD
+    void crearCatalogo_deberiaLanzarExcepcion_siNombreDuplicado() {
         CatalogoTiendasEntity duplicado = factory.manufacturePojo(CatalogoTiendasEntity.class);
         duplicado.setNombre(catalogosList.get(0).getNombre());
 
-=======
-        when(catalogoTiendasRepository.findByNombre("Catalogo1")).thenReturn(List.of(new CatalogoTiendasEntity()));
->>>>>>> 9dfa48a3575148cdd0d23fd015d6f7a2feb3d13f
         IllegalArgumentException ex = assertThrows(IllegalArgumentException.class,
                 () -> catalogoTiendasService.crearCatalogo(duplicado));
 
-        assertEquals("Ya existe un catálogo con ese nombre.", ex.getMessage());
+        assertEquals(CatalogoTiendasService.MENSAJE_NOMBRE_CATALOGO_DUPLICADO, ex.getMessage());
     }
 
     @Test
-    void testActualizarCatalogo_Success() {
-<<<<<<< HEAD
+    void crearCatalogo_deberiaManejarTiendasNull() {
+        CatalogoTiendasEntity nuevo = factory.manufacturePojo(CatalogoTiendasEntity.class);
+        nuevo.setNombre("ConTiendasNull");
+        nuevo.setTiendas(null);
+
+        CatalogoTiendasEntity creado = catalogoTiendasService.crearCatalogo(nuevo);
+
+        assertNotNull(creado.getId());
+        assertNotNull(creado.getTiendas());
+        assertTrue(creado.getTiendas().isEmpty());
+    }
+
+    @Test
+    void actualizarCatalogo_deberiaActualizarTodosLosCampos() {
         CatalogoTiendasEntity catalogo = catalogosList.get(0);
-=======
-        when(catalogoTiendasRepository.findById(1L)).thenReturn(Optional.of(catalogo));
-        when(catalogoTiendasRepository.findByNombre("NuevoNombre")).thenReturn(List.of());
-        when(catalogoTiendasRepository.save(catalogo)).thenReturn(catalogo);
->>>>>>> 9dfa48a3575148cdd0d23fd015d6f7a2feb3d13f
 
         CatalogoTiendasEntity actualizado = catalogoTiendasService.actualizarCatalogo(
                 catalogo.getId(),
@@ -150,38 +138,22 @@ class CatalogoTiendasServiceTest {
     }
 
     @Test
-    void testActualizarCatalogo_NombreDuplicado() {
-<<<<<<< HEAD
+    void actualizarCatalogo_deberiaLanzarExcepcion_siNombreDuplicado() {
         CatalogoTiendasEntity catalogo = catalogosList.get(0);
         String nombreDuplicado = catalogosList.get(1).getNombre();
-=======
-        CatalogoTiendasEntity otroCatalogo = new CatalogoTiendasEntity();
-        otroCatalogo.setId(2L);
-        otroCatalogo.setNombre("NuevoNombre");
-
-        when(catalogoTiendasRepository.findById(1L)).thenReturn(Optional.of(catalogo));
-        when(catalogoTiendasRepository.findByNombre("NuevoNombre")).thenReturn(List.of(otroCatalogo));
->>>>>>> 9dfa48a3575148cdd0d23fd015d6f7a2feb3d13f
 
         IllegalArgumentException ex = assertThrows(IllegalArgumentException.class,
                 () -> catalogoTiendasService.actualizarCatalogo(catalogo.getId(), nombreDuplicado, "desc", new ArrayList<>()));
 
-        assertEquals("El nombre ya está en uso por otro catálogo.", ex.getMessage());
+        assertEquals(CatalogoTiendasService.MENSAJE_NOMBRE_EN_USO_OTRO, ex.getMessage());
     }
 
     @Test
-<<<<<<< HEAD
-    void testEliminarCatalogo_Success() {
+    void eliminarCatalogo_deberiaEliminarCorrectamente() {
         CatalogoTiendasEntity nuevo = factory.manufacturePojo(CatalogoTiendasEntity.class);
         nuevo.setNombre("Eliminar");
         nuevo.setTiendas(new ArrayList<>());
         entityManager.persist(nuevo);
-=======
-    void testActualizarCatalogo_ListaTiendasVaciaNoPermitida() {
-        catalogo.getTiendas().add(tiendaMock);
-        when(catalogoTiendasRepository.findById(1L)).thenReturn(Optional.of(catalogo));
-        when(catalogoTiendasRepository.findByNombre(anyString())).thenReturn(List.of());
->>>>>>> 9dfa48a3575148cdd0d23fd015d6f7a2feb3d13f
 
         catalogoTiendasService.eliminarCatalogo(nuevo.getId());
 
@@ -189,40 +161,19 @@ class CatalogoTiendasServiceTest {
     }
 
     @Test
-<<<<<<< HEAD
-    void testEliminarCatalogo_ConTiendas() {
+    void eliminarCatalogo_deberiaLanzarExcepcion_siTieneTiendas() {
         CatalogoTiendasEntity catalogo = catalogosList.get(0);
-=======
-    void testEliminarCatalogo_Success() {
-        catalogo.setTiendas(new ArrayList<>());
-        when(catalogoTiendasRepository.findById(1L)).thenReturn(Optional.of(catalogo));
-
-        catalogoTiendasService.eliminarCatalogo(1L);
-        verify(catalogoTiendasRepository, times(1)).delete(catalogo);
-    }
-
-    @Test
-    void testEliminarCatalogo_ConTiendas() {
-        catalogo.getTiendas().add(tiendaMock);
-        when(catalogoTiendasRepository.findById(1L)).thenReturn(Optional.of(catalogo));
->>>>>>> 9dfa48a3575148cdd0d23fd015d6f7a2feb3d13f
 
         IllegalStateException ex = assertThrows(IllegalStateException.class,
                 () -> catalogoTiendasService.eliminarCatalogo(catalogo.getId()));
 
-        assertEquals("No se puede eliminar un catálogo que tiene tiendas asociadas.", ex.getMessage());
+        assertEquals(CatalogoTiendasService.MENSAJE_NO_ELIMINAR_TIENDAS_ASOCIADAS, ex.getMessage());
     }
 
     @Test
-    void testEliminarTiendaDeCatalogo_Success() {
-<<<<<<< HEAD
+    void eliminarTiendaDeCatalogo_deberiaEliminarCorrectamente() {
         CatalogoTiendasEntity catalogo = catalogosList.get(0);
         TiendaEntity tienda = tiendasList.get(0);
-=======
-        catalogo.getTiendas().add(tiendaMock);
-        when(catalogoTiendasRepository.findById(1L)).thenReturn(Optional.of(catalogo));
-        when(tiendaRepository.findById(10L)).thenReturn(Optional.of(tiendaMock));
->>>>>>> 9dfa48a3575148cdd0d23fd015d6f7a2feb3d13f
 
         catalogoTiendasService.eliminarTiendaDeCatalogo(catalogo.getId(), tienda.getId());
 
@@ -231,18 +182,73 @@ class CatalogoTiendasServiceTest {
     }
 
     @Test
-    void testEliminarTiendaDeCatalogo_TiendaNoPertenece() {
-<<<<<<< HEAD
+    void eliminarTiendaDeCatalogo_deberiaLanzarExcepcion_siTiendaNoPertenece() {
         CatalogoTiendasEntity catalogo = catalogosList.get(0);
         TiendaEntity tienda = tiendasList.get(1);
-=======
-        when(catalogoTiendasRepository.findById(1L)).thenReturn(Optional.of(catalogo));
-        when(tiendaRepository.findById(10L)).thenReturn(Optional.of(tiendaMock));
->>>>>>> 9dfa48a3575148cdd0d23fd015d6f7a2feb3d13f
 
         IllegalArgumentException ex = assertThrows(IllegalArgumentException.class,
                 () -> catalogoTiendasService.eliminarTiendaDeCatalogo(catalogo.getId(), tienda.getId()));
 
-        assertEquals("La tienda no pertenece a este catálogo.", ex.getMessage());
+        assertEquals(CatalogoTiendasService.MENSAJE_TIENDA_NO_PERTENECE_CATALOGO, ex.getMessage());
+    }
+
+    @Test
+    void actualizarCatalogo_deberiaActualizarSoloNombre() {
+        CatalogoTiendasEntity catalogo = catalogosList.get(0);
+
+        CatalogoTiendasEntity actualizado = catalogoTiendasService.actualizarCatalogo(
+                catalogo.getId(),
+                "SoloNombre",
+                catalogo.getDescripcion(),
+                catalogo.getTiendas()
+        );
+
+        assertEquals("SoloNombre", actualizado.getNombre());
+        assertEquals(catalogo.getDescripcion(), actualizado.getDescripcion());
+    }
+
+    @Test
+    void actualizarCatalogo_deberiaActualizarSoloDescripcion() {
+        CatalogoTiendasEntity catalogo = catalogosList.get(0);
+
+        CatalogoTiendasEntity actualizado = catalogoTiendasService.actualizarCatalogo(
+                catalogo.getId(),
+                catalogo.getNombre(),
+                "SoloDescripcion",
+                catalogo.getTiendas()
+        );
+
+        assertEquals("SoloDescripcion", actualizado.getDescripcion());
+        assertEquals(catalogo.getNombre(), actualizado.getNombre());
+    }
+
+    @Test
+    void actualizarCatalogo_deberiaActualizarSoloNombre() {
+        CatalogoTiendasEntity catalogo = catalogosList.get(0);
+
+        CatalogoTiendasEntity actualizado = catalogoTiendasService.actualizarCatalogo(
+                catalogo.getId(),
+                "SoloNombre",
+                catalogo.getDescripcion(),
+                catalogo.getTiendas()
+        );
+
+        assertEquals("SoloNombre", actualizado.getNombre());
+        assertEquals(catalogo.getDescripcion(), actualizado.getDescripcion());
+    }
+
+    @Test
+    void actualizarCatalogo_deberiaActualizarSoloDescripcion() {
+        CatalogoTiendasEntity catalogo = catalogosList.get(0);
+
+        CatalogoTiendasEntity actualizado = catalogoTiendasService.actualizarCatalogo(
+                catalogo.getId(),
+                catalogo.getNombre(),
+                "SoloDescripcion",
+                catalogo.getTiendas()
+        );
+
+        assertEquals("SoloDescripcion", actualizado.getDescripcion());
+        assertEquals(catalogo.getNombre(), actualizado.getNombre());
     }
 }
