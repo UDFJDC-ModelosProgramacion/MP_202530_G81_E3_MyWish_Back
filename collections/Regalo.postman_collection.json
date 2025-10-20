@@ -1,0 +1,139 @@
+{
+	"info": {
+		"_postman_id": "1fdab1ab-cd4b-400a-b9ee-acce39eb6595",
+		"name": "Regalo",
+		"description": "Colección Postman para probar los endpoints CRUD de la entidad Regalo.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "49389956",
+		"_collection_link": "https://guada7-8062307.postman.co/workspace/guada7's-Workspace~1431b7da-09a7-469a-831a-94263500583e/collection/49389956-1fdab1ab-cd4b-400a-b9ee-acce39eb6595?action=share&source=collection_link&creator=49389956"
+	},
+	"item": [
+		{
+			"name": "Crear Regalo",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"descripcion\": \"Perfume Chanel N°5\",\n  \"linkCompra\": \"https://tiendaperfumes.com/chanel5\",\n  \"precioEstimado\": 350000,\n  \"categoria\": \"Perfumes\",\n  \"estadoCompra\": { \"id\": 1 },\n  \"tienda\": { \"id\": 1 },\n  \"foto\": { \"id\": 1 },\n  \"listaRegalos\": { \"id\": 1 },\n  \"prioridad\": { \"id\": 1 }\n}"
+				},
+				"url": {
+					"raw": "{{baseURL}}/regalos",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"regalos"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Obtener todos los Regalos",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "{{baseURL}}/regalos",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"regalos"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Obtener Regalo por ID",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "{{baseURL}}/regalos/1",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"regalos",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Actualizar Regalo",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"descripcion\": \"Perfume Dior Sauvage\",\n  \"linkCompra\": \"https://tiendaperfumes.com/dior-sauvage\",\n  \"precioEstimado\": 420000,\n  \"categoria\": \"Perfumes\",\n  \"estadoCompra\": { \"id\": 1 },\n  \"tienda\": { \"id\": 1 },\n  \"foto\": { \"id\": 2 },\n  \"listaRegalos\": { \"id\": 1 },\n  \"prioridad\": { \"id\": 1 }\n}"
+				},
+				"url": {
+					"raw": "{{baseURL}}/regalos/1",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"regalos",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Eliminar Regalo",
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "{{baseURL}}/regalos/1",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"regalos",
+						"1"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"variable": [
+		{
+			"key": "baseURL",
+			"value": "http://localhost:8080"
+		}
+	]
+}
