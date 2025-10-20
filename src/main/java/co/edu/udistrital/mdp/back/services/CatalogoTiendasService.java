@@ -133,4 +133,14 @@ public class CatalogoTiendasService {
         catalogo.getTiendas().remove(tienda);
         catalogoTiendasRepository.save(catalogo);
     }
+
+    public List<CatalogoTiendasEntity> getAll() {
+    return catalogoTiendasRepository.findAll();
+}
+
+public CatalogoTiendasEntity getById(Long id) {
+    return catalogoTiendasRepository.findById(id)
+        .orElseThrow(() -> new IllegalArgumentException("Catálogo no encontrado"));
+}
+
 }
