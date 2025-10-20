@@ -75,7 +75,7 @@ public class MensajeInvitacionService {
                 remitente = lista.getCreador();
                 nombreEntidad = lista.getNombre();
                 mensaje.setListaRegalos(lista);
-                asunto = "🎁 Invitación a lista de regalos: " + nombreEntidad;
+                asunto = "Invitación a lista de regalos: " + nombreEntidad;
                 titulo = "¡Te han invitado a participar en una lista de regalos!";
             }
             default -> throw new IllegalArgumentException("Tipo de invitación no válido: " + tipo);
