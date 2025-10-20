@@ -6,4 +6,5 @@ import lombok.Data;
 public class FiltroRegaloDTO {
     private String criterio;
     private String valor;
+    private ListaRegalosDTO listaRegalos;
 }
