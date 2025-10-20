@@ -4,7 +4,7 @@ import java.util.List;
 import lombok.Data;
 
 @Data
-public class CelebracionDetail extends CelebracionDTO {
+public class CelebracionDetailDTO extends CelebracionDTO {
 
     private List<UsuarioDTO> invitados = new ArrayList<>();
 
