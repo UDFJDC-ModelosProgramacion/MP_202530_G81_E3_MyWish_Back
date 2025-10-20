@@ -1,5 +1,6 @@
 package co.edu.udistrital.mdp.back.services;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,10 +36,14 @@ public class CatalogoTiendasService {
             throw new IllegalArgumentException("La descripción no puede ser nula o vacía.");
         }
 
-        // Regla: El nombre del catálogo debe ser único
         List<CatalogoTiendasEntity> existentes = catalogoTiendasRepository.findByNombre(catalogo.getNombre());
         if (!existentes.isEmpty()) {
             throw new IllegalArgumentException("Ya existe un catálogo con ese nombre.");
+        }
+
+        // Inicializar lista de tiendas si es null
+        if (catalogo.getTiendas() == null) {
+            catalogo.setTiendas(new ArrayList<>());
         }
 
         return catalogoTiendasRepository.save(catalogo);
@@ -60,15 +65,19 @@ public class CatalogoTiendasService {
             throw new IllegalArgumentException("La descripción no puede ser nula o vacía.");
         }
 
-        // Regla: El nombre no puede duplicar otro catálogo existente (excepto este mismo)
         List<CatalogoTiendasEntity> otrosCatalogos = catalogoTiendasRepository.findByNombre(nuevoNombre);
         boolean existeOtro = otrosCatalogos.stream().anyMatch(c -> !c.getId().equals(catalogoId));
         if (existeOtro) {
             throw new IllegalArgumentException("El nombre ya está en uso por otro catálogo.");
         }
 
+        // Inicializar lista de tiendas si es null
+        if (nuevasTiendas == null) {
+            nuevasTiendas = new ArrayList<>();
+        }
+
         // Regla: No se puede dejar vacía la lista de tiendas si ya tenía elementos
-        if (!catalogo.getTiendas().isEmpty() && (nuevasTiendas == null || nuevasTiendas.isEmpty())) {
+        if (!catalogo.getTiendas().isEmpty() && nuevasTiendas.isEmpty()) {
             throw new IllegalArgumentException("No se puede dejar vacía la lista de tiendas si ya tenía elementos.");
         }
 
@@ -87,7 +96,6 @@ public class CatalogoTiendasService {
         CatalogoTiendasEntity catalogo = catalogoTiendasRepository.findById(catalogoId)
                 .orElseThrow(() -> new IllegalArgumentException("Catálogo no encontrado"));
 
-        // Regla: No se puede eliminar un catálogo si tiene tiendas asociadas
         if (!catalogo.getTiendas().isEmpty()) {
             throw new IllegalStateException("No se puede eliminar un catálogo que tiene tiendas asociadas.");
         }
@@ -95,7 +103,7 @@ public class CatalogoTiendasService {
         catalogoTiendasRepository.delete(catalogo);
     }
 
-    // Eliminar tienda de un catálogo (quita la tienda y actualiza catálogo)
+    // Eliminar tienda de un catálogo
     @Transactional
     public void eliminarTiendaDeCatalogo(Long catalogoId, Long tiendaId) {
         log.info("Eliminar tienda id {} del catálogo id {}", tiendaId, catalogoId);
@@ -113,6 +121,4 @@ public class CatalogoTiendasService {
         catalogo.getTiendas().remove(tienda);
         catalogoTiendasRepository.save(catalogo);
     }
-    
 }
-
