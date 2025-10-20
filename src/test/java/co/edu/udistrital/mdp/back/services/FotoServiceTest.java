@@ -66,17 +66,20 @@ class FotoServiceTest {
     }
 
     private void clearData() {
-        entityManager.getEntityManager().createQuery("delete from FotoEntity").executeUpdate();
-        entityManager.getEntityManager().createQuery("delete from RegaloEntity").executeUpdate();
-        entityManager.getEntityManager().createQuery("delete from ListaRegalosEntity").executeUpdate();
-        entityManager.getEntityManager().createQuery("delete from TiendaEntity").executeUpdate();
-        entityManager.getEntityManager().createQuery("delete from ComentarioEntity").executeUpdate();
+        fotoRepository.deleteAll();
+        regaloRepository.deleteAll();
+        listaRegalosRepository.deleteAll();
+        tiendaRepository.deleteAll();
+        comentarioRepository.deleteAll();
+        entityManager.flush();
     }
 
     private void insertData() {
+        // Primero crear y persistir todas las entidades relacionadas
         // Crear regalos
         for (int i = 0; i < 3; i++) {
             RegaloEntity regalo = factory.manufacturePojo(RegaloEntity.class);
+            regalo.setId(null); // Asegurar que sea nuevo
             entityManager.persist(regalo);
             regaloList.add(regalo);
         }
@@ -84,6 +87,7 @@ class FotoServiceTest {
         // Crear listas de regalos
         for (int i = 0; i < 2; i++) {
             ListaRegalosEntity lista = factory.manufacturePojo(ListaRegalosEntity.class);
+            lista.setId(null);
             entityManager.persist(lista);
             listaRegalosList.add(lista);
         }
@@ -91,6 +95,7 @@ class FotoServiceTest {
         // Crear tiendas
         for (int i = 0; i < 2; i++) {
             TiendaEntity tienda = factory.manufacturePojo(TiendaEntity.class);
+            tienda.setId(null);
             entityManager.persist(tienda);
             tiendaList.add(tienda);
         }
@@ -98,16 +103,20 @@ class FotoServiceTest {
         // Crear comentarios
         for (int i = 0; i < 2; i++) {
             ComentarioEntity comentario = factory.manufacturePojo(ComentarioEntity.class);
+            comentario.setId(null);
             entityManager.persist(comentario);
             comentarioList.add(comentario);
         }
 
-        // Crear fotos para diferentes entidades
+        entityManager.flush(); // Forzar el guardado de todas las entidades relacionadas
+
+        // Ahora crear fotos con entidades ya persistidas
         // Foto para regalo (OneToOne)
         FotoEntity fotoRegalo = factory.manufacturePojo(FotoEntity.class);
+        fotoRegalo.setId(null);
         fotoRegalo.setUrl("https://ejemplo.com/regalo1.jpg");
         fotoRegalo.setTipoArchivo("image/jpeg");
-        fotoRegalo.setTamanioBytes(1024L * 1024L);
+        fotoRegalo.setTamanioBytes(1024L * 1024L); // 1MB
         fotoRegalo.setEsPrincipal(false);
         fotoRegalo.setRegalo(regaloList.get(0));
         fotoRegalo.setListaRegalos(null);
@@ -118,9 +127,10 @@ class FotoServiceTest {
 
         // Foto para tienda (ManyToOne)
         FotoEntity fotoTienda = factory.manufacturePojo(FotoEntity.class);
+        fotoTienda.setId(null);
         fotoTienda.setUrl("https://ejemplo.com/tienda1.jpg");
         fotoTienda.setTipoArchivo("image/png");
-        fotoTienda.setTamanioBytes(2048L * 1024L);
+        fotoTienda.setTamanioBytes(2048L * 1024L); // 2MB
         fotoTienda.setEsPrincipal(true);
         fotoTienda.setRegalo(null);
         fotoTienda.setListaRegalos(null);
@@ -131,9 +141,10 @@ class FotoServiceTest {
 
         // Foto para comentario (ManyToOne)
         FotoEntity fotoComentario = factory.manufacturePojo(FotoEntity.class);
+        fotoComentario.setId(null);
         fotoComentario.setUrl("https://ejemplo.com/comentario1.jpg");
         fotoComentario.setTipoArchivo("image/gif");
-        fotoComentario.setTamanioBytes(512L * 1024L);
+        fotoComentario.setTamanioBytes(512L * 1024L); // 0.5MB
         fotoComentario.setEsPrincipal(false);
         fotoComentario.setRegalo(null);
         fotoComentario.setListaRegalos(null);
@@ -141,15 +152,18 @@ class FotoServiceTest {
         fotoComentario.setComentario(comentarioList.get(0));
         entityManager.persist(fotoComentario);
         fotoList.add(fotoComentario);
+
+        entityManager.flush(); // Forzar el guardado de las fotos
     }
 
     // =====================================================
-    // CREATE TESTS
+    // CREATE TESTS - CORREGIDOS
     // =====================================================
 
     @Test
     void testCreateFoto_Success() {
         FotoEntity nueva = factory.manufacturePojo(FotoEntity.class);
+        nueva.setId(null);
         nueva.setUrl("https://ejemplo.com/nueva.jpg");
         nueva.setTipoArchivo("image/jpeg");
         nueva.setTamanioBytes(2048L * 1024L); // 2MB
@@ -168,11 +182,35 @@ class FotoServiceTest {
 
     @Test
     void testCreateFoto_RegaloYaTieneFoto_LanzaExcepcion() {
-        // Intentar crear segunda foto para el mismo regalo que ya tiene una
+        // Usar un regalo que NO esté en la lista inicial
+        RegaloEntity regaloNuevo = factory.manufacturePojo(RegaloEntity.class);
+        regaloNuevo.setId(null);
+        entityManager.persist(regaloNuevo);
+        entityManager.flush();
+
+        // Primero crear una foto para el regalo
+        FotoEntity primeraFoto = factory.manufacturePojo(FotoEntity.class);
+        primeraFoto.setId(null);
+        primeraFoto.setUrl("https://ejemplo.com/primera.jpg");
+        primeraFoto.setTipoArchivo("image/jpeg");
+        primeraFoto.setTamanioBytes(1024L * 1024L); // 1MB
+        primeraFoto.setRegalo(regaloNuevo);
+        primeraFoto.setListaRegalos(null);
+        primeraFoto.setTienda(null);
+        primeraFoto.setComentario(null);
+        entityManager.persist(primeraFoto);
+        entityManager.flush();
+
+        // Intentar crear segunda foto para el mismo regalo
         FotoEntity segundaFoto = factory.manufacturePojo(FotoEntity.class);
+        segundaFoto.setId(null);
         segundaFoto.setUrl("https://ejemplo.com/segunda.jpg");
         segundaFoto.setTipoArchivo("image/jpeg");
-        segundaFoto.setRegalo(regaloList.get(0)); // Mismo regalo que ya tiene foto
+        segundaFoto.setTamanioBytes(1024L * 1024L); // 1MB
+        segundaFoto.setRegalo(regaloNuevo); // Mismo regalo
+        segundaFoto.setListaRegalos(null);
+        segundaFoto.setTienda(null);
+        segundaFoto.setComentario(null);
 
         assertThrows(IllegalStateException.class, () ->
                 fotoService.createFoto(segundaFoto));
@@ -180,18 +218,35 @@ class FotoServiceTest {
 
     @Test
     void testCreateFoto_ListaRegalosYaTieneFoto_LanzaExcepcion() {
-        // Primero crear una foto para una lista de regalos
+        // Usar una lista que NO esté en la lista inicial
+        ListaRegalosEntity listaNueva = factory.manufacturePojo(ListaRegalosEntity.class);
+        listaNueva.setId(null);
+        entityManager.persist(listaNueva);
+        entityManager.flush();
+
+        // Primero crear una foto para la lista de regalos
         FotoEntity primeraFoto = factory.manufacturePojo(FotoEntity.class);
+        primeraFoto.setId(null);
         primeraFoto.setUrl("https://ejemplo.com/primera-lista.jpg");
         primeraFoto.setTipoArchivo("image/jpeg");
-        primeraFoto.setListaRegalos(listaRegalosList.get(0));
+        primeraFoto.setTamanioBytes(1024L * 1024L); // 1MB
+        primeraFoto.setListaRegalos(listaNueva);
+        primeraFoto.setRegalo(null);
+        primeraFoto.setTienda(null);
+        primeraFoto.setComentario(null);
         entityManager.persist(primeraFoto);
         entityManager.flush();
 
         // Intentar crear segunda foto para la misma lista
         FotoEntity segundaFoto = factory.manufacturePojo(FotoEntity.class);
+        segundaFoto.setId(null);
         segundaFoto.setUrl("https://ejemplo.com/segunda-lista.jpg");
-        segundaFoto.setListaRegalos(listaRegalosList.get(0)); // Misma lista
+        segundaFoto.setTipoArchivo("image/jpeg");
+        segundaFoto.setTamanioBytes(1024L * 1024L); // 1MB
+        segundaFoto.setListaRegalos(listaNueva); // Misma lista
+        segundaFoto.setRegalo(null);
+        segundaFoto.setTienda(null);
+        segundaFoto.setComentario(null);
 
         assertThrows(IllegalStateException.class, () ->
                 fotoService.createFoto(segundaFoto));
@@ -200,8 +255,14 @@ class FotoServiceTest {
     @Test
     void testCreateFoto_URLInvalida_LanzaExcepcion() {
         FotoEntity nueva = factory.manufacturePojo(FotoEntity.class);
+        nueva.setId(null);
         nueva.setUrl("ejemplo.com/foto.jpg"); // Sin http/https
+        nueva.setTamanioBytes(1024L * 1024L); // 1MB
+        nueva.setTipoArchivo("image/jpeg");
         nueva.setRegalo(regaloList.get(1));
+        nueva.setListaRegalos(null);
+        nueva.setTienda(null);
+        nueva.setComentario(null);
 
         assertThrows(IllegalArgumentException.class, () ->
                 fotoService.createFoto(nueva));
@@ -210,9 +271,14 @@ class FotoServiceTest {
     @Test
     void testCreateFoto_TamanioExcedido_LanzaExcepcion() {
         FotoEntity nueva = factory.manufacturePojo(FotoEntity.class);
+        nueva.setId(null);
         nueva.setUrl("https://ejemplo.com/grande.jpg");
         nueva.setTamanioBytes(11L * 1024L * 1024L); // 11MB (excede el límite)
+        nueva.setTipoArchivo("image/jpeg");
         nueva.setRegalo(regaloList.get(1));
+        nueva.setListaRegalos(null);
+        nueva.setTienda(null);
+        nueva.setComentario(null);
 
         assertThrows(IllegalArgumentException.class, () ->
                 fotoService.createFoto(nueva));
@@ -221,9 +287,14 @@ class FotoServiceTest {
     @Test
     void testCreateFoto_FormatoInvalido_LanzaExcepcion() {
         FotoEntity nueva = factory.manufacturePojo(FotoEntity.class);
+        nueva.setId(null);
         nueva.setUrl("https://ejemplo.com/archivo.pdf");
         nueva.setTipoArchivo("application/pdf");
+        nueva.setTamanioBytes(1024L * 1024L); // 1MB
         nueva.setRegalo(regaloList.get(1));
+        nueva.setListaRegalos(null);
+        nueva.setTienda(null);
+        nueva.setComentario(null);
 
         assertThrows(IllegalArgumentException.class, () ->
                 fotoService.createFoto(nueva));
@@ -232,8 +303,10 @@ class FotoServiceTest {
     @Test
     void testCreateFoto_SinEntidadAsociada_LanzaExcepcion() {
         FotoEntity nueva = factory.manufacturePojo(FotoEntity.class);
+        nueva.setId(null);
         nueva.setUrl("https://ejemplo.com/foto.jpg");
         nueva.setTipoArchivo("image/jpeg");
+        nueva.setTamanioBytes(1024L * 1024L); // 1MB
         nueva.setRegalo(null);
         nueva.setListaRegalos(null);
         nueva.setTienda(null);
@@ -246,25 +319,30 @@ class FotoServiceTest {
     @Test
     void testCreateFoto_VariasEntidadesAsociadas_LanzaExcepcion() {
         FotoEntity nueva = factory.manufacturePojo(FotoEntity.class);
+        nueva.setId(null);
         nueva.setUrl("https://ejemplo.com/foto.jpg");
         nueva.setTipoArchivo("image/jpeg");
+        nueva.setTamanioBytes(1024L * 1024L); // 1MB
         nueva.setRegalo(regaloList.get(1));
         nueva.setListaRegalos(listaRegalosList.get(1)); // Dos entidades
+        nueva.setTienda(null);
+        nueva.setComentario(null);
 
         assertThrows(IllegalArgumentException.class, () ->
                 fotoService.createFoto(nueva));
     }
 
     // =====================================================
-    // UPDATE TESTS
+    // UPDATE TESTS - CORREGIDOS
     // =====================================================
 
     @Test
     void testUpdateFoto_Success() {
         FotoEntity existente = fotoList.get(0);
-        FotoEntity actualizada = factory.manufacturePojo(FotoEntity.class);
+        FotoEntity actualizada = new FotoEntity(); // No usar factory para evitar relaciones
         actualizada.setDescripcion("Descripción actualizada");
         actualizada.setEsPrincipal(false);
+        // No establecer relaciones para evitar el error
 
         FotoEntity resultado = fotoService.updateFoto(existente.getId(), actualizada);
         
@@ -273,7 +351,8 @@ class FotoServiceTest {
 
     @Test
     void testUpdateFoto_NoExiste_LanzaExcepcion() {
-        FotoEntity actualizada = factory.manufacturePojo(FotoEntity.class);
+        FotoEntity actualizada = new FotoEntity();
+        actualizada.setDescripcion("Test");
         
         assertThrows(EntityNotFoundException.class, () ->
                 fotoService.updateFoto(999L, actualizada));
@@ -282,8 +361,14 @@ class FotoServiceTest {
     @Test
     void testUpdateFoto_CambiarEntidadAsociada_LanzaExcepcion() {
         FotoEntity existente = fotoList.get(0);
-        FotoEntity actualizada = factory.manufacturePojo(FotoEntity.class);
-        actualizada.setRegalo(regaloList.get(1)); // Diferente regalo
+        FotoEntity actualizada = new FotoEntity();
+        // Crear un nuevo regalo diferente
+        RegaloEntity nuevoRegalo = factory.manufacturePojo(RegaloEntity.class);
+        nuevoRegalo.setId(null);
+        entityManager.persist(nuevoRegalo);
+        entityManager.flush();
+        
+        actualizada.setRegalo(nuevoRegalo); // Diferente regalo
 
         assertThrows(IllegalStateException.class, () ->
                 fotoService.updateFoto(existente.getId(), actualizada));
@@ -291,8 +376,9 @@ class FotoServiceTest {
 
     @Test
     void testUpdateFoto_MarcarComoPrincipal_DesmarcaOtras() {
-        FotoEntity existente = fotoList.get(1); // Foto de tienda (puede tener múltiples)
-        FotoEntity actualizada = factory.manufacturePojo(FotoEntity.class);
+        // Usar una foto de tienda que puede tener múltiples
+        FotoEntity existente = fotoList.get(1);
+        FotoEntity actualizada = new FotoEntity();
         actualizada.setEsPrincipal(true);
 
         FotoEntity resultado = fotoService.updateFoto(existente.getId(), actualizada);
@@ -356,17 +442,29 @@ class FotoServiceTest {
 
     @Test
     void testGetFotosByListaRegalosId() {
-        // Crear una foto para lista de regalos
+        // Crear una nueva lista de regalos con foto
+        ListaRegalosEntity listaNueva = factory.manufacturePojo(ListaRegalosEntity.class);
+        listaNueva.setId(null);
+        entityManager.persist(listaNueva);
+        entityManager.flush();
+
+        // Crear foto para la nueva lista
         FotoEntity fotoLista = factory.manufacturePojo(FotoEntity.class);
+        fotoLista.setId(null);
         fotoLista.setUrl("https://ejemplo.com/lista.jpg");
-        fotoLista.setListaRegalos(listaRegalosList.get(1));
+        fotoLista.setTipoArchivo("image/jpeg");
+        fotoLista.setTamanioBytes(1024L * 1024L);
+        fotoLista.setListaRegalos(listaNueva);
+        fotoLista.setRegalo(null);
+        fotoLista.setTienda(null);
+        fotoLista.setComentario(null);
         entityManager.persist(fotoLista);
         entityManager.flush();
 
-        List<FotoEntity> fotos = fotoService.getFotosByListaRegalosId(listaRegalosList.get(1).getId());
+        List<FotoEntity> fotos = fotoService.getFotosByListaRegalosId(listaNueva.getId());
         
         assertFalse(fotos.isEmpty());
-        assertEquals(listaRegalosList.get(1).getId(), fotos.get(0).getListaRegalos().getId());
+        assertEquals(listaNueva.getId(), fotos.get(0).getListaRegalos().getId());
     }
 
     @Test
@@ -400,6 +498,7 @@ class FotoServiceTest {
     @Test
     void testCreateFoto_FormatoPNG_Success() {
         FotoEntity nueva = factory.manufacturePojo(FotoEntity.class);
+        nueva.setId(null);
         nueva.setUrl("https://ejemplo.com/foto.png");
         nueva.setTipoArchivo("image/png");
         nueva.setTamanioBytes(1024L * 1024L);
@@ -417,6 +516,7 @@ class FotoServiceTest {
     @Test
     void testCreateFoto_FormatoGIF_Success() {
         FotoEntity nueva = factory.manufacturePojo(FotoEntity.class);
+        nueva.setId(null);
         nueva.setUrl("https://ejemplo.com/animacion.gif");
         nueva.setTipoArchivo("image/gif");
         nueva.setTamanioBytes(1024L * 1024L);
@@ -434,6 +534,7 @@ class FotoServiceTest {
     @Test
     void testCreateFoto_FormatoWEBP_Success() {
         FotoEntity nueva = factory.manufacturePojo(FotoEntity.class);
+        nueva.setId(null);
         nueva.setUrl("https://ejemplo.com/moderna.webp");
         nueva.setTipoArchivo("image/webp");
         nueva.setTamanioBytes(1024L * 1024L);
