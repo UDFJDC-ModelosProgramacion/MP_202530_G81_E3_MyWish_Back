@@ -221,4 +221,34 @@ public class CatalogoTiendasServiceTest {
         assertEquals("SoloDescripcion", actualizado.getDescripcion());
         assertEquals(catalogo.getNombre(), actualizado.getNombre());
     }
+
+    @Test
+    void actualizarCatalogo_deberiaActualizarSoloNombre() {
+        CatalogoTiendasEntity catalogo = catalogosList.get(0);
+
+        CatalogoTiendasEntity actualizado = catalogoTiendasService.actualizarCatalogo(
+                catalogo.getId(),
+                "SoloNombre",
+                catalogo.getDescripcion(),
+                catalogo.getTiendas()
+        );
+
+        assertEquals("SoloNombre", actualizado.getNombre());
+        assertEquals(catalogo.getDescripcion(), actualizado.getDescripcion());
+    }
+
+    @Test
+    void actualizarCatalogo_deberiaActualizarSoloDescripcion() {
+        CatalogoTiendasEntity catalogo = catalogosList.get(0);
+
+        CatalogoTiendasEntity actualizado = catalogoTiendasService.actualizarCatalogo(
+                catalogo.getId(),
+                catalogo.getNombre(),
+                "SoloDescripcion",
+                catalogo.getTiendas()
+        );
+
+        assertEquals("SoloDescripcion", actualizado.getDescripcion());
+        assertEquals(catalogo.getNombre(), actualizado.getNombre());
+    }
 }

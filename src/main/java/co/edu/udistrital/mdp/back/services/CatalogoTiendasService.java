@@ -55,6 +55,11 @@ public class CatalogoTiendasService {
             catalogo.setTiendas(new ArrayList<>());
         }
 
+        // Inicializar lista de tiendas si es null
+        if (catalogo.getTiendas() == null) {
+            catalogo.setTiendas(new ArrayList<>());
+        }
+
         return catalogoTiendasRepository.save(catalogo);
     }
 
