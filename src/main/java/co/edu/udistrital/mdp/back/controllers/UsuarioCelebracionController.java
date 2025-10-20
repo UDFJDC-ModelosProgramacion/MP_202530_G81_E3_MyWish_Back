@@ -23,7 +23,7 @@ public class UsuarioCelebracionController {
 
     /**
      * Agregar un invitado a una celebración
-     * Ejemplo: POST /celebraciones/{celebracionId}/invitados/{usuarioId}
+     
      */
     @PostMapping("/{celebracionId}/invitados/{usuarioId}")
     @ResponseStatus(code = HttpStatus.CREATED)
@@ -36,7 +36,6 @@ public class UsuarioCelebracionController {
 
     /**
      * Remover un invitado de una celebración
-     * Ejemplo: DELETE /celebraciones/{celebracionId}/invitados/{usuarioId}
      */
     @DeleteMapping("/{celebracionId}/invitados/{usuarioId}")
     @ResponseStatus(code = HttpStatus.NO_CONTENT)
@@ -47,7 +46,6 @@ public class UsuarioCelebracionController {
 
     /**
      * Consultar si un usuario está invitado a una celebración
-     * Ejemplo: GET /celebraciones/{celebracionId}/invitados/{usuarioId}/check
      */
     @GetMapping("/{celebracionId}/invitados/{usuarioId}/check")
     @ResponseStatus(code = HttpStatus.OK)

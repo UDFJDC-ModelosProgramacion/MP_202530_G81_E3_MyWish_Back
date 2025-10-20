@@ -30,7 +30,6 @@ public class TiendaController {
     /**
      * Obtiene todas las tiendas registradas.
      *
-     * @return Lista de tiendas en formato TiendaDetailDTO
      */
     @GetMapping
     @ResponseStatus(code = HttpStatus.OK)
@@ -45,8 +44,7 @@ public class TiendaController {
      * Obtiene una tienda específica por su ID.
      *
      * @param id Identificador de la tienda
-     * @return Detalle de la tienda en formato TiendaDetailDTO
-     * @throws EntityNotFoundException Si no existe la tienda con el ID proporcionado
+     
      */
     @GetMapping(value = "/{id}")
     @ResponseStatus(code = HttpStatus.OK)
@@ -59,9 +57,7 @@ public class TiendaController {
     /**
      * Crea una nueva tienda.
      *
-     * @param tiendaDTO Datos de la nueva tienda
-     * @return Tienda creada en formato TiendaDTO
-     * @throws IllegalArgumentException Si se incumplen reglas de negocio
+
      */
     @PostMapping
     @ResponseStatus(code = HttpStatus.CREATED)
@@ -74,11 +70,7 @@ public class TiendaController {
     /**
      * Actualiza los datos de una tienda existente.
      *
-     * @param id        ID de la tienda a actualizar
-     * @param tiendaDTO Datos nuevos de la tienda
-     * @return Tienda actualizada en formato TiendaDTO
-     * @throws EntityNotFoundException Si no existe la tienda
-     * @throws IllegalArgumentException Si se violan reglas de negocio
+
      */
     @PutMapping(value = "/{id}")
     @ResponseStatus(code = HttpStatus.OK)
@@ -92,9 +84,7 @@ public class TiendaController {
     /**
      * Elimina una tienda por su ID.
      *
-     * @param id Identificador de la tienda a eliminar
-     * @throws EntityNotFoundException Si no se encuentra la tienda
-     * @throws IllegalArgumentException Si la tienda no puede eliminarse (por reglas de negocio)
+
      */
     @DeleteMapping(value = "/{id}")
     @ResponseStatus(code = HttpStatus.NO_CONTENT)
@@ -106,8 +96,7 @@ public class TiendaController {
     /**
      * Busca tiendas por nombre parcial o total.
      *
-     * @param nombre Fragmento o nombre completo
-     * @return Lista de tiendas coincidentes
+
      */
     @GetMapping("/buscar/nombre")
     @ResponseStatus(code = HttpStatus.OK)
@@ -121,8 +110,7 @@ public class TiendaController {
     /**
      * Busca tiendas por país.
      *
-     * @param pais Nombre del país
-     * @return Lista de tiendas encontradas
+
      */
     @GetMapping("/buscar/pais")
     @ResponseStatus(code = HttpStatus.OK)
@@ -136,8 +124,7 @@ public class TiendaController {
     /**
      * Busca tiendas por ciudad.
      *
-     * @param ciudad Nombre de la ciudad
-     * @return Lista de tiendas encontradas
+
      */
     @GetMapping("/buscar/ciudad")
     @ResponseStatus(code = HttpStatus.OK)

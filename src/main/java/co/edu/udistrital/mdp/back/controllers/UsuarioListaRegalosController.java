@@ -24,7 +24,7 @@ public class UsuarioListaRegalosController {
 
     /**
      * Agregar un invitado a una lista de regalos
-     * POST /listas-regalos/{listaId}/invitados/{usuarioId}
+     * POST 
      */
     @PostMapping(value = "/{listaId}/invitados/{usuarioId}")
     @ResponseStatus(code = HttpStatus.CREATED)
@@ -38,7 +38,7 @@ public class UsuarioListaRegalosController {
 
     /**
      * Remover un invitado de una lista de regalos
-     * DELETE /listas-regalos/{listaId}/invitados/{usuarioId}
+     * DELETE
      */
     @DeleteMapping(value = "/{listaId}/invitados/{usuarioId}")
     @ResponseStatus(code = HttpStatus.NO_CONTENT)
@@ -51,7 +51,7 @@ public class UsuarioListaRegalosController {
 
     /**
      * Verificar si un usuario está invitado a una lista
-     * GET /listas-regalos/{listaId}/invitados/{usuarioId}
+     * GET 
      */
     @GetMapping(value = "/{listaId}/invitados/{usuarioId}")
     @ResponseStatus(code = HttpStatus.OK)

@@ -31,7 +31,6 @@ public class MonedaController {
     /**
      * Obtiene todas las monedas registradas.
      *
-     * @return Lista de monedas en formato DTO.
      */
     @GetMapping
     @ResponseStatus(code = HttpStatus.OK)
@@ -44,9 +43,6 @@ public class MonedaController {
     /**
      * Obtiene una moneda específica por su ID.
      *
-     * @param id Identificador de la moneda a consultar.
-     * @return Detalle de la moneda correspondiente.
-     * @throws EntityNotFoundException si la moneda no existe.
      */
     @GetMapping(value = "/{id}")
     @ResponseStatus(code = HttpStatus.OK)
@@ -57,10 +53,7 @@ public class MonedaController {
 
     /**
      * Crea una nueva moneda en el sistema.
-     *
-     * @param monedaDTO Datos de la moneda a crear.
-     * @return Moneda creada en formato DTO.
-     */
+     *     */
     @PostMapping
     @ResponseStatus(code = HttpStatus.CREATED)
     public MonedaDTO create(@RequestBody MonedaDTO monedaDTO) {
@@ -72,9 +65,6 @@ public class MonedaController {
     /**
      * Actualiza los datos de una moneda existente.
      *
-     * @param id Identificador de la moneda a actualizar.
-     * @param monedaDTO Datos actualizados de la moneda.
-     * @return Moneda actualizada en formato DTO.
      */
     @PutMapping(value = "/{id}")
     @ResponseStatus(code = HttpStatus.OK)
@@ -90,7 +80,6 @@ public class MonedaController {
     /**
      * Elimina una moneda del sistema.
      *
-     * @param id Identificador de la moneda a eliminar.
      */
     @DeleteMapping(value = "/{id}")
     @ResponseStatus(code = HttpStatus.NO_CONTENT)

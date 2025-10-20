@@ -34,9 +34,7 @@ public class ListaRegalosUsuarioController {
     /**
      * Obtiene todas las listas de regalos en las que un usuario está invitado.
      *
-     * @param usuarioId ID del usuario.
-     * @return Lista de listas de regalos en formato DTO.
-     * @throws EntityNotFoundException si el usuario no existe.
+
      */
     @GetMapping("/{usuarioId}/listas-invitado")
     @ResponseStatus(code = HttpStatus.OK)
@@ -52,10 +50,7 @@ public class ListaRegalosUsuarioController {
     /**
      * Verifica si un usuario está invitado a una lista de regalos.
      *
-     * @param usuarioId ID del usuario.
-     * @param listaId   ID de la lista de regalos.
-     * @return true si el usuario está invitado, false en caso contrario.
-     * @throws EntityNotFoundException si la lista no existe.
+
      */
     @GetMapping("/{usuarioId}/listas/{listaId}/invitado")
     @ResponseStatus(code = HttpStatus.OK)
@@ -68,10 +63,7 @@ public class ListaRegalosUsuarioController {
     /**
      * Elimina la invitación de un usuario en una lista de regalos.
      *
-     * @param usuarioId ID del usuario.
-     * @param listaId   ID de la lista de regalos.
-     * @throws EntityNotFoundException  si la lista o el usuario no existen.
-     * @throws IllegalArgumentException si el usuario no estaba invitado.
+
      */
     @DeleteMapping("/{usuarioId}/listas/{listaId}/invitacion")
     @ResponseStatus(code = HttpStatus.NO_CONTENT)

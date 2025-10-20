@@ -56,10 +56,7 @@ public class CelebracionUsuarioController {
     /**
      * Verifica si un usuario está invitado a una celebración específica.
      *
-     * @param usuarioId     Identificador del usuario.
-     * @param celebracionId Identificador de la celebración.
-     * @return true si el usuario está invitado, false en caso contrario.
-     * @throws EntityNotFoundException si el usuario o la celebración no existen.
+
      */
     @GetMapping("/usuario/{usuarioId}/celebracion/{celebracionId}")
     @ResponseStatus(code = HttpStatus.OK)
@@ -74,10 +71,7 @@ public class CelebracionUsuarioController {
     /**
      * Elimina la invitación de un usuario a una celebración específica.
      *
-     * @param usuarioId     Identificador del usuario.
-     * @param celebracionId Identificador de la celebración.
-     * @throws EntityNotFoundException si la celebración no existe.
-     * @throws IllegalArgumentException si el usuario no estaba invitado.
+
      */
     @DeleteMapping("/usuario/{usuarioId}/celebracion/{celebracionId}")
     @ResponseStatus(code = HttpStatus.NO_CONTENT)
