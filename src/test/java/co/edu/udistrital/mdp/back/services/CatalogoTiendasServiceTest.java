@@ -23,7 +23,7 @@ import uk.co.jemos.podam.api.PodamFactoryImpl;
 @DataJpaTest
 @Transactional
 @Import(CatalogoTiendasService.class)
- class CatalogoTiendasServiceTest {
+class CatalogoTiendasServiceTest {
 
     @Autowired
     private CatalogoTiendasService catalogoTiendasService;
@@ -71,6 +71,7 @@ import uk.co.jemos.podam.api.PodamFactoryImpl;
         }
     }
 
+    // ----------------- Tests de creación -----------------
     @Test
     void crearCatalogo_deberiaPersistirCorrectamente() {
         CatalogoTiendasEntity nuevo = factory.manufacturePojo(CatalogoTiendasEntity.class);
@@ -102,6 +103,9 @@ import uk.co.jemos.podam.api.PodamFactoryImpl;
         CatalogoTiendasEntity duplicado = factory.manufacturePojo(CatalogoTiendasEntity.class);
         duplicado.setNombre(catalogosList.get(0).getNombre());
 
+        Long catalogoId = duplicado.getId(); // opcional para claridad
+        String nombre = duplicado.getNombre();
+
         IllegalArgumentException ex = assertThrows(IllegalArgumentException.class,
                 () -> catalogoTiendasService.crearCatalogo(duplicado));
 
@@ -121,6 +125,7 @@ import uk.co.jemos.podam.api.PodamFactoryImpl;
         assertTrue(creado.getTiendas().isEmpty());
     }
 
+    // ----------------- Tests de actualización -----------------
     @Test
     void actualizarCatalogo_deberiaActualizarTodosLosCampos() {
         CatalogoTiendasEntity catalogo = catalogosList.get(0);
@@ -140,56 +145,13 @@ import uk.co.jemos.podam.api.PodamFactoryImpl;
     @Test
     void actualizarCatalogo_deberiaLanzarExcepcion_siNombreDuplicado() {
         CatalogoTiendasEntity catalogo = catalogosList.get(0);
+        Long catalogoId = catalogo.getId();
         String nombreDuplicado = catalogosList.get(1).getNombre();
 
         IllegalArgumentException ex = assertThrows(IllegalArgumentException.class,
-                () -> catalogoTiendasService.actualizarCatalogo(catalogo.getId(), nombreDuplicado, "desc", new ArrayList<>()));
+                () -> catalogoTiendasService.actualizarCatalogo(catalogoId, nombreDuplicado, "desc", new ArrayList<>()));
 
         assertEquals(CatalogoTiendasService.MENSAJE_NOMBRE_EN_USO_OTRO, ex.getMessage());
-    }
-
-    @Test
-    void eliminarCatalogo_deberiaEliminarCorrectamente() {
-        CatalogoTiendasEntity nuevo = factory.manufacturePojo(CatalogoTiendasEntity.class);
-        nuevo.setNombre("Eliminar");
-        nuevo.setTiendas(new ArrayList<>());
-        entityManager.persist(nuevo);
-
-        catalogoTiendasService.eliminarCatalogo(nuevo.getId());
-
-        assertFalse(catalogoTiendasRepository.findById(nuevo.getId()).isPresent());
-    }
-
-    @Test
-    void eliminarCatalogo_deberiaLanzarExcepcion_siTieneTiendas() {
-        CatalogoTiendasEntity catalogo = catalogosList.get(0);
-
-        IllegalStateException ex = assertThrows(IllegalStateException.class,
-                () -> catalogoTiendasService.eliminarCatalogo(catalogo.getId()));
-
-        assertEquals(CatalogoTiendasService.MENSAJE_NO_ELIMINAR_TIENDAS_ASOCIADAS, ex.getMessage());
-    }
-
-    @Test
-    void eliminarTiendaDeCatalogo_deberiaEliminarCorrectamente() {
-        CatalogoTiendasEntity catalogo = catalogosList.get(0);
-        TiendaEntity tienda = tiendasList.get(0);
-
-        catalogoTiendasService.eliminarTiendaDeCatalogo(catalogo.getId(), tienda.getId());
-
-        CatalogoTiendasEntity actualizado = catalogoTiendasRepository.findById(catalogo.getId()).get();
-        assertTrue(actualizado.getTiendas().isEmpty());
-    }
-
-    @Test
-    void eliminarTiendaDeCatalogo_deberiaLanzarExcepcion_siTiendaNoPertenece() {
-        CatalogoTiendasEntity catalogo = catalogosList.get(0);
-        TiendaEntity tienda = tiendasList.get(1);
-
-        IllegalArgumentException ex = assertThrows(IllegalArgumentException.class,
-                () -> catalogoTiendasService.eliminarTiendaDeCatalogo(catalogo.getId(), tienda.getId()));
-
-        assertEquals(CatalogoTiendasService.MENSAJE_TIENDA_NO_PERTENECE_CATALOGO, ex.getMessage());
     }
 
     @Test
@@ -220,5 +182,53 @@ import uk.co.jemos.podam.api.PodamFactoryImpl;
 
         assertEquals("SoloDescripcion", actualizado.getDescripcion());
         assertEquals(catalogo.getNombre(), actualizado.getNombre());
+    }
+
+    // ----------------- Tests de eliminación -----------------
+    @Test
+    void eliminarCatalogo_deberiaEliminarCorrectamente() {
+        CatalogoTiendasEntity nuevo = factory.manufacturePojo(CatalogoTiendasEntity.class);
+        nuevo.setNombre("Eliminar");
+        nuevo.setTiendas(new ArrayList<>());
+        entityManager.persist(nuevo);
+
+        catalogoTiendasService.eliminarCatalogo(nuevo.getId());
+
+        assertFalse(catalogoTiendasRepository.findById(nuevo.getId()).isPresent());
+    }
+
+    @Test
+    void eliminarCatalogo_deberiaLanzarExcepcion_siTieneTiendas() {
+        CatalogoTiendasEntity catalogo = catalogosList.get(0);
+        Long catalogoId = catalogo.getId();
+
+        IllegalStateException ex = assertThrows(IllegalStateException.class,
+                () -> catalogoTiendasService.eliminarCatalogo(catalogoId));
+
+        assertEquals(CatalogoTiendasService.MENSAJE_NO_ELIMINAR_TIENDAS_ASOCIADAS, ex.getMessage());
+    }
+
+    @Test
+    void eliminarTiendaDeCatalogo_deberiaEliminarCorrectamente() {
+        CatalogoTiendasEntity catalogo = catalogosList.get(0);
+        TiendaEntity tienda = tiendasList.get(0);
+
+        catalogoTiendasService.eliminarTiendaDeCatalogo(catalogo.getId(), tienda.getId());
+
+        CatalogoTiendasEntity actualizado = catalogoTiendasRepository.findById(catalogo.getId()).get();
+        assertTrue(actualizado.getTiendas().isEmpty());
+    }
+
+    @Test
+    void eliminarTiendaDeCatalogo_deberiaLanzarExcepcion_siTiendaNoPertenece() {
+        CatalogoTiendasEntity catalogo = catalogosList.get(0);
+        TiendaEntity tienda = tiendasList.get(1);
+        Long catalogoId = catalogo.getId();
+        Long tiendaId = tienda.getId();
+
+        IllegalArgumentException ex = assertThrows(IllegalArgumentException.class,
+                () -> catalogoTiendasService.eliminarTiendaDeCatalogo(catalogoId, tiendaId));
+
+        assertEquals(CatalogoTiendasService.MENSAJE_TIENDA_NO_PERTENECE_CATALOGO, ex.getMessage());
     }
 }

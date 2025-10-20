@@ -20,6 +20,7 @@ import co.edu.udistrital.mdp.back.entities.CelebracionEntity;
 import co.edu.udistrital.mdp.back.repositories.UsuarioRepository;
 import co.edu.udistrital.mdp.back.repositories.ListaRegalosRepository;
 import co.edu.udistrital.mdp.back.repositories.CelebracionRepository;
+
 import uk.co.jemos.podam.api.PodamFactory;
 import uk.co.jemos.podam.api.PodamFactoryImpl;
 
@@ -84,7 +85,9 @@ class UsuarioServiceTest {
         UsuarioEntity nuevo = factory.manufacturePojo(UsuarioEntity.class);
         nuevo.setCorreo(null);
 
-        assertThrows(IllegalArgumentException.class, () -> usuarioService.crearUsuario(nuevo));
+        IllegalArgumentException ex = assertThrows(IllegalArgumentException.class,
+                () -> usuarioService.crearUsuario(nuevo));
+        assertEquals("El correo del usuario no puede ser nulo.", ex.getMessage());
     }
 
     @Test
@@ -114,10 +117,8 @@ class UsuarioServiceTest {
         lista.setCreador(usuario);
         entityManager.persist(lista);
 
-        IllegalStateException ex = assertThrows(IllegalStateException.class, () ->
-                usuarioService.eliminarUsuario(usuario.getId())
-        );
-
+        IllegalStateException ex = assertThrows(IllegalStateException.class,
+                () -> usuarioService.eliminarUsuario(usuario.getId()));
         assertEquals("No se puede eliminar un usuario con listas creadas activas.", ex.getMessage());
     }
 
@@ -129,10 +130,8 @@ class UsuarioServiceTest {
         celebracion.setOrganizador(usuario);
         entityManager.persist(celebracion);
 
-        IllegalStateException ex = assertThrows(IllegalStateException.class, () ->
-                usuarioService.eliminarUsuario(usuario.getId())
-        );
-
+        IllegalStateException ex = assertThrows(IllegalStateException.class,
+                () -> usuarioService.eliminarUsuario(usuario.getId()));
         assertEquals("No se puede eliminar un usuario con celebraciones organizadas pendientes.", ex.getMessage());
     }
 }
