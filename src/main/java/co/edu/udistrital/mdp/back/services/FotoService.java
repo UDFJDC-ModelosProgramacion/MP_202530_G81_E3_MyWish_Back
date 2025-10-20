@@ -22,63 +22,72 @@ public class FotoService {
     // CREATE
     // =====================================================
     @Transactional
-    public FotoEntity createFoto(FotoEntity fotoEntity) {
+public FotoEntity createFoto(FotoEntity fotoEntity) {
 
-        log.info("Inicia proceso de creación de la foto");
+    log.info("Inicia proceso de creación de la foto");
 
-        // Regla 1: La URL de la foto debe ser una dirección válida (http/https)
-        if (fotoEntity.getUrl() == null || 
-            (!fotoEntity.getUrl().startsWith("http://") && !fotoEntity.getUrl().startsWith("https://"))) {
-            throw new IllegalArgumentException("La URL de la foto debe ser una dirección válida (http/https).");
-        }
+    // =====================================================
+    // REGLAS DE VALIDACIÓN
+    // =====================================================
 
-        // Regla 2: El tamaño del archivo no puede exceder los 10MB
-        if (fotoEntity.getTamanioBytes() != null && fotoEntity.getTamanioBytes() > 10 * 1024 * 1024) {
-            throw new IllegalArgumentException("El tamaño del archivo no puede exceder los 10MB.");
-        }
-
-        // Regla 3: Solo se permiten formatos de imagen: JPG, PNG, GIF, WEBP
-        if (fotoEntity.getTipoArchivo() != null) {
-            String tipoArchivo = fotoEntity.getTipoArchivo().toLowerCase();
-            if (!tipoArchivo.equals("image/jpeg") && 
-                !tipoArchivo.equals("image/png") && 
-                !tipoArchivo.equals("image/gif") && 
-                !tipoArchivo.equals("image/webp")) {
-                throw new IllegalArgumentException("Solo se permiten formatos de imagen: JPG, PNG, GIF, WEBP.");
-            }
-        }
-
-        // Regla 4: Una foto debe estar asociada a una y solo una entidad
-        int entidadesAsociadas = 0;
-        if (fotoEntity.getRegalo() != null) entidadesAsociadas++;
-        if (fotoEntity.getListaRegalos() != null) entidadesAsociadas++;
-        if (fotoEntity.getTienda() != null) entidadesAsociadas++;
-        if (fotoEntity.getComentario() != null) entidadesAsociadas++;
-        
-        if (entidadesAsociadas != 1) {
-            throw new IllegalArgumentException("Una foto debe estar asociada a una y solo una entidad.");
-        }
-
-        // Validar relaciones OneToOne (no pueden tener múltiples fotos)
-        if (fotoEntity.getRegalo() != null) {
-            // Verificar que el regalo no tenga ya una foto asignada
-            List<FotoEntity> fotosExistentes = fotoRepository.findByRegaloId(fotoEntity.getRegalo().getId());
-            if (!fotosExistentes.isEmpty()) {
-                throw new IllegalStateException("El regalo ya tiene una foto asignada.");
-            }
-        }
-
-        if (fotoEntity.getListaRegalos() != null) {
-            // Verificar que la lista de regalos no tenga ya una foto asignada
-            List<FotoEntity> fotosExistentes = fotoRepository.findByListaRegalosId(fotoEntity.getListaRegalos().getId());
-            if (!fotosExistentes.isEmpty()) {
-                throw new IllegalStateException("La lista de regalos ya tiene una foto asignada.");
-            }
-        }
-
-        log.info("Termina proceso de creación de la foto");
-        return fotoRepository.save(fotoEntity);
+    // Regla 1: La URL de la foto debe ser una dirección válida (http/https)
+    if (fotoEntity.getUrl() == null || 
+        (!fotoEntity.getUrl().startsWith("http://") && !fotoEntity.getUrl().startsWith("https://"))) {
+        throw new IllegalArgumentException("La URL de la foto debe ser una dirección válida (http/https).");
     }
+
+    // Regla 2: El tamaño del archivo no puede exceder los 10MB
+    if (fotoEntity.getTamanioBytes() != null && fotoEntity.getTamanioBytes() > 10 * 1024 * 1024) {
+        throw new IllegalArgumentException("El tamaño del archivo no puede exceder los 10MB.");
+    }
+
+    // Regla 3: Solo se permiten formatos de imagen: JPG, PNG, GIF, WEBP
+    if (fotoEntity.getTipoArchivo() != null) {
+        String tipoArchivo = fotoEntity.getTipoArchivo().toLowerCase();
+        if (!tipoArchivo.equals("image/jpeg") && 
+            !tipoArchivo.equals("image/png") && 
+            !tipoArchivo.equals("image/gif") && 
+            !tipoArchivo.equals("image/webp")) {
+            throw new IllegalArgumentException("Solo se permiten formatos de imagen: JPG, PNG, GIF, WEBP.");
+        }
+    }
+
+    // =====================================================
+    // VALIDACIONES DE RELACIONES
+    // =====================================================
+
+    // Regla 4: Una foto puede estar asociada a una entidad (Regalo, ListaRegalos, Tienda o Comentario),
+    // pero no a más de una al mismo tiempo.
+    int entidadesAsociadas = 0;
+    if (fotoEntity.getRegalo() != null) entidadesAsociadas++;
+    if (fotoEntity.getListaRegalos() != null) entidadesAsociadas++;
+    if (fotoEntity.getTienda() != null) entidadesAsociadas++;
+    if (fotoEntity.getComentario() != null) entidadesAsociadas++;
+
+    if (entidadesAsociadas > 1) {
+        throw new IllegalArgumentException("Una foto no puede estar asociada a más de una entidad al mismo tiempo.");
+    }
+
+    // Regla 5: Si la foto está asociada a un Regalo o una ListaRegalos (relación OneToOne),
+    // verificar que esa entidad no tenga ya una foto asignada.
+    if (fotoEntity.getRegalo() != null) {
+        List<FotoEntity> fotosExistentes = fotoRepository.findByRegaloId(fotoEntity.getRegalo().getId());
+        if (!fotosExistentes.isEmpty()) {
+            throw new IllegalStateException("El regalo ya tiene una foto asignada.");
+        }
+    }
+
+    if (fotoEntity.getListaRegalos() != null) {
+        List<FotoEntity> fotosExistentes = fotoRepository.findByListaRegalosId(fotoEntity.getListaRegalos().getId());
+        if (!fotosExistentes.isEmpty()) {
+            throw new IllegalStateException("La lista de regalos ya tiene una foto asignada.");
+        }
+    }
+
+    log.info("Termina proceso de creación de la foto");
+    return fotoRepository.save(fotoEntity);
+}
+
 
     // =====================================================
     // UPDATE

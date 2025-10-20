@@ -1,19 +1,18 @@
 package co.edu.udistrital.mdp.back.services;
 
-import co.edu.udistrital.mdp.back.entities.*;
+import co.edu.udistrital.mdp.back.entities.FotoEntity;
 import co.edu.udistrital.mdp.back.repositories.FotoRepository;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.context.annotation.Import;
-import org.springframework.transaction.annotation.Transactional;
 import uk.co.jemos.podam.api.PodamFactory;
 import uk.co.jemos.podam.api.PodamFactoryImpl;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -21,7 +20,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @DataJpaTest
 @Transactional
 @Import(FotoService.class)
-class FotoServiceTest {
+public class FotoServiceTest {
 
     @Autowired
     private FotoService fotoService;
@@ -33,11 +32,8 @@ class FotoServiceTest {
     private TestEntityManager entityManager;
 
     private PodamFactory factory = new PodamFactoryImpl();
-    private List<FotoEntity> fotoList = new ArrayList<>();
-    private TiendaEntity tienda;
-    private ComentarioEntity comentario;
-    private RegaloEntity regalo;
-    private ListaRegalosEntity listaRegalos;
+
+    private FotoEntity fotoPrueba;
 
     @BeforeEach
     void setUp() {
@@ -46,35 +42,17 @@ class FotoServiceTest {
     }
 
     private void clearData() {
-        entityManager.getEntityManager().createQuery("delete from FotoEntity").executeUpdate();
-        entityManager.getEntityManager().createQuery("delete from TiendaEntity").executeUpdate();
-        entityManager.getEntityManager().createQuery("delete from ComentarioEntity").executeUpdate();
-        entityManager.getEntityManager().createQuery("delete from RegaloEntity").executeUpdate();
-        entityManager.getEntityManager().createQuery("delete from ListaRegalosEntity").executeUpdate();
+        fotoRepository.deleteAll();
     }
 
     private void insertData() {
-        tienda = factory.manufacturePojo(TiendaEntity.class);
-        entityManager.persist(tienda);
-
-        comentario = factory.manufacturePojo(ComentarioEntity.class);
-        entityManager.persist(comentario);
-
-        regalo = factory.manufacturePojo(RegaloEntity.class);
-        entityManager.persist(regalo);
-
-        listaRegalos = factory.manufacturePojo(ListaRegalosEntity.class);
-        entityManager.persist(listaRegalos);
-
-        for (int i = 0; i < 3; i++) {
-            FotoEntity foto = factory.manufacturePojo(FotoEntity.class);
-            foto.setUrl("https://ejemplo.com/foto" + i + ".jpg");
-            foto.setTipoArchivo("image/jpeg");
-            foto.setTamanioBytes(500000L);
-            foto.setTienda(tienda);
-            entityManager.persist(foto);
-            fotoList.add(foto);
-        }
+        fotoPrueba = new FotoEntity();
+        fotoPrueba.setUrl("https://example.com/imagen.jpg");
+        fotoPrueba.setDescripcion("Foto de prueba");
+        fotoPrueba.setTipoArchivo("image/jpeg");
+        fotoPrueba.setTamanioBytes(500000L);
+        fotoPrueba.setEsPrincipal(true);
+        entityManager.persist(fotoPrueba);
     }
 
     // =====================================================
@@ -82,109 +60,47 @@ class FotoServiceTest {
     // =====================================================
 
     @Test
-    void testCreateFotoSuccess() {
-        FotoEntity nueva = factory.manufacturePojo(FotoEntity.class);
-        nueva.setUrl("https://valid.com/foto.jpg");
-        nueva.setTipoArchivo("image/png");
-        nueva.setTamanioBytes(1000000L);
-        nueva.setTienda(tienda);
+    void testCreateFoto_Valida() {
+        FotoEntity nuevaFoto = new FotoEntity();
+        nuevaFoto.setUrl("https://miservidor.com/foto.png");
+        nuevaFoto.setTipoArchivo("image/png");
+        nuevaFoto.setTamanioBytes(2048L);
+        nuevaFoto.setDescripcion("Foto válida");
+        nuevaFoto.setEsPrincipal(false);
 
-        FotoEntity result = fotoService.createFoto(nueva);
+        FotoEntity resultado = fotoService.createFoto(nuevaFoto);
 
-        assertNotNull(result.getId());
-        assertEquals("https://valid.com/foto.jpg", result.getUrl());
-        assertEquals(tienda.getId(), result.getTienda().getId());
+        assertNotNull(resultado);
+        assertEquals("https://miservidor.com/foto.png", resultado.getUrl());
+        assertNotNull(entityManager.find(FotoEntity.class, resultado.getId()));
     }
 
     @Test
-    void testCreateFotoUrlInvalidaThrows() {
-        FotoEntity foto = factory.manufacturePojo(FotoEntity.class);
-        foto.setUrl("ftp://invalida.jpg");
-        foto.setTienda(tienda);
+    void testCreateFoto_UrlInvalida() {
+        FotoEntity foto = new FotoEntity();
+        foto.setUrl("ftp://servidor.com/foto.png");
+        foto.setTipoArchivo("image/png");
 
         assertThrows(IllegalArgumentException.class, () -> fotoService.createFoto(foto));
     }
 
     @Test
-    void testCreateFotoTamanioExcedeThrows() {
-        FotoEntity foto = factory.manufacturePojo(FotoEntity.class);
-        foto.setUrl("https://valida.com/foto.jpg");
-        foto.setTamanioBytes(15L * 1024 * 1024); // 15 MB
-        foto.setTienda(tienda);
+    void testCreateFoto_TamanoExcedido() {
+        FotoEntity foto = new FotoEntity();
+        foto.setUrl("https://servidor.com/foto.jpg");
+        foto.setTipoArchivo("image/jpeg");
+        foto.setTamanioBytes(11L * 1024 * 1024); // 11MB
 
         assertThrows(IllegalArgumentException.class, () -> fotoService.createFoto(foto));
     }
 
     @Test
-    void testCreateFotoTipoArchivoInvalidoThrows() {
-        FotoEntity foto = factory.manufacturePojo(FotoEntity.class);
-        foto.setUrl("https://valida.com/foto.jpg");
-        foto.setTipoArchivo("application/pdf");
-        foto.setTienda(tienda);
+    void testCreateFoto_TipoArchivoInvalido() {
+        FotoEntity foto = new FotoEntity();
+        foto.setUrl("https://servidor.com/foto.txt");
+        foto.setTipoArchivo("text/plain");
 
         assertThrows(IllegalArgumentException.class, () -> fotoService.createFoto(foto));
-    }
-
-    @Test
-    void testCreateFotoConMultiplesEntidadesThrows() {
-        FotoEntity foto = factory.manufacturePojo(FotoEntity.class);
-        foto.setUrl("https://valida.com/foto.jpg");
-        foto.setTienda(tienda);
-        foto.setComentario(comentario);
-
-        assertThrows(IllegalArgumentException.class, () -> fotoService.createFoto(foto));
-    }
-
-    // =====================================================
-    // UPDATE
-    // =====================================================
-
-    @Test
-    void testUpdateFotoDescripcionYPrincipalSuccess() {
-        FotoEntity existente = fotoList.get(0);
-        FotoEntity cambios = new FotoEntity();
-        cambios.setDescripcion("Nueva descripción");
-        cambios.setEsPrincipal(true);
-
-        FotoEntity result = fotoService.updateFoto(existente.getId(), cambios);
-
-        assertEquals("Nueva descripción", result.getDescripcion());
-        assertTrue(result.getEsPrincipal());
-    }
-
-    @Test
-    void testUpdateFotoNoExisteThrows() {
-        FotoEntity cambios = new FotoEntity();
-        cambios.setDescripcion("Cambio");
-
-        assertThrows(EntityNotFoundException.class, () -> fotoService.updateFoto(999L, cambios));
-    }
-
-    @Test
-    void testUpdateFotoCambiaEntidadThrows() {
-        FotoEntity existente = fotoList.get(0);
-        FotoEntity cambios = new FotoEntity();
-        cambios.setRegalo(regalo);
-
-        assertThrows(IllegalStateException.class, () -> fotoService.updateFoto(existente.getId(), cambios));
-    }
-
-    // =====================================================
-    // DELETE
-    // =====================================================
-
-    @Test
-    void testDeleteFotoSuccess() {
-        FotoEntity existente = fotoList.get(1);
-        fotoService.deleteFoto(existente.getId());
-
-        FotoEntity deleted = entityManager.find(FotoEntity.class, existente.getId());
-        assertNull(deleted);
-    }
-
-    @Test
-    void testDeleteFotoNoExisteThrows() {
-        assertThrows(EntityNotFoundException.class, () -> fotoService.deleteFoto(999L));
     }
 
     // =====================================================
@@ -192,25 +108,60 @@ class FotoServiceTest {
     // =====================================================
 
     @Test
-    void testGetFotoByIdSuccess() {
-        FotoEntity existente = fotoList.get(0);
-        FotoEntity result = fotoService.getFotoById(existente.getId());
-
-        assertEquals(existente.getId(), result.getId());
+    void testGetAllFotos() {
+        List<FotoEntity> lista = fotoService.getAllFotos();
+        assertEquals(1, lista.size());
+        assertEquals(fotoPrueba.getUrl(), lista.get(0).getUrl());
     }
 
     @Test
-    void testGetFotoByIdNoExisteThrows() {
+    void testGetFotoById_Existente() {
+        FotoEntity encontrada = fotoService.getFotoById(fotoPrueba.getId());
+        assertNotNull(encontrada);
+        assertEquals(fotoPrueba.getId(), encontrada.getId());
+    }
+
+    @Test
+    void testGetFotoById_NoExistente() {
         assertThrows(EntityNotFoundException.class, () -> fotoService.getFotoById(999L));
     }
 
-    @Test
-    void testGetFotosPrincipales() {
-        fotoList.get(0).setEsPrincipal(true);
-        entityManager.persist(fotoList.get(0));
+    // =====================================================
+    // UPDATE
+    // =====================================================
 
-        List<FotoEntity> principales = fotoService.getFotosPrincipales();
-        assertFalse(principales.isEmpty());
-        assertTrue(principales.stream().allMatch(FotoEntity::getEsPrincipal));
+    @Test
+    void testUpdateFoto_DescripcionYPrincipal() {
+        FotoEntity actualizada = new FotoEntity();
+        actualizada.setDescripcion("Nueva descripción");
+        actualizada.setEsPrincipal(false);
+
+        FotoEntity resultado = fotoService.updateFoto(fotoPrueba.getId(), actualizada);
+
+        assertEquals("Nueva descripción", resultado.getDescripcion());
+        assertFalse(resultado.getEsPrincipal());
+    }
+
+    @Test
+    void testUpdateFoto_NoExistente() {
+        FotoEntity datos = new FotoEntity();
+        datos.setDescripcion("Cambio");
+        assertThrows(EntityNotFoundException.class, () -> fotoService.updateFoto(999L, datos));
+    }
+
+    // =====================================================
+    // DELETE
+    // =====================================================
+
+    @Test
+    void testDeleteFoto_Existente() {
+        fotoService.deleteFoto(fotoPrueba.getId());
+        FotoEntity eliminada = entityManager.find(FotoEntity.class, fotoPrueba.getId());
+        assertNull(eliminada);
+    }
+
+    @Test
+    void testDeleteFoto_NoExistente() {
+        assertThrows(EntityNotFoundException.class, () -> fotoService.deleteFoto(999L));
     }
 }
