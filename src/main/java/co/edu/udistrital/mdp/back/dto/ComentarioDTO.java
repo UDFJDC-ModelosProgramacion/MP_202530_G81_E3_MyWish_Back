@@ -1,32 +1,15 @@
-package co.edu.udistrital.mdp.back.dtos;
+package co.edu.udistrital.mdp.back.dto;
 
-import lombok.Getter;
-import lombok.Setter;
-import co.edu.udistrital.mdp.back.entities.ComentarioEntity;
+import lombok.Data;
 
 /**
- * DTO básico de Comentario
+ * DTO para la entidad ComentarioEntity.
+ * Contiene los atributos principales del comentario.
  */
-@Getter
-@Setter
+@Data
 public class ComentarioDTO {
 
+    private Long id;
     private String texto;
     private int calificacion;
-
-    public ComentarioDTO() {}
-
-    public ComentarioDTO(ComentarioEntity entity) {
-        if (entity != null) {
-            this.texto = entity.getTexto();
-            this.calificacion = entity.getCalificacion();
-        }
-    }
-
-    public ComentarioEntity toEntity() {
-        ComentarioEntity entity = new ComentarioEntity();
-        entity.setTexto(this.texto);
-        entity.setCalificacion(this.calificacion);
-        return entity;
-    }
 }
