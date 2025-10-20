@@ -12,7 +12,6 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.util.Date;
 import java.util.List;
 
@@ -20,11 +19,20 @@ import java.util.List;
 @Service
 public class MensajeInvitacionService {
 
-    @Autowired private MensajeInvitacionRepository mensajeRepo;
-    @Autowired private CelebracionRepository celebracionRepo;
-    @Autowired private ListaRegalosRepository listaRepo;
-    @Autowired private UsuarioRepository usuarioRepo;
-    @Autowired private JavaMailSender mailSender;
+    @Autowired 
+    private MensajeInvitacionRepository mensajeRepo;
+
+    @Autowired 
+    private CelebracionRepository celebracionRepo;
+
+    @Autowired 
+    private ListaRegalosRepository listaRepo;
+
+    @Autowired 
+    private UsuarioRepository usuarioRepo;
+
+    @Autowired 
+    private JavaMailSender mailSender;
 
     // =====================================================
     // MÉTODO GENÉRICO DE ENVÍO DE INVITACIONES
@@ -46,7 +54,6 @@ public class MensajeInvitacionService {
         mensaje.setFechaEnvio(new Date());
 
         UsuarioEntity remitente;
-
         String asunto;
         String titulo;
         String nombreEntidad;
@@ -77,12 +84,11 @@ public class MensajeInvitacionService {
         mensaje.setRemitente(remitente);
 
         // Enviar correo
-       try {
-    enviarCorreo(destinatario.getCorreo(), remitente.getNombre(), asunto, titulo, textoMensaje);
-} catch (MessagingException e) {
-    throw new CorreoNoEnviadoException("Error al enviar el correo: " + e.getMessage(), e);
-}
-
+        try {
+            enviarCorreo(destinatario.getCorreo(), remitente.getNombre(), asunto, titulo, textoMensaje);
+        } catch (MessagingException e) {
+            throw new CorreoNoEnviadoException("Error al enviar el correo: " + e.getMessage(), e);
+        }
 
         // Guardar en BD
         return mensajeRepo.save(mensaje);
@@ -96,7 +102,6 @@ public class MensajeInvitacionService {
 
         MimeMessage mensaje = mailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(mensaje, true);
-
         helper.setTo(destinatario);
         helper.setSubject(asunto);
         helper.setText(
@@ -105,19 +110,19 @@ public class MensajeInvitacionService {
                         "<p>Mensaje: " + cuerpo + "</p>" +
                         "<p><i>¡Esperamos verte pronto!</i></p>",
                 true);
-
         mailSender.send(mensaje);
     }
 
     // =====================================================
     // CRUD BÁSICO
     // =====================================================
+
     @Transactional(readOnly = true)
     public List<MensajeInvitacionEntity> getAll() {
         return mensajeRepo.findAll();
     }
 
-    @Transactional(readOnly = true)
+    // 🔹 No es necesario @Transactional aquí, solo lectura
     public MensajeInvitacionEntity getById(Long id) {
         return mensajeRepo.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Mensaje no encontrado con id " + id));
