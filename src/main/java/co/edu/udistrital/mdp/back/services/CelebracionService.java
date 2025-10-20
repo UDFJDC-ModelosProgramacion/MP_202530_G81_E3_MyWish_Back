@@ -14,11 +14,12 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
-
 @Slf4j
 @Service
 public class CelebracionService {
+
+    private static final String MSG_CELEBRACION_ID = "La celebración con id ";
+    private static final String MSG_NO_EXISTE = " no existe.";
 
     @Autowired
     private CelebracionRepository celebracionRepository;
@@ -34,24 +35,18 @@ public class CelebracionService {
     // =====================================================
     @Transactional
     public CelebracionEntity createCelebracion(CelebracionEntity celebracionEntity, Long organizadorId) {
-
         log.info("Inicia proceso de creación de la celebración");
 
-        // Regla 1: No se puede crear una celebración sin nombre
         if (celebracionEntity.getNombre() == null || celebracionEntity.getNombre().trim().isEmpty()) {
             throw new IllegalArgumentException("No se puede crear una celebración sin nombre.");
         }
 
-        // Regla 2: La fecha de la celebración no puede ser anterior a la fecha actual
-        if (celebracionEntity.getFecha() == null ||
-                celebracionEntity.getFecha().isBefore(LocalDate.now())) {
+        if (celebracionEntity.getFecha() == null || celebracionEntity.getFecha().isBefore(LocalDate.now())) {
             throw new IllegalArgumentException("La fecha de la celebración no puede ser anterior a la fecha actual.");
         }
 
-        // Asignar organizador
         UsuarioEntity organizador = usuarioRepository.findById(organizadorId)
-                .orElseThrow(
-                        () -> new EntityNotFoundException("Usuario organizador no encontrado con id " + organizadorId));
+                .orElseThrow(() -> new EntityNotFoundException("Usuario organizador no encontrado con id " + organizadorId));
 
         celebracionEntity.setOrganizador(organizador);
 
@@ -64,28 +59,20 @@ public class CelebracionService {
     // =====================================================
     @Transactional
     public CelebracionEntity updateCelebracion(Long celebracionId, CelebracionEntity celebracionEntity) {
-
         log.info("Inicia proceso de actualización de la celebración con id: {}", celebracionId);
 
-        Optional<CelebracionEntity> celebracionOpt = celebracionRepository.findById(celebracionId);
-        if (celebracionOpt.isEmpty()) {
-            throw new EntityNotFoundException("La celebración con id " + celebracionId + " no existe.");
-        }
+        CelebracionEntity existente = celebracionRepository.findById(celebracionId)
+                .orElseThrow(() -> new EntityNotFoundException(MSG_CELEBRACION_ID + celebracionId + MSG_NO_EXISTE));
 
-        CelebracionEntity existente = celebracionOpt.get();
-
-        // Regla 3: No se puede cambiar el organizador una vez creada la celebración
         if (celebracionEntity.getOrganizador() != null &&
                 !celebracionEntity.getOrganizador().equals(existente.getOrganizador())) {
             throw new IllegalStateException("No se puede cambiar el organizador de una celebración existente.");
         }
 
-        // ✅ Regla 5: Se puede actualizar la lista de regalos asociada (OneToOne)
         if (celebracionEntity.getListaRegalos() != null) {
             existente.setListaRegalos(celebracionEntity.getListaRegalos());
         }
 
-        // Actualización de datos válidos
         existente.setNombre(celebracionEntity.getNombre());
         existente.setDescripcion(celebracionEntity.getDescripcion());
         existente.setLugar(celebracionEntity.getLugar());
@@ -102,25 +89,15 @@ public class CelebracionService {
     // =====================================================
     @Transactional
     public void deleteCelebracion(Long celebracionId) {
-
         log.info("Inicia proceso de eliminación de la celebración con id: {}", celebracionId);
 
-        Optional<CelebracionEntity> celebracionOpt = celebracionRepository.findById(celebracionId);
-        if (celebracionOpt.isEmpty()) {
-            throw new EntityNotFoundException("La celebración con id " + celebracionId + " no existe.");
-        }
+        CelebracionEntity celebracion = celebracionRepository.findById(celebracionId)
+                .orElseThrow(() -> new EntityNotFoundException(MSG_CELEBRACION_ID + celebracionId + MSG_NO_EXISTE));
 
-        CelebracionEntity celebracion = celebracionOpt.get();
-
-        // Regla 4: Al eliminar la celebración, inactivar los mensajes de invitación
         List<MensajeInvitacionEntity> mensajes = mensajeInvitacionRepository.findByCelebracion_Id(celebracionId);
-        for (MensajeInvitacionEntity mensaje : mensajes) {
-            mensajeInvitacionRepository.delete(mensaje);
-
-        }
+        mensajes.forEach(mensajeInvitacionRepository::delete);
 
         celebracionRepository.delete(celebracion);
-
         log.info("Termina proceso de eliminación de la celebración con id: {}", celebracionId);
     }
 
@@ -136,8 +113,8 @@ public class CelebracionService {
     @Transactional(readOnly = true)
     public CelebracionEntity getCelebracionById(Long celebracionId) {
         log.info("Inicia proceso de consulta de la celebración con id: {}", celebracionId);
+
         return celebracionRepository.findById(celebracionId)
-                .orElseThrow(
-                        () -> new EntityNotFoundException("La celebración con id " + celebracionId + " no existe."));
+                .orElseThrow(() -> new EntityNotFoundException(MSG_CELEBRACION_ID + celebracionId + MSG_NO_EXISTE));
     }
 }
