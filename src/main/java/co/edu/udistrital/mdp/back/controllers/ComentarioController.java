@@ -32,7 +32,6 @@ public class ComentarioController {
     /**
      * Obtiene todos los comentarios almacenados.
      *
-     * @return Lista de ComentarioDetailDTO
      */
     @GetMapping
     @ResponseStatus(code = HttpStatus.OK)
@@ -45,9 +44,7 @@ public class ComentarioController {
     /**
      * Obtiene un comentario específico por su ID.
      *
-     * @param id Identificador del comentario a consultar
-     * @return ComentarioDetailDTO con la información del comentario
-     * @throws EntityNotFoundException si no se encuentra el comentario
+
      */
     @GetMapping(value = "/{id}")
     @ResponseStatus(code = HttpStatus.OK)
@@ -59,9 +56,7 @@ public class ComentarioController {
     /**
      * Crea un nuevo comentario.
      *
-     * @param comentarioDTO Datos del comentario a crear
-     * @return ComentarioDTO con la información del comentario creado
-     * @throws IllegalArgumentException si los datos son inválidos
+
      */
     @PostMapping
     @ResponseStatus(code = HttpStatus.CREATED)
@@ -74,11 +69,7 @@ public class ComentarioController {
     /**
      * Actualiza los datos de un comentario existente.
      *
-     * @param id Identificador del comentario a actualizar
-     * @param comentarioDTO Datos actualizados (texto y calificación)
-     * @return ComentarioDTO con la información actualizada
-     * @throws EntityNotFoundException si no existe el comentario
-     * @throws IllegalArgumentException si los datos son inválidos
+
      */
     @PutMapping(value = "/{id}")
     @ResponseStatus(code = HttpStatus.OK)
@@ -94,8 +85,7 @@ public class ComentarioController {
     /**
      * Elimina un comentario.
      *
-     * @param id Identificador del comentario a eliminar
-     * @throws EntityNotFoundException si no existe el comentario
+
      */
     @DeleteMapping(value = "/{id}")
     @ResponseStatus(code = HttpStatus.NO_CONTENT)

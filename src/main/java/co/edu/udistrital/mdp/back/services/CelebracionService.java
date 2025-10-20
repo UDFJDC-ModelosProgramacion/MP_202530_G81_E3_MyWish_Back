@@ -6,7 +6,7 @@ import co.edu.udistrital.mdp.back.entities.UsuarioEntity;
 import co.edu.udistrital.mdp.back.repositories.CelebracionRepository;
 import co.edu.udistrital.mdp.back.repositories.MensajeInvitacionRepository;
 import co.edu.udistrital.mdp.back.repositories.UsuarioRepository;
-import jakarta.persistence.EntityNotFoundException; // ✅ Excepción estándar JPA
+import jakarta.persistence.EntityNotFoundException; 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

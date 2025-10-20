@@ -29,7 +29,6 @@ public class OcasionController {
 
     /**
      * Obtiene todas las ocasiones.
-     * @return Lista de OcasionDetailDTO.
      */
     @GetMapping
     @ResponseStatus(code = HttpStatus.OK)
@@ -40,9 +39,6 @@ public class OcasionController {
 
     /**
      * Obtiene una ocasión específica por su ID.
-     * @param id ID de la ocasión.
-     * @return OcasionDetailDTO de la ocasión encontrada.
-     * @throws IllegalArgumentException si no se encuentra la ocasión.
      */
     @GetMapping(value = "/{id}")
     @ResponseStatus(code = HttpStatus.OK)
@@ -53,9 +49,6 @@ public class OcasionController {
 
     /**
      * Crea una nueva ocasión.
-     * @param ocasionDTO Datos de la nueva ocasión.
-     * @return OcasionDTO creada.
-     * @throws IllegalArgumentException si el nombre es inválido o ya existe.
      */
     @PostMapping
     @ResponseStatus(code = HttpStatus.CREATED)
@@ -67,10 +60,6 @@ public class OcasionController {
 
     /**
      * Actualiza el nombre de una ocasión existente.
-     * @param id ID de la ocasión a actualizar.
-     * @param ocasionDTO DTO con el nuevo nombre.
-     * @return OcasionDTO actualizada.
-     * @throws IllegalArgumentException si el nombre es inválido o duplicado.
      */
     @PutMapping(value = "/{id}")
     @ResponseStatus(code = HttpStatus.OK)
@@ -81,8 +70,6 @@ public class OcasionController {
 
     /**
      * Elimina una ocasión por su ID.
-     * @param id ID de la ocasión a eliminar.
-     * @throws IllegalArgumentException si la ocasión no existe.
      */
     @DeleteMapping(value = "/{id}")
     @ResponseStatus(code = HttpStatus.NO_CONTENT)
