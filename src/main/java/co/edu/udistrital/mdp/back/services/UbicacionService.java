@@ -101,41 +101,26 @@ public class UbicacionService {
         ubicacionRepo.delete(ubicacion);
     }
 
-    /**
-     * Busca ubicaciones por ciudad.
-     */
     public List<UbicacionEntity> findByCiudad(String ciudad) {
         log.info("Buscando ubicaciones en la ciudad: {}", ciudad);
         return ubicacionRepo.findByCiudad(ciudad);
     }
 
-    /**
-     * Busca ubicaciones por país.
-     */
     public List<UbicacionEntity> findByPais(String pais) {
         log.info("Buscando ubicaciones en el país: {}", pais);
         return ubicacionRepo.findByPais(pais);
     }
 
-    /**
-     * Busca ubicaciones por dirección.
-     */
     public List<UbicacionEntity> findByDireccion(String direccion) {
         log.info("Buscando ubicaciones con dirección: {}", direccion);
         return ubicacionRepo.findByDireccion(direccion);
     }
 
-    /**
-     * Busca ubicaciones por tienda.
-     */
     public List<UbicacionEntity> findByTienda(TiendaEntity tienda) {
         log.info("Buscando ubicaciones de la tienda: {}", tienda.getNombre());
         return ubicacionRepo.findByTienda(tienda);
     }
 
-    /**
-     * Busca ubicaciones por ID de tienda.
-     */
     public List<UbicacionEntity> findByTiendaId(Long tiendaId) {
         log.info("Buscando ubicaciones de la tienda con id: {}", tiendaId);
         return ubicacionRepo.findByTiendaId(tiendaId);

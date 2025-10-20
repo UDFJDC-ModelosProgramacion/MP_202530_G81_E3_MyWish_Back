@@ -4,7 +4,6 @@ import co.edu.udistrital.mdp.back.entities.TiendaEntity;
 import co.edu.udistrital.mdp.back.entities.UbicacionEntity;
 import co.edu.udistrital.mdp.back.repositories.TiendaRepository;
 import co.edu.udistrital.mdp.back.repositories.UbicacionRepository;
-import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
