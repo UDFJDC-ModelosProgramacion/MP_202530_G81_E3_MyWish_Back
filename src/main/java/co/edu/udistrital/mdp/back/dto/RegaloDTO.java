@@ -1,20 +1,20 @@
-package co.edu.udistrital.mdp.back.dto;
+    package co.edu.udistrital.mdp.back.dto;
 
 
-import lombok.Data;
+    import lombok.Data;
 
-@Data
-public class RegaloDTO {
+    @Data
+    public class RegaloDTO {
 
-    private Long id;
-    private String descripcion;
-    private String linkCompra;
-    private Double precioEstimado;
-    private String categoria;
+        private Long id;
+        private String descripcion;
+        private String linkCompra;
+        private Double precioEstimado;
+        private String categoria;
 
-    private EstadoCompraDTO estadoCompra;
-    private TiendaDTO tienda;
-    private FotoDTO foto;
-    private ListaRegalosDTO listaRegalos;
-    private PrioridadRegaloDTO prioridad;
-}
+        private EstadoCompraDTO estadoCompra;
+        private TiendaDTO tienda;
+        private FotoDTO foto;
+        private ListaRegalosDTO listaRegalos;
+        private PrioridadRegaloDTO prioridad;
+    }
